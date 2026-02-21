@@ -1,3 +1,21 @@
+# C++/WinRT Plus
+
+C++/WinRT Plus is a community-driven evolution of the original C++/WinRT project. This independent initiative is neither affiliated with nor sponsored by Microsoft. Our mission is to address long-standing issues in C++/WinRT and deliver meaningful improvements to the developer experience. While the project introduces some breaking changes, we provide a simple and smooth migration path. You can continue using it just as you would with C++/WinRT.
+
+We're deeply grateful to the original authors of C++/WinRT for their groundbreaking work, which gave the C++ community first-class access to the Windows Runtime.
+
+With development on the original project slowing, we believe it's time for the community to take the lead. C++/WinRT Plus builds on that strong foundation—preserving what works while addressing the issues that matter most to daily users. Join us in shaping the future of Windows Runtime development in C++.
+
+## Changelog
+
+2026/2/22: Removed support for C++17 and C++/CX. Existing projects need to upgrade their C++ standard to C++20.
+
+<hr>
+
+The following content is from the original C++/WinRT documentation and remains a valuable resource.
+
+<hr>
+
 # The C++/WinRT language projection
 
 C++/WinRT is an entirely standard C++ language projection for Windows Runtime (WinRT) APIs, implemented as a header-file-based library, and designed to provide you with first-class access to the modern Windows API. With C++/WinRT, you can author and consume Windows Runtime APIs using any standards-compliant C++20 compiler.
