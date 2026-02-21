@@ -30,12 +30,12 @@ It sets the following project properties and item metadata:
 
 | Property | Value | Description |
 |-|-|-|
-| [PreferredToolArchitecture](https://docs.microsoft.com/en-us/cpp/build/msbuild-visual-cpp-overview?view=vs-2017) | x64 | Enables the compiler to use more memory |
+| [PreferredToolArchitecture](https://learn.microsoft.com/en-us/cpp/build/reference/msbuild-visual-cpp-overview?view=msvc-180) | x64 | Enables the compiler to use more memory |
 | CanReferenceWinRT | true | Enables native project references (e.g., to WinMD files) |
 | GeneratedFilesDir | *$(IntDir)Generated Files\ | Sets the folder for C++/WinRT generated source files |
 | XamlLanguage | CppWinRT | Directs the Xaml compiler to generate C++/WinRT code |
 | ClCompile.CompileAsWinRT | *false | Enables ISO C++ compilation (disables C++/CX) |
-| ClCompile.LanguageStandard | *stdcpp17 | Enables C++17 language features |
+| ClCompile.LanguageStandard | *stdcpp20 | Enables C++20 language features |
 | ClCompile.AdditionalOptions | /bigobj | Enables support for large object files |
 | ClCompile.AdditionalIncludeDirectories | GeneratedFilesDir | Adds $(GeneratedFilesDir) to the C++ include dirs |
 | Link.AdditionalDependencies | WindowsApp.lib | Umbrella library for Windows Runtime imports |
@@ -58,7 +58,7 @@ C++/WinRT behavior can be customized with these project properties:
 |-|-|-|
 | CppWinRTLibs | *true \| false | Enables the Link item metadata settings above |
 | CppWinRTModernIDL | *true \| false | Enables the Midl item metadata settings above |
-| CppWinRTVerbosity | low \| *normal \| high | Sets the [importance](https://docs.microsoft.com/en-us/visualstudio/msbuild/message-task?view=vs-2017) of C++/WinRT build messages (see below) |
+| CppWinRTVerbosity | low \| *normal \| high | Sets the [importance](https://learn.microsoft.com/en-us/visualstudio/msbuild/message-task?view=visualstudio) of C++/WinRT build messages (see below) |
 | CppWinRTNamespaceMergeDepth | *1 | Sets the depth of namespace merging (Xaml apps require 1) |
 | CppWinRTRootNamespaceAutoMerge | true \| *false | Sets the namespace merge depth to be the length of the root namespace |
 | CppWinRTMergeNoValidate | true \| *false | Disables mdmerge validation |

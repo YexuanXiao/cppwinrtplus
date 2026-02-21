@@ -156,9 +156,6 @@
     <ProjectReference Include="..\TestRuntimeComponentCSharp\TestRuntimeComponentCSharp.csproj">
       <Project>{c47f8562-a2b9-4ba3-87ac-b42d015e241d}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\TestRuntimeComponentCX\TestRuntimeComponentCX.vcxproj">
-      <Project>{adc53200-b456-4386-9851-5bf69dfb8928}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\TestRuntimeComponentEmpty\TestRuntimeComponentEmpty.vcxproj">
       <Project>{8456c55f-bf01-4798-b79b-7388681c398f}</Project>
     </ProjectReference>
