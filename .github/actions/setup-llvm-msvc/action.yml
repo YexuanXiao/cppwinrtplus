@@ -4,7 +4,7 @@ inputs:
   llvm-version:
     description: 'LLVM version'
     required: true
-    default: '17.0.5'
+    default: '21.1.8'
 outputs:
   llvm-path:
     description: "The path in which LLVM is installed to"
@@ -34,7 +34,7 @@ runs:
       if: steps.cache-llvm.outputs.cache-hit != 'true'
       shell: pwsh
       run: |
-        Invoke-WebRequest "https://github.com/zufuliu/llvm-utils/releases/download/v22.09/LLVM_VS2017.zip" -OutFile LLVM_VS2017.zip
+        Invoke-WebRequest "https://github.com/zufuliu/llvm-utils/releases/download/v25.11/LLVM_VS2017.zip" -OutFile LLVM_VS2017.zip
         7z x -y "LLVM_VS2017.zip" -o"$pwd\.llvm-utils\"
         rm LLVM_VS2017.zip
 
