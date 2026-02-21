@@ -52,7 +52,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard Condition="'$(CppWinRTLanguageStandard)'==''">stdcpp17</LanguageStandard>
+      <LanguageStandard Condition="'$(CppWinRTLanguageStandard)'==''">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(CppWinRTLanguageStandard)'=='20'">stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -60,7 +60,6 @@
       <PreprocessorDefinitions Condition="'$(TestsUseAnsiColor)'=='1'">CATCH_CONFIG_COLOUR_ANSI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/bigobj</AdditionalOptions>
-      <AdditionalOptions Condition="'$(CppWinRTLanguageStandard)'==''">/await %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Clang)'=='1'">-Wno-unused-command-line-argument -fno-delayed-template-parsing -mcx16</AdditionalOptions>
     </ClCompile>
     <Link>
