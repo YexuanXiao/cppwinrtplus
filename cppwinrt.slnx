@@ -79,7 +79,7 @@
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component/test_component.vcxproj" />
     </Project>
-    <Project Path="test/old_tests/UnitTests/Tests.vcxproj">
+    <Project Path="test/old_tests/UnitTests/test_old.vcxproj">
       <BuildDependency Project="test/old_tests/Component/Component.vcxproj" />
     </Project>
   </Folder>
