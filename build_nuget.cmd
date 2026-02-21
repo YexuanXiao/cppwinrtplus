@@ -1,5 +1,11 @@
 rem @echo off
 
+nuget >nul 2>&1
+if %errorlevel% neq 0 (
+    echo NuGet is not available. Please install NuGet CLI from https://www.nuget.org/downloads and add it to PATH.
+    exit /b 1
+)
+
 set target_version=%1
 if "%target_version%"=="" set target_version=3.0.0.0
 
