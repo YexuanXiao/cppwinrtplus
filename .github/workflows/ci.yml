@@ -21,7 +21,7 @@ jobs:
             arch: arm64
           - compiler: clang-cl
             config: Release
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     steps:
       - uses: actions/checkout@v6
 
@@ -100,7 +100,7 @@ jobs:
             arch: arm64
           - compiler: clang-cl
             config: Release
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     steps:
       - uses: actions/checkout@v6
 
@@ -281,7 +281,7 @@ jobs:
         arch: [x86, x64, arm64]
         config: [Release]
         Deployment: [Component, Standalone]
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     steps:
       - uses: actions/checkout@v6
 
@@ -321,7 +321,7 @@ jobs:
           - MSVC
         arch: [x86, x64]
         config: [Release]
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     steps:
       - uses: actions/checkout@v6
 
@@ -366,7 +366,7 @@ jobs:
 
   build-nuget:
     name: Build nuget package with MSVC
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     steps:
       - uses: actions/checkout@v6
 
