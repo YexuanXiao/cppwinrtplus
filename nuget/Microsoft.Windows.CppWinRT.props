@@ -21,7 +21,8 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
     <ItemDefinitionGroup>
         <ClCompile>
-            <CompileAsWinRT Condition="'$(CppWinRTProjectLanguage)' != 'C++/CX' And '%(ClCompile.CompileAsWinRT)' == ''">false</CompileAsWinRT>
+            <!-- CompileAsWinRT means C++/CX and /ZW, which is incompatible with C++20. -->
+            <CompileAsWinRT>false</CompileAsWinRT>
             <LanguageStandard Condition="'%(ClCompile.LanguageStandard)' == ''">stdcpp20</LanguageStandard>
         </ClCompile>
         <Midl Condition="'$(CppWinRTModernIDL)' != 'false'">

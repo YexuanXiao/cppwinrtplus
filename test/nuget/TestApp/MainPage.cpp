@@ -9,7 +9,6 @@ using namespace winrt::TestApp::Library1;
 using namespace winrt::TestApp::Library4;
 using namespace winrt::TestRuntimeComponent1;
 using namespace winrt::TestRuntimeComponent2;
-using namespace winrt::TestRuntimeComponentCX;
 using namespace winrt::TestRuntimeComponentEmpty;
 using namespace winrt::TestRuntimeComponentEmpty::SubNamespace1;
 using namespace winrt::TestRuntimeComponent_NamespaceUnderscore;
@@ -25,9 +24,6 @@ namespace winrt::TestApp::implementation
 
         TestRuntimeComponent2Class c2{};
         c2.Test();
-
-        TestRuntimeComponentCXClass c3{};
-        c3.Test();
 
         TestRuntimeComponentNamespaceUnderscoreClass cUnderscore{};
         cUnderscore.Test();
