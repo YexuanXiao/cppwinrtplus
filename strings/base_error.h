@@ -471,7 +471,7 @@ WINRT_EXPORT namespace winrt
         }
         catch (...)
         {
-            abort();
+            std::abort();
         }
     }
 
@@ -532,7 +532,7 @@ WINRT_EXPORT namespace winrt
     [[noreturn]] inline void terminate() noexcept
     {
         WINRT_IMPL_RoFailFastWithErrorContext(to_hresult());
-        abort();
+        std::abort();
     }
 }
 

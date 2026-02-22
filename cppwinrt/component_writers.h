@@ -913,7 +913,7 @@ namespace winrt::@::implementation
 )";
 
             std::string upper(type_name);
-            std::transform(upper.begin(), upper.end(), upper.begin(), [](char c) {return static_cast<char>(::toupper(c)); });
+            std::transform(upper.begin(), upper.end(), upper.begin(), [](char c) {return static_cast<char>(::std::toupper(c)); });
 
             auto include_path = get_generated_component_filename(type);
 

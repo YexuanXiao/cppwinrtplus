@@ -66,7 +66,7 @@ namespace cppwinrt
 #if defined(_DEBUG)
             if (debug_trace)
             {
-                ::printf("%.*s", static_cast<int>(value.size()), value.data());
+                ::std::printf("%.*s", static_cast<int>(value.size()), value.data());
             }
 #endif
         }
@@ -78,7 +78,7 @@ namespace cppwinrt
 #if defined(_DEBUG)
             if (debug_trace)
             {
-                ::printf("%c", value);
+                ::std::printf("%c", value);
             }
 #endif
         }
@@ -141,10 +141,10 @@ namespace cppwinrt
 #if defined(_WIN32) || defined(_WIN64)
             std::size_t const size = sprintf_s(buffer, format, args...);
 #else
-            std::size_t size = snprintf(buffer, sizeof(buffer), format, args...);
+            std::size_t size = std::snprintf(buffer, sizeof(buffer), format, args...);
             if (size > sizeof(buffer) - 1)
             {
-                fprintf(stderr, "\n*** WARNING: writer_base::write_printf -- buffer too small\n");
+                std::fprintf(stderr, "\n*** WARNING: writer_base::write_printf -- buffer too small\n");
                 size = sizeof(buffer) - 1;
             }
 #endif
@@ -167,8 +167,8 @@ namespace cppwinrt
 
         void flush_to_console(bool to_stdout = true) noexcept
         {
-            fprintf(to_stdout ? stdout : stderr, "%.*s", static_cast<int>(m_first.size()), m_first.data());
-            fprintf(to_stdout ? stdout : stderr, "%.*s", static_cast<int>(m_second.size()), m_second.data());
+            std::fprintf(to_stdout ? stdout : stderr, "%.*s", static_cast<int>(m_first.size()), m_first.data());
+            std::fprintf(to_stdout ? stdout : stderr, "%.*s", static_cast<int>(m_second.size()), m_second.data());
             m_first.clear();
             m_second.clear();
         }

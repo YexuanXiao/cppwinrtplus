@@ -29,7 +29,7 @@ namespace winrt::impl
             }
             else if (remaining < 0)
             {
-                abort();
+                std::abort();
             }
 
             return static_cast<std::uint32_t>(remaining);
@@ -116,7 +116,7 @@ namespace winrt::impl
 
         if (value[length] != 0)
         {
-            abort();
+            std::abort();
         }
 
         header.flags = hstring_reference_flag;

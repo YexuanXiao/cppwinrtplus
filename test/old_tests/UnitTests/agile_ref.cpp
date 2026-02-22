@@ -40,7 +40,7 @@ IAsyncAction test_agile_ref()
 // FIXME: Test is known to crash from calling invalid address on x86 when built with Clang.
 TEST_CASE("agile_ref", "[.clang-crash]")
 #elif defined(__GNUC__) && !defined(__clang__)
-// FIXME: Test is known to randomly crash or abort when built with GCC (segfaults under appverifier).
+// FIXME: Test is known to randomly crash or std::abort when built with GCC (segfaults under appverifier).
 TEST_CASE("agile_ref", "[.gcc-crash]")
 #else
 TEST_CASE("agile_ref")

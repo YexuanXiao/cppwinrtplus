@@ -31,8 +31,8 @@ body:
 
         int main()
         {
-          Uri uri(L"https://kennykerr.ca");
-          printf("%ls\n", uri.ToString().c_str());
+          Uri uri(L"https://github.com/yexuanXiao/cppwinrtplus");
+          std::printf("%ls\n", uri.ToString().c_str());
         }
       render: cpp
   - type: textarea
