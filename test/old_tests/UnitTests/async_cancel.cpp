@@ -75,7 +75,7 @@ namespace
             return nullptr;
         }
 
-        uint32_t Id() const noexcept
+        std::uint32_t Id() const noexcept
         {
             return 1;
         }
@@ -176,7 +176,7 @@ TEST_CASE("async_cancel_use_status")
     [](void* complete) -> fire_and_forget
     {
         REQUIRE_THROWS_AS(co_await make<foreign_canceled_action>(), hresult_canceled);
-        REQUIRE_THROWS_AS(co_await make<foreign_canceled_operation<int32_t>>(), hresult_canceled);
+        REQUIRE_THROWS_AS(co_await make<foreign_canceled_operation<std::int32_t>>(), hresult_canceled);
 
         REQUIRE_THROWS_AS(co_await when_any(make<foreign_canceled_action>(), make<foreign_canceled_action>()), hresult_canceled);
         REQUIRE_THROWS_AS(co_await when_any(make<foreign_canceled_operation<int>>(), make<foreign_canceled_operation<int>>()), hresult_canceled);

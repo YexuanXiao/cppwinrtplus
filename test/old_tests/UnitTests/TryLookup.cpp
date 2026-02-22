@@ -115,7 +115,7 @@ TEST_CASE("TryLookup TryRemove error")
     {
         hresult code;
         int Lookup(int) { throw_hresult(code); }
-        int32_t Size() { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
+        std::int32_t Size() { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
         bool HasKey(int) { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
         IMapView<int, int> GetView() { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
         bool Insert(int, int) { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
@@ -165,7 +165,7 @@ TEST_CASE("trylookup_from_abi specialization")
             }
         }
         int Lookup(int) { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
-        int32_t Size() { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
+        std::int32_t Size() { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
         bool HasKey(int) { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
         void Split(IMapView<int, int>&, IMapView<int, int>&) { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
     };
@@ -202,7 +202,7 @@ TEST_CASE("trylookup_from_abi NOT opt-in, no special tag")
         }
         int Lookup(int) { return 42; } // Behave as if the item was found
 
-        int32_t Size() { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
+        std::int32_t Size() { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
         bool HasKey(int) { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
         void Split(IMapView<int, int>&, IMapView<int, int>&) { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
     };
@@ -240,7 +240,7 @@ TEST_CASE("trylookup_from_abi specialization with IInspectable")
             }
         }
         IInspectable Lookup(int) { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
-        int32_t Size() { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
+        std::int32_t Size() { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
         bool HasKey(int) { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
         void Split(IMapView<int, IInspectable>&, IMapView<int, IInspectable>&) { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
     };

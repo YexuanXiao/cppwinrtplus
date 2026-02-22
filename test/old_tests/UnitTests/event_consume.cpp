@@ -104,7 +104,7 @@ struct TestClipboard
 TEST_CASE("consuming instance events")
 {
     ISplashScreen s = make<TestSplashScreen>();
-    uint32_t count = 0;
+    std::uint32_t count = 0;
 
     SplashScreen::Dismissed_revoker // revoke type alias is present
         revoker = s.Dismissed(auto_revoke, // auto_revoke value is required
@@ -146,7 +146,7 @@ TEST_CASE("consuming instance events")
 
 TEST_CASE("consume factory events")
 {
-    uint32_t count = 0;
+    std::uint32_t count = 0;
 
     Clipboard::ContentChanged_revoker // revoke type alias is present
         revoker = TestClipboard::ContentChanged(auto_revoke, // auto_revoke value is required

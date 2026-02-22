@@ -33,13 +33,13 @@ namespace
 }
 TEST_CASE("box_array")
 {
-    Verify<uint8_t>(42);
-    Verify<int16_t>(42);
-    Verify<uint16_t>(42);
-    Verify<int32_t>(42);
-    Verify<uint32_t>(42);
-    Verify<int64_t>(42);
-    Verify<uint64_t>(42);
+    Verify<std::uint8_t>(42);
+    Verify<std::int16_t>(42);
+    Verify<std::uint16_t>(42);
+    Verify<std::int32_t>(42);
+    Verify<std::uint32_t>(42);
+    Verify<std::int64_t>(42);
+    Verify<std::uint64_t>(42);
     Verify<float>(42);
     Verify<double>(42);
     Verify<char16_t>(42);

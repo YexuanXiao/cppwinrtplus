@@ -53,7 +53,7 @@ TEST_CASE("out_params")
     }
 
     {
-        com_array<int32_t> value(10);
+        com_array<std::int32_t> value(10);
         object.OutInt32Array(value);
         REQUIRE(value.size() == 3);
         REQUIRE(value[0] == 1);
@@ -102,7 +102,7 @@ TEST_CASE("out_params")
     }
 
     {
-        std::array<int32_t, 4> value{ 0xCC, 0xCC, 0xCC, 0xCC };
+        std::array<std::int32_t, 4> value{ 0xCC, 0xCC, 0xCC, 0xCC };
         object.RefInt32Array(value);
         REQUIRE(value[0] == 1);
         REQUIRE(value[1] == 2);
@@ -193,11 +193,11 @@ TEST_CASE("out_params")
     {
         Signed value = static_cast<Signed>(0xCC);
         REQUIRE_THROWS_AS(object.OutEnum(value), hresult_invalid_argument);
-        REQUIRE(static_cast<int32_t>(value) == 0xCC);
+        REQUIRE(static_cast<std::int32_t>(value) == 0xCC);
     }
 
     {
-        com_array<int32_t> value(10);
+        com_array<std::int32_t> value(10);
         REQUIRE_THROWS_AS(object.OutInt32Array(value), hresult_invalid_argument);
         REQUIRE(value.size() == 0);
     }
@@ -228,7 +228,7 @@ TEST_CASE("out_params")
     }
 
     {
-        std::array<int32_t, 4> value{ 0xCC, 0xCC, 0xCC, 0xCC };
+        std::array<std::int32_t, 4> value{ 0xCC, 0xCC, 0xCC, 0xCC };
         REQUIRE_THROWS_AS(object.RefInt32Array(value), hresult_invalid_argument);
         REQUIRE(value[0] == 0xCC);
         REQUIRE(value[1] == 0xCC);

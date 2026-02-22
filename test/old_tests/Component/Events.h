@@ -8,11 +8,11 @@ namespace winrt::Component::implementation
     {
         Events() = default;
 
-        event_token SimpleEvent(Windows::Foundation::EventHandler<int32_t> const& handler);
+        event_token SimpleEvent(Windows::Foundation::EventHandler<std::int32_t> const& handler);
         void SimpleEvent(event_token const& cookie);
         void RaiseSimpleEvent(int value);
 
-        event_token TypedEvent(Windows::Foundation::TypedEventHandler<Component::Events, int32_t> const& handler);
+        event_token TypedEvent(Windows::Foundation::TypedEventHandler<Component::Events, std::int32_t> const& handler);
         void TypedEvent(event_token const& cookie);
         void RaiseTypedEvent(int value);
 
@@ -21,8 +21,8 @@ namespace winrt::Component::implementation
         void RaiseCustomEvent(int value);
 
     private:
-        event<Windows::Foundation::EventHandler<int32_t>> m_simple;
-        event<Windows::Foundation::TypedEventHandler<Component::Events, int32_t>> m_typed;
+        event<Windows::Foundation::EventHandler<std::int32_t>> m_simple;
+        event<Windows::Foundation::TypedEventHandler<Component::Events, std::int32_t>> m_typed;
         event<CustomDelegate> m_custom;
     };
 }
@@ -32,13 +32,13 @@ namespace winrt::Component::factory_implementation
     struct Events : EventsT<Events, implementation::Events, static_lifetime>
     {
         Events() { ++s_constructorCount; }
-        event_token StaticEvent(Windows::Foundation::EventHandler<int32_t> const& handler);
+        event_token StaticEvent(Windows::Foundation::EventHandler<std::int32_t> const& handler);
         void StaticEvent(event_token const& cookie);
         void RaiseStaticEvent(int value);
         bool TestStaticLifetime();
 
     private:
-        event<Windows::Foundation::EventHandler<int32_t>> m_static;
-        static std::atomic<int32_t> s_constructorCount;
+        event<Windows::Foundation::EventHandler<std::int32_t>> m_static;
+        static std::atomic<std::int32_t> s_constructorCount;
     };
 }

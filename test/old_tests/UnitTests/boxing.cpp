@@ -36,14 +36,14 @@ TEST_CASE("IReference, boxing round trip")
 {
     static_assert(std::is_convertible_v<Uri, Windows::Foundation::IUnknown>);
 
-    TestRoundTrip<uint8_t>(42);
-    TestRoundTrip<int8_t>(42);
-    TestRoundTrip<uint16_t>(42);
-    TestRoundTrip<int16_t>(42);
-    TestRoundTrip<uint32_t>(42);
-    TestRoundTrip<int32_t>(42);
-    TestRoundTrip<uint64_t>(42);
-    TestRoundTrip<int64_t>(42);
+    TestRoundTrip<std::uint8_t>(42);
+    TestRoundTrip<std::int8_t>(42);
+    TestRoundTrip<std::uint16_t>(42);
+    TestRoundTrip<std::int16_t>(42);
+    TestRoundTrip<std::uint32_t>(42);
+    TestRoundTrip<std::int32_t>(42);
+    TestRoundTrip<std::uint64_t>(42);
+    TestRoundTrip<std::int64_t>(42);
     TestRoundTrip<bool>(true);
     TestRoundTrip<char16_t>(L'&');
     TestRoundTrip<guid>(guid_of<IStringable>());

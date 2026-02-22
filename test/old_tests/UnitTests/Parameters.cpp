@@ -13,7 +13,7 @@ TEST_CASE("Parameters")
     {
         params.SetInt32(123);
         REQUIRE(params.GetInt32() == 123);
-        int32_t value{ 0 };
+        std::int32_t value{ 0 };
         params.OutInt32(value);
         REQUIRE(value == 123);
     }

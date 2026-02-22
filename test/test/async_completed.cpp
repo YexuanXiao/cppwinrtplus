@@ -26,7 +26,7 @@ namespace
             return nullptr;
         }
 
-        uint32_t Id() const noexcept
+        std::uint32_t Id() const noexcept
         {
             return 1;
         }

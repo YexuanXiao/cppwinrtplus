@@ -458,7 +458,7 @@ TEST_CASE("weak,assignment")
 
 TEST_CASE("weak,module_lock")
 {
-    uint32_t object_count = get_module_lock();
+    std::uint32_t object_count = get_module_lock();
 
     IStringable a = make<Weak>();
 
@@ -474,7 +474,7 @@ TEST_CASE("weak,module_lock")
 
 TEST_CASE("weak,no_module_lock")
 {
-    uint32_t object_count = get_module_lock();
+    std::uint32_t object_count = get_module_lock();
 
     IStringable a = make<WeakNoModuleLock>();
 

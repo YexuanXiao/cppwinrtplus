@@ -8,7 +8,7 @@ using namespace Windows::Foundation;
 //{
 //    struct ErrorInfo : implements<ErrorInfo, IStringable>
 //    {
-//        ErrorInfo(std::string_view const& file, uint32_t const line) :
+//        ErrorInfo(std::string_view const& file, std::uint32_t const line) :
 //            m_string(file)
 //        {
 //            m_string += " (" + std::to_string(line) + ")";

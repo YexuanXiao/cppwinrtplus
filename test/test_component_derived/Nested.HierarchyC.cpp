@@ -13,5 +13,5 @@ namespace winrt::test_component_derived::Nested::implementation
     }
 
     static_assert(!std::is_convertible_v<HierarchyC, winrt::test_component_base::IHierarchyAProtected>);
-    static_assert(!std::is_constructible_v<winrt::test_component_base::HierarchyA, int32_t, hstring const&>);
+    static_assert(!std::is_constructible_v<winrt::test_component_base::HierarchyA, std::int32_t, hstring const&>);
 }

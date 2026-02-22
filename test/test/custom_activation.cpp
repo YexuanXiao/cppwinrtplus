@@ -22,7 +22,7 @@ namespace
         }
     };
 
-    int32_t __stdcall handler(void* classId, winrt::guid const& iid, void** factory) noexcept
+    std::int32_t __stdcall handler(void* classId, winrt::guid const& iid, void** factory) noexcept
     {
         bool expected = reinterpret_cast<hstring const&>(classId) == L"Windows.Foundation.Uri";
         REQUIRE(expected);

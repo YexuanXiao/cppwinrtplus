@@ -10,7 +10,7 @@ inline constexpr bool string_view_equal(std::basic_string_view<CharT> left, std:
         return false;
     }
 
-    for (size_t i = 0; i < left.size(); ++i)
+    for (std::size_t i = 0; i < left.size(); ++i)
     {
         if (left[i] != right[i])
         {

@@ -63,10 +63,10 @@ TEST_CASE("range_for,IIterable,IKeyValuePair")
         { 3, L"three"},
     };
 
-    IIterable<IKeyValuePair<int32_t, hstring>> c = single_threaded_map<int32_t, hstring>(std::map<int, hstring>(values));
+    IIterable<IKeyValuePair<std::int32_t, hstring>> c = single_threaded_map<std::int32_t, hstring>(std::map<int, hstring>(values));
     std::map<int, hstring> result;
 
-    for (IKeyValuePair<int32_t, hstring> i : c)
+    for (IKeyValuePair<std::int32_t, hstring> i : c)
     {
         result[i.Key()] = i.Value();
 
@@ -98,10 +98,10 @@ TEST_CASE("range_for,IMap")
         { 3, L"three" },
     };
 
-    IMap<int32_t, hstring> c = single_threaded_map<int32_t, hstring>(std::map<int, hstring>(values));
+    IMap<std::int32_t, hstring> c = single_threaded_map<std::int32_t, hstring>(std::map<int, hstring>(values));
     std::map<int, hstring> result;
 
-    for (IKeyValuePair<int32_t, hstring> i : c)
+    for (IKeyValuePair<std::int32_t, hstring> i : c)
     {
         result[i.Key()] = i.Value();
     }
@@ -128,10 +128,10 @@ TEST_CASE("range_for,IMapView")
         { 3, L"three" },
     };
 
-    IMapView<int32_t, hstring> c = single_threaded_map<int32_t, hstring>(std::map<int, hstring>(values)).GetView();
+    IMapView<std::int32_t, hstring> c = single_threaded_map<std::int32_t, hstring>(std::map<int, hstring>(values)).GetView();
     std::map<int, hstring> result;
 
-    for (IKeyValuePair<int32_t, hstring> i : c)
+    for (IKeyValuePair<std::int32_t, hstring> i : c)
     {
         result[i.Key()] = i.Value();
     }

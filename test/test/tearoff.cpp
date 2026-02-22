@@ -48,7 +48,7 @@ namespace
 
             ULONG __stdcall Release() noexcept final
             {
-                uint32_t const remaining = m_references.fetch_sub(1, std::memory_order_relaxed) - 1;
+                std::uint32_t const remaining = m_references.fetch_sub(1, std::memory_order_relaxed) - 1;
 
                 if (remaining == 0)
                 {
@@ -61,7 +61,7 @@ namespace
         private:
 
             winrt::com_ptr<::IUnknown> m_object;
-            std::atomic<uint32_t> m_references{ 1 };
+            std::atomic<std::uint32_t> m_references{ 1 };
         };
 
         *result = new (std::nothrow) persist(object);
@@ -103,7 +103,7 @@ namespace
 
             ULONG __stdcall Release() noexcept final
             {
-                uint32_t const remaining = m_references.fetch_sub(1, std::memory_order_relaxed) - 1;
+                std::uint32_t const remaining = m_references.fetch_sub(1, std::memory_order_relaxed) - 1;
 
                 if (remaining == 0)
                 {
@@ -132,7 +132,7 @@ namespace
 
             winrt::com_ptr<::IInspectable> m_object;
             winrt::hstring m_value;
-            std::atomic<uint32_t> m_references{ 1 };
+            std::atomic<std::uint32_t> m_references{ 1 };
         };
 
         *result = new (std::nothrow) stringable(object, value);
@@ -154,7 +154,7 @@ namespace
             Closed = true;
         }
 
-        int32_t query_interface_tearoff(winrt::guid const& id, void** result) const noexcept final
+        std::int32_t query_interface_tearoff(winrt::guid const& id, void** result) const noexcept final
         {
             if (winrt::is_guid_of<IPersist>(id))
             {
@@ -186,7 +186,7 @@ namespace
             return L"RuntimeClassName";
         }
 
-        int32_t query_interface_tearoff(winrt::guid const& id, void** result) const noexcept final
+        std::int32_t query_interface_tearoff(winrt::guid const& id, void** result) const noexcept final
         {
             if (winrt::is_guid_of<winrt::IStringable>(id))
             {

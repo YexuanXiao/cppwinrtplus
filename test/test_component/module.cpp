@@ -3,12 +3,12 @@
 bool __stdcall test_can_unload_now() noexcept;
 void* __stdcall test_get_activation_factory(std::wstring_view const& name);
 
-int32_t __stdcall DllCanUnloadNow() noexcept
+std::int32_t __stdcall DllCanUnloadNow() noexcept
 {
     return test_can_unload_now() ? 0 : 1;
 }
 
-int32_t __stdcall DllGetActivationFactory(void* classId, void** factory) noexcept
+std::int32_t __stdcall DllGetActivationFactory(void* classId, void** factory) noexcept
 {
     try
     {

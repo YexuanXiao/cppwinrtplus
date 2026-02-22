@@ -16,14 +16,14 @@ namespace
     }
 
     static struct {
-        uint32_t lineNumber;
+        std::uint32_t lineNumber;
         char const* fileName;
         char const* functionName;
         void* returnAddress;
         winrt::hresult result;
     } s_loggerArgs{};
 
-    void __stdcall logger(uint32_t lineNumber, char const* fileName, char const* functionName, void* returnAddress, winrt::hresult const result) noexcept
+    void __stdcall logger(std::uint32_t lineNumber, char const* fileName, char const* functionName, void* returnAddress, winrt::hresult const result) noexcept
     {
         s_loggerArgs = {
             .lineNumber = lineNumber,
@@ -53,7 +53,7 @@ TEST_CASE("custom_error_logger")
     REQUIRE(s_loggerArgs.functionName == nullptr);
 
     REQUIRE(s_loggerArgs.returnAddress);
-    REQUIRE(s_loggerArgs.result == static_cast<int32_t>(0x80000018)); // E_ILLEGAL_DELEGATE_ASSIGNMENT)
+    REQUIRE(s_loggerArgs.result == static_cast<std::int32_t>(0x80000018)); // E_ILLEGAL_DELEGATE_ASSIGNMENT)
 
     // Remove global handler
     winrt_throw_hresult_handler = nullptr;

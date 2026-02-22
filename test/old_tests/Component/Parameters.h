@@ -8,9 +8,9 @@ namespace winrt::Component::implementation
     {
         Parameters() = default;
 
-        void SetInt32(int32_t value);
-        int32_t GetInt32() const;
-        void OutInt32(int32_t& value) const;
+        void SetInt32(std::int32_t value);
+        std::int32_t GetInt32() const;
+        void OutInt32(std::int32_t& value) const;
 
         void SetString(hstring const& value);
         hstring GetString() const;
@@ -20,10 +20,10 @@ namespace winrt::Component::implementation
         Windows::Foundation::IInspectable GetObject() const;
         void OutObject(Windows::Foundation::IInspectable& value) const;
 
-        void SetInt32Array(array_view<int32_t const> value);
-        com_array<int32_t> GetInt32Array() const;
-        void OutInt32Array(com_array<int32_t>& value) const;
-        void CopyInt32Array(array_view<int32_t> value) const;
+        void SetInt32Array(array_view<std::int32_t const> value);
+        com_array<std::int32_t> GetInt32Array() const;
+        void OutInt32Array(com_array<std::int32_t>& value) const;
+        void CopyInt32Array(array_view<std::int32_t> value) const;
 
         void SetStringArray(array_view<hstring const> value);
         com_array<hstring> GetStringArray() const;
@@ -36,10 +36,10 @@ namespace winrt::Component::implementation
         void CopyObjectArray(array_view<Windows::Foundation::IInspectable> value) const;
 
     private:
-        int32_t m_int32{ 0 };
+        std::int32_t m_int32{ 0 };
         hstring m_string;
         Windows::Foundation::IInspectable m_object;
-        std::vector<int32_t> m_int32_array;
+        std::vector<std::int32_t> m_int32_array;
         std::vector<hstring> m_string_array;
         std::vector<Windows::Foundation::IInspectable> m_object_array;
     };

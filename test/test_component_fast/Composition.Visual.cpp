@@ -8,11 +8,11 @@ namespace winrt::test_component_fast::Composition::implementation
         base_type(compositor)
     {
     }
-    void Visual::Offset(int32_t value)
+    void Visual::Offset(std::int32_t value)
     {
         m_offset = value;
     }
-    int32_t Visual::Offset()
+    std::int32_t Visual::Offset()
     {
         return m_offset;
     }

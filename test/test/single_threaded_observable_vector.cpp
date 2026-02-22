@@ -213,7 +213,7 @@ TEST_CASE("single_threaded_observable_vector")
         IObservableVector<int> vector_i = single_threaded_observable_vector<int>({ 1,2 });
         IObservableVector<IInspectable> vector_o = vector_i.as<IObservableVector<IInspectable>>();
 
-        uint32_t index{};
+        std::uint32_t index{};
         REQUIRE((vector_i.IndexOf(2, index) && index == 1));
         index = 0;
         REQUIRE((vector_o.IndexOf(box_value(2), index) && index == 1));
@@ -444,7 +444,7 @@ TEST_CASE("single_threaded_observable_vector")
 
         // Verify that nulls are legal if the underlying type derives from IInspectable.
         REQUIRE_NOTHROW(vector_o.Append(nullptr));
-        uint32_t index = 99;
+        std::uint32_t index = 99;
         REQUIRE(vector_o.IndexOf(nullptr, index));
         REQUIRE(index == 0);
 

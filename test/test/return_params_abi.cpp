@@ -57,7 +57,7 @@ TEST_CASE("return_params_abi")
     }
     {
         ABI::test_component::Struct raw;
-        memset(&raw, 0xCC, sizeof(raw));
+        std::memset(&raw, 0xCC, sizeof(raw));
         REQUIRE(S_OK == abi->ReturnStruct(&raw));
         REQUIRE(WindowsGetStringRawBuffer(raw.First, nullptr) == L"1"sv);
         REQUIRE(WindowsGetStringRawBuffer(raw.Second, nullptr) == L"2"sv);
@@ -65,17 +65,17 @@ TEST_CASE("return_params_abi")
         REQUIRE(S_OK == WindowsDeleteString(raw.Second));
     }
     {
-        uint32_t length{ 0xCC };
-        auto raw{ reinterpret_cast<int32_t*>(0xCC) };
+        std::uint32_t length{ 0xCC };
+        auto raw{ reinterpret_cast<std::int32_t*>(0xCC) };
         REQUIRE(S_OK == abi->ReturnInt32Array(&length, &raw));
-        com_array<int32_t> value{ raw, length, take_ownership_from_abi };
+        com_array<std::int32_t> value{ raw, length, take_ownership_from_abi };
         REQUIRE(value.size() == 3);
         REQUIRE(value[0] == 1);
         REQUIRE(value[1] == 2);
         REQUIRE(value[2] == 3);
     }
     {
-        uint32_t length{ 0xCC };
+        std::uint32_t length{ 0xCC };
         auto raw{ reinterpret_cast<HSTRING*>(0xCC) };
         REQUIRE(S_OK == abi->ReturnStringArray(&length, &raw));
         com_array<hstring> value{ raw, length, take_ownership_from_abi };
@@ -85,7 +85,7 @@ TEST_CASE("return_params_abi")
         REQUIRE(value[2] == L"3");
     }
     {
-        uint32_t length{ 0xCC };
+        std::uint32_t length{ 0xCC };
         auto raw{ reinterpret_cast<::IInspectable * *>(0xCC) };
         REQUIRE(S_OK == abi->ReturnObjectArray(&length, &raw));
         com_array<winrt::IInspectable> value{ raw, length, take_ownership_from_abi };
@@ -95,7 +95,7 @@ TEST_CASE("return_params_abi")
         REQUIRE(value[2].as<IStringable>().ToString() == L"3");
     }
     {
-        uint32_t length{ 0xCC };
+        std::uint32_t length{ 0xCC };
         auto raw{ reinterpret_cast<ABI::Windows::Foundation::IStringable * *>(0xCC) };
         REQUIRE(S_OK == abi->ReturnStringableArray(&length, &raw));
         com_array<IStringable> value{ raw, length, take_ownership_from_abi };
@@ -105,7 +105,7 @@ TEST_CASE("return_params_abi")
         REQUIRE(value[2].ToString() == L"3");
     }
     {
-        uint32_t length{ 0xCC };
+        std::uint32_t length{ 0xCC };
         auto raw{ reinterpret_cast<ABI::test_component::Struct*>(0xCC) };
         REQUIRE(S_OK == abi->ReturnStructArray(&length, &raw));
         com_array<Struct> value{ raw, length, take_ownership_from_abi };
@@ -140,41 +140,41 @@ TEST_CASE("return_params_abi")
     }
     {
         ABI::test_component::Struct raw;
-        memset(&raw, 0xCC, sizeof(raw));
+        std::memset(&raw, 0xCC, sizeof(raw));
         REQUIRE(E_INVALIDARG == abi->ReturnStruct(&raw));
         REQUIRE(raw.First == nullptr);
         REQUIRE(raw.Second == nullptr);
     }
     {
-        uint32_t length{ 0xCC };
-        auto raw{ reinterpret_cast<int32_t*>(0xCC) };
+        std::uint32_t length{ 0xCC };
+        auto raw{ reinterpret_cast<std::int32_t*>(0xCC) };
         REQUIRE(E_INVALIDARG == abi->ReturnInt32Array(&length, &raw));
         REQUIRE(length == 0xCC);
         REQUIRE(raw == nullptr);
     }
     {
-        uint32_t length{ 0xCC };
+        std::uint32_t length{ 0xCC };
         auto raw{ reinterpret_cast<HSTRING*>(0xCC) };
         REQUIRE(E_INVALIDARG == abi->ReturnStringArray(&length, &raw));
         REQUIRE(length == 0xCC);
         REQUIRE(raw == nullptr);
     }
     {
-        uint32_t length{ 0xCC };
+        std::uint32_t length{ 0xCC };
         auto raw{ reinterpret_cast<::IInspectable * *>(0xCC) };
         REQUIRE(E_INVALIDARG == abi->ReturnObjectArray(&length, &raw));
         REQUIRE(length == 0xCC);
         REQUIRE(raw == nullptr);
     }
     {
-        uint32_t length{ 0xCC };
+        std::uint32_t length{ 0xCC };
         auto raw{ reinterpret_cast<ABI::Windows::Foundation::IStringable * *>(0xCC) };
         REQUIRE(E_INVALIDARG == abi->ReturnStringableArray(&length, &raw));
         REQUIRE(length == 0xCC);
         REQUIRE(raw == nullptr);
     }
     {
-        uint32_t length{ 0xCC };
+        std::uint32_t length{ 0xCC };
         auto raw{ reinterpret_cast<ABI::test_component::Struct*>(0xCC) };
         REQUIRE(E_INVALIDARG == abi->ReturnStructArray(&length, &raw));
         REQUIRE(length == 0xCC);

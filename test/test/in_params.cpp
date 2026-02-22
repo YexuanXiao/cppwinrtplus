@@ -9,7 +9,7 @@ namespace
 {
     struct Value : implements<Value, IStringable>
     {
-        Value(int32_t value) :
+        Value(std::int32_t value) :
             m_value(value)
         {
         }
@@ -21,7 +21,7 @@ namespace
 
     private:
 
-        int32_t m_value{};
+        std::int32_t m_value{};
     };
 }
 

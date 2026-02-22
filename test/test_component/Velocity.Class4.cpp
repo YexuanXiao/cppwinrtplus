@@ -4,10 +4,10 @@
 
 namespace winrt::test_component::Velocity::implementation
 {
-    Class4::Class4(int32_t)
+    Class4::Class4(std::int32_t)
     {
     }
-    Class4::Class4(int32_t, int32_t)
+    Class4::Class4(std::int32_t, std::int32_t)
     {
     }
     void Class4::Class4_Static1()

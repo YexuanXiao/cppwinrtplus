@@ -134,14 +134,14 @@ TEST_CASE("Boxing")
     TestUnbox<hstring>(std::wstring_view(L"value"), L"value", L"DEFAULT");
     TestUnbox<float>(123.0F, 321.0F);
     TestUnbox<double>(123.0, 321.0);
-    TestUnboxIntegerType<uint8_t>(123U, 32U);
-    TestUnboxIntegerType<int8_t>(123, 32);
-    TestUnboxIntegerType<uint16_t>(123U, 321U);
-    TestUnboxIntegerType<int16_t>(123, 321);
-    TestUnboxIntegerType<uint32_t>(123U, 321U);
-    TestUnboxIntegerType<int32_t>(123, 321);
-    TestUnboxIntegerType<uint64_t>(123U, 321U);
-    TestUnboxIntegerType<int64_t>(123, 321);
+    TestUnboxIntegerType<std::uint8_t>(123U, 32U);
+    TestUnboxIntegerType<std::int8_t>(123, 32);
+    TestUnboxIntegerType<std::uint16_t>(123U, 321U);
+    TestUnboxIntegerType<std::int16_t>(123, 321);
+    TestUnboxIntegerType<std::uint32_t>(123U, 321U);
+    TestUnboxIntegerType<std::int32_t>(123, 321);
+    TestUnboxIntegerType<std::uint64_t>(123U, 321U);
+    TestUnboxIntegerType<std::int64_t>(123, 321);
     TestUnbox<bool>(true, false);
     TestUnboxIntegerType<char16_t>(L'Y', L'N');
     TestUnbox<guid>(
@@ -156,15 +156,15 @@ TEST_CASE("Boxing")
     TestUnbox<UnsignedEnum>(UnsignedEnum::First, UnsignedEnum::Second);
 
     // Validate unboxing a enum from the underlying type.
-    TestUnbox<SignedEnum>(static_cast<int32_t>(SignedEnum::Negative), SignedEnum::Negative, SignedEnum::Positive);
-    TestUnbox<UnsignedEnum>(static_cast<uint32_t>(UnsignedEnum::First), UnsignedEnum::First, UnsignedEnum::Second);
+    TestUnbox<SignedEnum>(static_cast<std::int32_t>(SignedEnum::Negative), SignedEnum::Negative, SignedEnum::Positive);
+    TestUnbox<UnsignedEnum>(static_cast<std::uint32_t>(UnsignedEnum::First), UnsignedEnum::First, UnsignedEnum::Second);
 
     // Validate you can't unbox an enum from something other than the underlying type.
-    TestFailedUnbox<SignedEnum>(static_cast<uint32_t>(SignedEnum::Negative), SignedEnum::Positive);
-    TestFailedUnbox<SignedEnum>(static_cast<int16_t>(SignedEnum::Negative), SignedEnum::Positive);
-    TestFailedUnbox<UnsignedEnum>(static_cast<int32_t>(UnsignedEnum::First), UnsignedEnum::Second);
-    TestFailedUnbox<UnsignedEnum>(static_cast<int16_t>(UnsignedEnum::First), UnsignedEnum::Second);
-    TestFailedUnbox<UnsignedEnum>(static_cast<uint16_t>(UnsignedEnum::First), UnsignedEnum::Second);
+    TestFailedUnbox<SignedEnum>(static_cast<std::uint32_t>(SignedEnum::Negative), SignedEnum::Positive);
+    TestFailedUnbox<SignedEnum>(static_cast<std::int16_t>(SignedEnum::Negative), SignedEnum::Positive);
+    TestFailedUnbox<UnsignedEnum>(static_cast<std::int32_t>(UnsignedEnum::First), UnsignedEnum::Second);
+    TestFailedUnbox<UnsignedEnum>(static_cast<std::int16_t>(UnsignedEnum::First), UnsignedEnum::Second);
+    TestFailedUnbox<UnsignedEnum>(static_cast<std::uint16_t>(UnsignedEnum::First), UnsignedEnum::Second);
 
     {
         // Test some cases where the compiler has to choose between multiple overloads.

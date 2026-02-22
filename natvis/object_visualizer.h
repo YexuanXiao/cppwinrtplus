@@ -35,7 +35,7 @@ enum class ObjectType
 struct PropertyData 
 {
     std::wstring iid;
-    int32_t index;
+    std::int32_t index;
     PropertyCategory category;
     std::wstring abiType;
     std::wstring displayType;

@@ -244,13 +244,13 @@ namespace
         operator array_view<T>()
         {
             auto guard = concurrency_guard::lock_nonconst();
-            return { inner::data(), static_cast<uint32_t>(inner::size()) };
+            return { inner::data(), static_cast<std::uint32_t>(inner::size()) };
         }
 
         operator array_view<T const>() const
         {
             auto guard = concurrency_guard::lock_const();
-            return { inner::data(), static_cast<uint32_t>(inner::size()) };
+            return { inner::data(), static_cast<std::uint32_t>(inner::size()) };
         }
     };
 #pragma endregion
@@ -295,7 +295,7 @@ namespace
             v.Append(conditional_box<T>(42));
         }, [&]
         {
-            uint32_t index;
+            std::uint32_t index;
             bool found = v.IndexOf(conditional_box<T>(3), index);
             if constexpr (std::is_same_v<T, int>)
             {

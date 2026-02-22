@@ -49,19 +49,19 @@ TEST_CASE("delegates")
         REQUIRE(value == L"");
     }
     {
-        OutInt32Delegate d = [](int32_t & value)
+        OutInt32Delegate d = [](std::int32_t & value)
         {
             value = 123;
         };
-        int32_t value{ 0xCC };
+        std::int32_t value{ 0xCC };
         d(value);
         REQUIRE(value == 123);
     }
     {
-        OutInt32Delegate d = [](int32_t&)
+        OutInt32Delegate d = [](std::int32_t&)
         {
         };
-        int32_t value{ 123 };
+        std::int32_t value{ 123 };
         d(value);
         REQUIRE(value == 123);
     }

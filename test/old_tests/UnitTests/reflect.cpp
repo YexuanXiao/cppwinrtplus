@@ -164,12 +164,12 @@ TEST_CASE("visit properties")
         REQUIRE(props[3]->is_writable() == true);
 
         Reflection::PropertyTests object{};
-        REQUIRE(unbox_value<int32_t>(props[0]->get_value(object)) == 0);
+        REQUIRE(unbox_value<std::int32_t>(props[0]->get_value(object)) == 0);
         props[1]->set_value(object, box_value(42));
-        REQUIRE(unbox_value<int32_t>(props[1]->get_value(object)) == 42);
-        REQUIRE(unbox_value<int32_t>(props[2]->get_value(object)) == 0);
+        REQUIRE(unbox_value<std::int32_t>(props[1]->get_value(object)) == 42);
+        REQUIRE(unbox_value<std::int32_t>(props[2]->get_value(object)) == 0);
         props[3]->set_value(object, box_value(1729));
-        REQUIRE(unbox_value<int32_t>(props[3]->get_value(object)) == 1729);
+        REQUIRE(unbox_value<std::int32_t>(props[3]->get_value(object)) == 1729);
     };
 
     std::vector<std::unique_ptr<IPropertyQuery>> props;

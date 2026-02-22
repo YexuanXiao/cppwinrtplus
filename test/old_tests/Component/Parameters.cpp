@@ -3,17 +3,17 @@
 
 namespace winrt::Component::implementation
 {
-    void Parameters::SetInt32(int32_t value)
+    void Parameters::SetInt32(std::int32_t value)
     {
         m_int32 = value;
     }
 
-    int32_t Parameters::GetInt32() const
+    std::int32_t Parameters::GetInt32() const
     {
         return m_int32;
     }
 
-    void Parameters::OutInt32(int32_t& value) const
+    void Parameters::OutInt32(std::int32_t& value) const
     {
         value = m_int32;
     }
@@ -48,24 +48,24 @@ namespace winrt::Component::implementation
         value = m_object;
     }
 
-    void Parameters::SetInt32Array(array_view<int32_t const> value)
+    void Parameters::SetInt32Array(array_view<std::int32_t const> value)
     {
         m_int32_array.assign(value.begin(), value.end());
     }
 
-    com_array<int32_t> Parameters::GetInt32Array() const
+    com_array<std::int32_t> Parameters::GetInt32Array() const
     {
-        return com_array<int32_t>(m_int32_array);
+        return com_array<std::int32_t>(m_int32_array);
     }
 
-    void Parameters::OutInt32Array(com_array<int32_t>& value) const
+    void Parameters::OutInt32Array(com_array<std::int32_t>& value) const
     {
-        value = com_array<int32_t>(m_int32_array);
+        value = com_array<std::int32_t>(m_int32_array);
     }
 
-    void Parameters::CopyInt32Array(array_view<int32_t> value) const
+    void Parameters::CopyInt32Array(array_view<std::int32_t> value) const
     {
-        uint32_t actual = static_cast<uint32_t>(m_int32_array.size());
+        std::uint32_t actual = static_cast<std::uint32_t>(m_int32_array.size());
 
         if (actual > value.size())
         {
@@ -92,7 +92,7 @@ namespace winrt::Component::implementation
 
     void Parameters::CopyStringArray(array_view<hstring> value) const
     {
-        uint32_t actual = static_cast<uint32_t>(m_string_array.size());
+        std::uint32_t actual = static_cast<std::uint32_t>(m_string_array.size());
 
         if (actual > value.size())
         {
@@ -119,7 +119,7 @@ namespace winrt::Component::implementation
 
     void Parameters::CopyObjectArray(array_view<Windows::Foundation::IInspectable> value) const
     {
-        uint32_t actual = static_cast<uint32_t>(m_object_array.size());
+        std::uint32_t actual = static_cast<std::uint32_t>(m_object_array.size());
 
         if (actual > value.size())
         {

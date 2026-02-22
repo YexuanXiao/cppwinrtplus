@@ -8,7 +8,7 @@ namespace winrt::test_component::implementation
 
     struct Value : implements<Value, IStringable>
     {
-        Value(int32_t value) :
+        Value(std::int32_t value) :
             m_value(value)
         {
         }
@@ -20,10 +20,10 @@ namespace winrt::test_component::implementation
 
     private:
 
-        int32_t m_value{};
+        std::int32_t m_value{};
     };
 
-    hstring Class::InInt32(int32_t value)
+    hstring Class::InInt32(std::int32_t value)
     {
         return hstring{ std::to_wstring(value) };
     }
@@ -65,42 +65,42 @@ namespace winrt::test_component::implementation
         throw hresult_invalid_argument();
     }
 
-    Class::Class(Windows::Foundation::Collections::IIterable<hstring> const& arg, int32_t)
+    Class::Class(Windows::Foundation::Collections::IIterable<hstring> const& arg, std::int32_t)
     {
         if (arg.First().Current() != L"test")
         {
             throw hresult_error();
         }
     }
-    Class::Class(Windows::Foundation::Collections::IIterable<Windows::Foundation::Collections::IKeyValuePair<hstring, hstring>> const& arg, int32_t, int32_t)
+    Class::Class(Windows::Foundation::Collections::IIterable<Windows::Foundation::Collections::IKeyValuePair<hstring, hstring>> const& arg, std::int32_t, std::int32_t)
     {
         if (arg.First().Current().Key() != L"test")
         {
             throw hresult_error();
         }
     }
-    Class::Class(Windows::Foundation::Collections::IMap<hstring, hstring> const& arg, int32_t, int32_t, int32_t)
+    Class::Class(Windows::Foundation::Collections::IMap<hstring, hstring> const& arg, std::int32_t, std::int32_t, std::int32_t)
     {
         if (arg.Lookup(L"test") != L"test")
         {
             throw hresult_error();
         }
     }
-    Class::Class(Windows::Foundation::Collections::IMapView<hstring, hstring> const& arg, int32_t, int32_t, int32_t, int32_t)
+    Class::Class(Windows::Foundation::Collections::IMapView<hstring, hstring> const& arg, std::int32_t, std::int32_t, std::int32_t, std::int32_t)
     {
         if (arg.Lookup(L"test") != L"test")
         {
             throw hresult_error();
         }
     }
-    Class::Class(Windows::Foundation::Collections::IVector<hstring> const& arg, int32_t, int32_t, int32_t, int32_t, int32_t)
+    Class::Class(Windows::Foundation::Collections::IVector<hstring> const& arg, std::int32_t, std::int32_t, std::int32_t, std::int32_t, std::int32_t)
     {
         if (arg.GetAt(0) != L"test")
         {
             throw hresult_error();
         }
     }
-    Class::Class(Windows::Foundation::Collections::IVectorView<hstring> const& arg, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t)
+    Class::Class(Windows::Foundation::Collections::IVectorView<hstring> const& arg, std::int32_t, std::int32_t, std::int32_t, std::int32_t, std::int32_t, std::int32_t)
     {
         if (arg.GetAt(0) != L"test")
         {
@@ -149,7 +149,7 @@ namespace winrt::test_component::implementation
         co_return value.GetAt(0);
     }
 
-    void Class::OutInt32(int32_t& value)
+    void Class::OutInt32(std::int32_t& value)
     {
         value = 123;
     }
@@ -180,7 +180,7 @@ namespace winrt::test_component::implementation
         value = Signed::First;
     }
 
-    int32_t Class::ReturnInt32()
+    std::int32_t Class::ReturnInt32()
     {
         return 123;
     }
@@ -205,7 +205,7 @@ namespace winrt::test_component::implementation
         return Signed::First;
     }
 
-    hstring Class::InInt32Array(array_view<int32_t const> value)
+    hstring Class::InInt32Array(array_view<std::int32_t const> value)
     {
         simulate_rpc_behavior(value);
 
@@ -284,7 +284,7 @@ namespace winrt::test_component::implementation
         return result;
     }
 
-    void Class::OutInt32Array(com_array<int32_t>& value)
+    void Class::OutInt32Array(com_array<std::int32_t>& value)
     {
         value = { 1,2,3 };
     }
@@ -314,13 +314,13 @@ namespace winrt::test_component::implementation
         value = { Signed::First, Signed::Second };
     }
 
-    void Class::RefInt32Array(array_view<int32_t> value)
+    void Class::RefInt32Array(array_view<std::int32_t> value)
     {
         simulate_rpc_behavior(value);
 
         if (value.size())
         {
-            int32_t counter{};
+            std::int32_t counter{};
 
             std::generate(value.begin(), value.end() - 1, [&]
                 {
@@ -335,7 +335,7 @@ namespace winrt::test_component::implementation
 
         if (value.size())
         {
-            int32_t counter{};
+            std::int32_t counter{};
 
             std::generate(value.begin(), value.end() - 1, [&]
                 {
@@ -350,7 +350,7 @@ namespace winrt::test_component::implementation
 
         if (value.size())
         {
-            int32_t counter{};
+            std::int32_t counter{};
 
             std::generate(value.begin(), value.end() - 1, [&]
                 {
@@ -365,7 +365,7 @@ namespace winrt::test_component::implementation
 
         if (value.size())
         {
-            int32_t counter{};
+            std::int32_t counter{};
 
             std::generate(value.begin(), value.end() - 1, [&]
                 {
@@ -380,7 +380,7 @@ namespace winrt::test_component::implementation
 
         if (value.size())
         {
-            int32_t counter{};
+            std::int32_t counter{};
 
             std::generate(value.begin(), value.end() - 1, [&]
                 {
@@ -404,13 +404,13 @@ namespace winrt::test_component::implementation
             std::generate(value.begin(), value.end() - 1, [&]
                 {
                     auto result = counter;
-                    counter = static_cast<Signed>(static_cast<int32_t>(counter) + 1);
+                    counter = static_cast<Signed>(static_cast<std::int32_t>(counter) + 1);
                     return result;
                 });
         }
     }
 
-    com_array<int32_t> Class::ReturnInt32Array()
+    com_array<std::int32_t> Class::ReturnInt32Array()
     {
         return { 1,2,3 };
     }
@@ -444,7 +444,7 @@ namespace winrt::test_component::implementation
     {
     }
 
-    int32_t Class::NoexceptInt32() noexcept
+    std::int32_t Class::NoexceptInt32() noexcept
     {
         return 123;
     }
@@ -464,7 +464,7 @@ namespace winrt::test_component::implementation
         return m_deferrableEvent.remove(token);
     }
 
-    IAsyncOperation<int32_t> Class::RaiseDeferrableEventAsync()
+    IAsyncOperation<std::int32_t> Class::RaiseDeferrableEventAsync()
     {
         auto args = make_self<DeferrableEventArgs>();
         m_deferrableEvent(*this, *args);

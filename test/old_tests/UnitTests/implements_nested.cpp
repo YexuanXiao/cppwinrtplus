@@ -43,7 +43,7 @@ TEST_CASE("implements_nested")
 
         auto guid_compare = [](guid const& lhs, guid const& rhs)
         {
-            return memcmp(&lhs, &rhs, sizeof(guid)) < 0;
+            return std::memcmp(&lhs, &rhs, sizeof(guid)) < 0;
         };
 
         std::sort(actual_iids.begin(), actual_iids.end(), guid_compare);

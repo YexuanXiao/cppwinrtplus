@@ -44,12 +44,12 @@ namespace
 
 TEST_CASE("produce_IMap_int32_t_hstring")
 {
-    IMap<int32_t, hstring> m = single_threaded_observable_map<int32_t, hstring>();
+    IMap<std::int32_t, hstring> m = single_threaded_observable_map<std::int32_t, hstring>();
 
-    IObservableMap<int32_t, hstring> om = m.as<IObservableMap<int32_t, hstring>>();
+    IObservableMap<std::int32_t, hstring> om = m.as<IObservableMap<std::int32_t, hstring>>();
     int handlerCount = 0; // Tracks the number of times the handler is called.
 
-    event_token token = om.MapChanged([&](IObservableMap<int32_t, hstring> const & sender, IMapChangedEventArgs<int32_t> const & args)
+    event_token token = om.MapChanged([&](IObservableMap<std::int32_t, hstring> const & sender, IMapChangedEventArgs<std::int32_t> const & args)
     {
         ++handlerCount;
         REQUIRE(sender == om);
@@ -86,8 +86,8 @@ TEST_CASE("produce_IMap_int32_t_hstring")
     REQUIRE(m.HasKey(1));
     REQUIRE(!m.HasKey(3));
 
-    IMapView<int32_t, hstring> view = m.GetView();
-    const bool same = view.as<IMap<int32_t, hstring>>() == m;
+    IMapView<std::int32_t, hstring> view = m.GetView();
+    const bool same = view.as<IMap<std::int32_t, hstring>>() == m;
     REQUIRE(same);
 
     REQUIRE(m.Size() == 2);
@@ -99,8 +99,8 @@ TEST_CASE("produce_IMap_int32_t_hstring")
     m.Clear();
     REQUIRE(m.Size() == 0);
 
-    IMapView<int32_t, hstring> first;
-    IMapView<int32_t, hstring> second;
+    IMapView<std::int32_t, hstring> first;
+    IMapView<std::int32_t, hstring> second;
     view.Split(first, second);
     REQUIRE(first == nullptr);
     REQUIRE(second == nullptr);
@@ -110,46 +110,46 @@ TEST_CASE("produce_IMap_int32_t_hstring")
 
 TEST_CASE("produce_IMap_IIterable_int32_t_hstring")
 {
-    IMap<int32_t, hstring> m = single_threaded_map<int32_t, hstring>();
+    IMap<std::int32_t, hstring> m = single_threaded_map<std::int32_t, hstring>();
     m.Insert(1, L"one");
     m.Insert(2, L"two");
     m.Insert(3, L"three");
 
-    IIterable<IKeyValuePair<int32_t, hstring>> iterable = m;
+    IIterable<IKeyValuePair<std::int32_t, hstring>> iterable = m;
 
     // Both should produce identical iterators but the iterators are unique objects.
     REQUIRE(iterable.First());
     REQUIRE(m.First());
     REQUIRE(iterable.First() != m.First());
 
-    IIterator<IKeyValuePair<int32_t, hstring>> i = m.First();
-    REQUIRE((i.Current() == make<key_value_pair<int32_t, hstring>>(1, L"one")));
+    IIterator<IKeyValuePair<std::int32_t, hstring>> i = m.First();
+    REQUIRE((i.Current() == make<key_value_pair<std::int32_t, hstring>>(1, L"one")));
     REQUIRE(i.HasCurrent());
     REQUIRE(i.MoveNext());
-    REQUIRE((i.Current() == make<key_value_pair<int32_t, hstring>>(2, L"two")));
+    REQUIRE((i.Current() == make<key_value_pair<std::int32_t, hstring>>(2, L"two")));
     REQUIRE(i.HasCurrent());
     REQUIRE(i.MoveNext());
-    REQUIRE((i.Current() == make<key_value_pair<int32_t, hstring>>(3, L"three")));
+    REQUIRE((i.Current() == make<key_value_pair<std::int32_t, hstring>>(3, L"three")));
     REQUIRE(i.HasCurrent());
     REQUIRE(!i.MoveNext());
 
-    std::array<IKeyValuePair<int32_t, hstring>, 4> many{};
+    std::array<IKeyValuePair<std::int32_t, hstring>, 4> many{};
     REQUIRE(0 == i.GetMany(many));
 
     // Reset iterator
     i = m.First();
     REQUIRE(3 == i.GetMany(many));
-    REQUIRE((many[0] == make<key_value_pair<int32_t, hstring>>(1, L"one")));
-    REQUIRE((many[1] == make<key_value_pair<int32_t, hstring>>(2, L"two")));
-    REQUIRE((many[2] == make<key_value_pair<int32_t, hstring>>(3, L"three")));
+    REQUIRE((many[0] == make<key_value_pair<std::int32_t, hstring>>(1, L"one")));
+    REQUIRE((many[1] == make<key_value_pair<std::int32_t, hstring>>(2, L"two")));
+    REQUIRE((many[2] == make<key_value_pair<std::int32_t, hstring>>(3, L"three")));
     REQUIRE((!many[3]));
 }
 
-// This producer tests that IMap may be specialized with an hstring key and int32_t value.
+// This producer tests that IMap may be specialized with an hstring key and std::int32_t value.
 
 TEST_CASE("produce_IMap_hstring_int32_t")
 {
-    IMap<hstring, int32_t> m = single_threaded_map<hstring, int32_t>();
+    IMap<hstring, std::int32_t> m = single_threaded_map<hstring, std::int32_t>();
 
     REQUIRE(!m.Insert(L"one", 1));
     REQUIRE(m.Insert(L"one", 1));
@@ -170,8 +170,8 @@ TEST_CASE("produce_IMap_hstring_int32_t")
     REQUIRE(m.HasKey(L"one"));
     REQUIRE(!m.HasKey(L"three"));
 
-    IMapView<hstring, int32_t> view = m.GetView();
-    const bool same = view.as<IMap<hstring, int32_t>>() == m;
+    IMapView<hstring, std::int32_t> view = m.GetView();
+    const bool same = view.as<IMap<hstring, std::int32_t>>() == m;
     REQUIRE(same);
 
     REQUIRE(m.Size() == 2);
@@ -184,8 +184,8 @@ TEST_CASE("produce_IMap_hstring_int32_t")
     m.Clear();
     REQUIRE(m.Size() == 0);
 
-    IMapView<hstring, int32_t> first;
-    IMapView<hstring, int32_t> second;
+    IMapView<hstring, std::int32_t> first;
+    IMapView<hstring, std::int32_t> second;
     view.Split(first, second);
     REQUIRE(first == nullptr);
     REQUIRE(second == nullptr);
@@ -195,37 +195,37 @@ TEST_CASE("produce_IMap_hstring_int32_t")
 
 TEST_CASE("produce_IMap_IIterable_hstring_int32_t")
 {
-    IMap<hstring, int32_t> m = single_threaded_map<hstring, int32_t>();
+    IMap<hstring, std::int32_t> m = single_threaded_map<hstring, std::int32_t>();
     m.Insert(L"one", 1);
     m.Insert(L"two", 2);
     m.Insert(L"three", 3);
 
-    IIterable<IKeyValuePair<hstring, int32_t>> iterable = m;
+    IIterable<IKeyValuePair<hstring, std::int32_t>> iterable = m;
 
     // Both should produce identical iterators but the iterators are unique objects.
     REQUIRE(iterable.First());
     REQUIRE(m.First());
     REQUIRE(iterable.First() != m.First());
 
-    IIterator<IKeyValuePair<hstring, int32_t>> i = m.First();
-    REQUIRE((i.Current() == make<key_value_pair<hstring, int32_t>>(L"one", 1)));
+    IIterator<IKeyValuePair<hstring, std::int32_t>> i = m.First();
+    REQUIRE((i.Current() == make<key_value_pair<hstring, std::int32_t>>(L"one", 1)));
     REQUIRE(i.HasCurrent());
     REQUIRE(i.MoveNext());
-    REQUIRE((i.Current() == make<key_value_pair<hstring, int32_t>>(L"three", 3)));
+    REQUIRE((i.Current() == make<key_value_pair<hstring, std::int32_t>>(L"three", 3)));
     REQUIRE(i.HasCurrent());
     REQUIRE(i.MoveNext());
-    REQUIRE((i.Current() == make<key_value_pair<hstring, int32_t>>(L"two", 2)));
+    REQUIRE((i.Current() == make<key_value_pair<hstring, std::int32_t>>(L"two", 2)));
     REQUIRE(i.HasCurrent());
     REQUIRE(!i.MoveNext());
 
-    std::array<IKeyValuePair<hstring, int32_t>, 4> many{};
+    std::array<IKeyValuePair<hstring, std::int32_t>, 4> many{};
     REQUIRE(0 == i.GetMany(many));
 
     // Reset iterator
     i = m.First();
     REQUIRE(3 == i.GetMany(many));
-    REQUIRE((many[0] == make<key_value_pair<hstring, int32_t>>(L"one", 1)));
-    REQUIRE((many[1] == make<key_value_pair<hstring, int32_t>>(L"three", 3)));
-    REQUIRE((many[2] == make<key_value_pair<hstring, int32_t>>(L"two", 2)));
+    REQUIRE((many[0] == make<key_value_pair<hstring, std::int32_t>>(L"one", 1)));
+    REQUIRE((many[1] == make<key_value_pair<hstring, std::int32_t>>(L"three", 3)));
+    REQUIRE((many[2] == make<key_value_pair<hstring, std::int32_t>>(L"two", 2)));
     REQUIRE((!many[3]));
 }

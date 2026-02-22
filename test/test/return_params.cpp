@@ -42,7 +42,7 @@ TEST_CASE("return_params")
         REQUIRE(value.Second == L"2");
     }
     {
-        com_array<int32_t> value = object.ReturnInt32Array();
+        com_array<std::int32_t> value = object.ReturnInt32Array();
         REQUIRE(value.size() == 3);
         REQUIRE(value[0] == 1);
         REQUIRE(value[1] == 2);

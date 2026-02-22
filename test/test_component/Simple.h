@@ -8,8 +8,8 @@ namespace winrt::test_component::implementation
         Simple() = default;
 
         void Method();
-        Windows::Foundation::IReference<int32_t> Reference(Windows::Foundation::DateTime const& value);
-        Windows::Foundation::IAsyncOperation<int32_t> Operation(Windows::Foundation::DateTime value);
+        Windows::Foundation::IReference<std::int32_t> Reference(Windows::Foundation::DateTime const& value);
+        Windows::Foundation::IAsyncOperation<std::int32_t> Operation(Windows::Foundation::DateTime value);
         Windows::Foundation::IAsyncAction Action(Windows::Foundation::DateTime value);
         Windows::Foundation::IInspectable Object(Windows::Foundation::DateTime const& value);
 

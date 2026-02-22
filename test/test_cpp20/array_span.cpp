@@ -154,16 +154,16 @@ TEST_CASE("array_view,span,ctad")
 #define REQUIRE_DEDUCED_AS(T, ...) \
     static_assert(std::is_same_v<array_view<T>, decltype(array_view(__VA_ARGS__))>)
 
-    uint8_t a[] = {1, 2, 3};
-    std::span<uint8_t, 3> sp{ a };
+    std::uint8_t a[] = {1, 2, 3};
+    std::span<std::uint8_t, 3> sp{ a };
 
-    REQUIRE_DEDUCED_AS(uint8_t, sp);
+    REQUIRE_DEDUCED_AS(std::uint8_t, sp);
 
-    std::span<uint8_t const, 3> csp{ a };
-    REQUIRE_DEDUCED_AS(uint8_t const, csp);
+    std::span<std::uint8_t const, 3> csp{ a };
+    REQUIRE_DEDUCED_AS(std::uint8_t const, csp);
 
-    std::span<uint8_t, 3> const cs{ a };
-    REQUIRE_DEDUCED_AS(uint8_t const, cs);
+    std::span<std::uint8_t, 3> const cs{ a };
+    REQUIRE_DEDUCED_AS(std::uint8_t const, cs);
 
 #undef REQUIRE_DEDUCED_AS
 }
@@ -174,16 +174,16 @@ TEST_CASE("com_array,span,ctad")
 #define REQUIRE_DEDUCED_AS(T, ...) \
     static_assert(std::is_same_v<com_array<T>, decltype(com_array(__VA_ARGS__))>)
 
-    uint8_t a[] = { 1, 2, 3 };
+    std::uint8_t a[] = { 1, 2, 3 };
 
-    std::span<uint8_t, 3> sp{ a };
-    REQUIRE_DEDUCED_AS(uint8_t, sp);
+    std::span<std::uint8_t, 3> sp{ a };
+    REQUIRE_DEDUCED_AS(std::uint8_t, sp);
 
-    std::span<uint8_t const, 3> csp{ a };
-    REQUIRE_DEDUCED_AS(uint8_t, csp);
+    std::span<std::uint8_t const, 3> csp{ a };
+    REQUIRE_DEDUCED_AS(std::uint8_t, csp);
 
-    std::span<uint8_t, 3> const cs{ a };
-    REQUIRE_DEDUCED_AS(uint8_t, cs);
+    std::span<std::uint8_t, 3> const cs{ a };
+    REQUIRE_DEDUCED_AS(std::uint8_t, cs);
 
 #undef REQUIRE_DEDUCED_AS
 }

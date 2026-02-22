@@ -14,7 +14,7 @@ namespace
 {
     struct Value : implements<Value, IStringable>
     {
-        Value(int32_t value) :
+        Value(std::int32_t value) :
             m_value(value)
         {
         }
@@ -26,7 +26,7 @@ namespace
 
     private:
 
-        int32_t m_value{};
+        std::int32_t m_value{};
     };
 }
 
@@ -82,9 +82,9 @@ TEST_CASE("in_params_abi")
         REQUIRE(S_OK == WindowsDeleteString(result));
     }
     {
-        std::array<int32_t, 2> input{ 1,2 };
+        std::array<std::int32_t, 2> input{ 1,2 };
         HSTRING result{};
-        REQUIRE(S_OK == abi->InInt32Array(static_cast<uint32_t>(input.size()), input.data(), &result));
+        REQUIRE(S_OK == abi->InInt32Array(static_cast<std::uint32_t>(input.size()), input.data(), &result));
         REQUIRE(WindowsGetStringRawBuffer(result, nullptr) == L"12"sv);
         REQUIRE(S_OK == WindowsDeleteString(result));
     }
@@ -93,7 +93,7 @@ TEST_CASE("in_params_abi")
         WindowsCreateString(L"1", 1, input.data());
         WindowsCreateString(L"2", 1, input.data() + 1);
         HSTRING result{};
-        REQUIRE(S_OK == abi->InStringArray(static_cast<uint32_t>(input.size()), input.data(), &result));
+        REQUIRE(S_OK == abi->InStringArray(static_cast<std::uint32_t>(input.size()), input.data(), &result));
         REQUIRE(WindowsGetStringRawBuffer(result, nullptr) == L"12"sv);
         REQUIRE(S_OK == WindowsDeleteString(result));
         REQUIRE(S_OK == WindowsDeleteString(input[0]));
@@ -104,7 +104,7 @@ TEST_CASE("in_params_abi")
         input[0] = static_cast<::IInspectable*>(detach_abi(make<Value>(1)));
         input[1] = static_cast<::IInspectable*>(detach_abi(make<Value>(2)));
         HSTRING result{};
-        REQUIRE(S_OK == abi->InObjectArray(static_cast<uint32_t>(input.size()), input.data(), &result));
+        REQUIRE(S_OK == abi->InObjectArray(static_cast<std::uint32_t>(input.size()), input.data(), &result));
         REQUIRE(WindowsGetStringRawBuffer(result, nullptr) == L"12"sv);
         REQUIRE(S_OK == WindowsDeleteString(result));
         input[0]->Release();
@@ -115,7 +115,7 @@ TEST_CASE("in_params_abi")
         input[0] = static_cast<ABI::Windows::Foundation::IStringable*>(detach_abi(make<Value>(1)));
         input[1] = static_cast<ABI::Windows::Foundation::IStringable*>(detach_abi(make<Value>(2)));
         HSTRING result{};
-        REQUIRE(S_OK == abi->InStringableArray(static_cast<uint32_t>(input.size()), input.data(), &result));
+        REQUIRE(S_OK == abi->InStringableArray(static_cast<std::uint32_t>(input.size()), input.data(), &result));
         REQUIRE(WindowsGetStringRawBuffer(result, nullptr) == L"12"sv);
         REQUIRE(S_OK == WindowsDeleteString(result));
         input[0]->Release();
@@ -125,7 +125,7 @@ TEST_CASE("in_params_abi")
         std::array<Struct, 2> input{ Struct{L"1",L"2"}, Struct{L"3",L"4"} };
         auto raw = reinterpret_cast<ABI::test_component::Struct*>(input.data());
         HSTRING result{};
-        REQUIRE(S_OK == abi->InStructArray(static_cast<uint32_t>(input.size()), raw, &result));
+        REQUIRE(S_OK == abi->InStructArray(static_cast<std::uint32_t>(input.size()), raw, &result));
         REQUIRE(WindowsGetStringRawBuffer(result, nullptr) == L"1234"sv);
         REQUIRE(S_OK == WindowsDeleteString(result));
     }
