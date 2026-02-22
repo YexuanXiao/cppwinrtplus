@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "catch.hpp"
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(disable: 4505)
 #endif
 

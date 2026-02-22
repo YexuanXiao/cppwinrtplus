@@ -4,7 +4,7 @@ namespace winrt::impl
     template <typename D>
     struct composable_factory
     {
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(push)
 #pragma warning(disable: 4702) // Compiler bug causing spurious "unreachable code" warnings
 #endif
@@ -15,7 +15,7 @@ namespace winrt::impl
             inner = CreateInstanceImpl(outer, std::forward<Args>(args)...);
             return inner.as<I>();
         }
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(pop)
 #endif
 

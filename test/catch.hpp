@@ -1543,7 +1543,7 @@ inline id performOptionalSelector( id obj, SEL sel ) {
 // end catch_objc_arc.hpp
 #endif
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(push)
 #pragma warning(disable:4180) // We attempt to stream a function (address) by const&, which MSVC complains about but is harmless
 #endif
@@ -2181,14 +2181,14 @@ namespace Catch { \
 
 #define CATCH_REGISTER_ENUM( enumName, ... ) INTERNAL_CATCH_REGISTER_ENUM( enumName, __VA_ARGS__ )
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(pop)
 #endif
 
 // end catch_tostring.h
 #include <iosfwd>
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(push)
 #pragma warning(disable:4389) // '==' : signed/unsigned mismatch
 #pragma warning(disable:4018) // more "signed/unsigned mismatch"
@@ -2424,7 +2424,7 @@ namespace Catch {
 
 } // end namespace Catch
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(pop)
 #endif
 
