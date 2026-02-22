@@ -48,20 +48,7 @@
 #endif
 
 #ifdef __cpp_lib_coroutine
-
 #include <coroutine>
-
-namespace winrt::impl
-{
-    template <typename T = void>
-    using coroutine_handle = std::coroutine_handle<T>;
-
-    using suspend_always = std::suspend_always;
-    using suspend_never = std::suspend_never;
-}
-
 #else
-
 #error C++/WinRT requires coroutine support, which is currently missing. Try enabling C++20 in your compiler.
-
 #endif
