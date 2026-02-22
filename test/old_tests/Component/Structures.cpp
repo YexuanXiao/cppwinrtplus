@@ -40,7 +40,7 @@ namespace winrt::Component::implementation
 
     void Structures::CopyArray(array_view<WrapStructure> value)
     {
-        uint32_t actual = static_cast<uint32_t>(m_array.size());
+        std::uint32_t actual = static_cast<std::uint32_t>(m_array.size());
 
         if (actual > value.size())
         {

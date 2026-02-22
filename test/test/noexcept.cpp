@@ -9,7 +9,7 @@ TEST_CASE("noexcept")
     Class c;
 
     c.NoexceptVoid();
-    int32_t a = c.NoexceptInt32();
+    std::int32_t a = c.NoexceptInt32();
     hstring b = c.NoexceptString();
 
     REQUIRE(a == 123);

@@ -70,7 +70,7 @@ WINRT_EXPORT namespace winrt
         }
 
         slim_mutex m_lock;
-        int32_t m_outstanding_deferrals = 0;
+        std::int32_t m_outstanding_deferrals = 0;
         coroutine_handle m_handle = nullptr;
     };
 #endif

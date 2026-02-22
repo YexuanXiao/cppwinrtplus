@@ -92,7 +92,7 @@ TEST_CASE("delegate,lambda,AsyncOperationProgressHandler")
 {
     Movable movable = 1;
 
-    AsyncOperationProgressHandler<uint64_t, uint64_t> h = [capture = std::move(movable)](auto && ...)
+    AsyncOperationProgressHandler<std::uint64_t, std::uint64_t> h = [capture = std::move(movable)](auto && ...)
     {
         REQUIRE(capture.Value == 1);
     };
@@ -106,7 +106,7 @@ TEST_CASE("delegate,lambda,AsyncOperationWithProgressCompletedHandler")
 {
     Movable movable = 1;
 
-    AsyncOperationWithProgressCompletedHandler<uint64_t, uint64_t> h = [capture = std::move(movable)](auto && ...)
+    AsyncOperationWithProgressCompletedHandler<std::uint64_t, std::uint64_t> h = [capture = std::move(movable)](auto && ...)
     {
         REQUIRE(capture.Value == 1);
     };

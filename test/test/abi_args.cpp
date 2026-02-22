@@ -15,8 +15,8 @@ TEST_CASE("abi_args")
         auto a = single_threaded_vector<IInspectable>();
         a.ReplaceAll({ box_value(1), box_value(2) });
         REQUIRE(a.Size() == 2);
-        REQUIRE(unbox_value<int32_t>(a.GetAt(0)) == 1);
-        REQUIRE(unbox_value<int32_t>(a.GetAt(1)) == 2);
+        REQUIRE(unbox_value<std::int32_t>(a.GetAt(0)) == 1);
+        REQUIRE(unbox_value<std::int32_t>(a.GetAt(1)) == 2);
     }
 
     // generic, in, array, string
@@ -48,7 +48,7 @@ TEST_CASE("abi_args")
 
     // generic, in, array, fundamental
     {
-        auto a = single_threaded_vector<int32_t>();
+        auto a = single_threaded_vector<std::int32_t>();
         a.ReplaceAll({ 1, 2 });
         REQUIRE(a.Size() == 2);
         REQUIRE(a.GetAt(0) == 1);
@@ -65,8 +65,8 @@ TEST_CASE("abi_args")
         a.ReplaceAll({ box_value(1), box_value(2) });
         std::array<IInspectable, 2> b;
         a.GetMany(0, b);
-        REQUIRE(unbox_value<int32_t>(b[0]) == 1);
-        REQUIRE(unbox_value<int32_t>(b[1]) == 2);
+        REQUIRE(unbox_value<std::int32_t>(b[0]) == 1);
+        REQUIRE(unbox_value<std::int32_t>(b[1]) == 2);
     }
 
     // generic, out, array, string
@@ -101,9 +101,9 @@ TEST_CASE("abi_args")
 
     // generic, out, array, fundamental
     {
-        auto a = single_threaded_vector<int32_t>();
+        auto a = single_threaded_vector<std::int32_t>();
         a.ReplaceAll({ 1, 2 });
-        std::array<int32_t, 2> b;
+        std::array<std::int32_t, 2> b;
         a.GetMany(0, b);
         REQUIRE(b[0] == 1);
         REQUIRE(b[1] == 2);

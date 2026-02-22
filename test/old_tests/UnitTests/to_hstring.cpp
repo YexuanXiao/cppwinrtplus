@@ -17,35 +17,35 @@ namespace
     void test_cases()
     {
         {
-            uint8_t value = 42;
+            std::uint8_t value = 42;
             REQUIRE(to_hstring(value) == L"42");
         }
         {
-            int8_t value = -42;
+            std::int8_t value = -42;
             REQUIRE(to_hstring(value) == L"-42");
         }
         {
-            uint16_t value = 1729;
+            std::uint16_t value = 1729;
             REQUIRE(to_hstring(value) == L"1729");
         }
         {
-            int16_t value = -1729;
+            std::int16_t value = -1729;
             REQUIRE(to_hstring(value) == L"-1729");
         }
         {
-            uint32_t value = 123456789;
+            std::uint32_t value = 123456789;
             REQUIRE(to_hstring(value) == L"123456789");
         }
         {
-            int32_t value = -123456789;
+            std::int32_t value = -123456789;
             REQUIRE(to_hstring(value) == L"-123456789");
         }
         {
-            uint64_t value = 1234567890123456;
+            std::uint64_t value = 1234567890123456;
             REQUIRE(to_hstring(value) == L"1234567890123456");
         }
         {
-            int64_t value = -1234567890123456;
+            std::int64_t value = -1234567890123456;
             REQUIRE(to_hstring(value) == L"-1234567890123456");
         }
         {

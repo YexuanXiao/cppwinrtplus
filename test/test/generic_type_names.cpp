@@ -81,21 +81,21 @@ TEST_CASE("generic_type_names")
     REQUIRE_EQUAL_NAME(L"Windows.Foundation.IReference`1<Boolean>",
         IReference<bool>);
     REQUIRE_EQUAL_NAME(L"Windows.Foundation.IReference`1<Int8>",
-        IReference<int8_t>);
+        IReference<std::int8_t>);
     REQUIRE_EQUAL_NAME(L"Windows.Foundation.IReference`1<Int16>",
-        IReference<int16_t>);
+        IReference<std::int16_t>);
     REQUIRE_EQUAL_NAME(L"Windows.Foundation.IReference`1<Int32>",
-        IReference<int32_t>);
+        IReference<std::int32_t>);
     REQUIRE_EQUAL_NAME(L"Windows.Foundation.IReference`1<Int64>",
-        IReference<int64_t>);
+        IReference<std::int64_t>);
     REQUIRE_EQUAL_NAME(L"Windows.Foundation.IReference`1<UInt8>",
-        IReference<uint8_t>);
+        IReference<std::uint8_t>);
     REQUIRE_EQUAL_NAME(L"Windows.Foundation.IReference`1<UInt16>",
-        IReference<uint16_t>);
+        IReference<std::uint16_t>);
     REQUIRE_EQUAL_NAME(L"Windows.Foundation.IReference`1<UInt32>",
-        IReference<uint32_t>);
+        IReference<std::uint32_t>);
     REQUIRE_EQUAL_NAME(L"Windows.Foundation.IReference`1<UInt64>",
-        IReference<uint64_t>);
+        IReference<std::uint64_t>);
     REQUIRE_EQUAL_NAME(L"Windows.Foundation.IReference`1<Single>",
         IReference<float>);
     REQUIRE_EQUAL_NAME(L"Windows.Foundation.IReference`1<Double>",

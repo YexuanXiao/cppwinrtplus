@@ -5,7 +5,7 @@ namespace winrt::Component::implementation
 {
     using namespace Windows::Foundation;
 
-    event_token Events::SimpleEvent(EventHandler<int32_t> const& handler)
+    event_token Events::SimpleEvent(EventHandler<std::int32_t> const& handler)
     {
         return m_simple.add(handler);
     }
@@ -20,7 +20,7 @@ namespace winrt::Component::implementation
         m_simple(*this, value);
     }
 
-    event_token Events::TypedEvent(TypedEventHandler<Component::Events, int32_t> const& handler)
+    event_token Events::TypedEvent(TypedEventHandler<Component::Events, std::int32_t> const& handler)
     {
         return m_typed.add(handler);
     }
@@ -55,7 +55,7 @@ namespace winrt::Component::factory_implementation
 {
     using namespace Windows::Foundation;
 
-    event_token Events::StaticEvent(EventHandler<int32_t> const& handler)
+    event_token Events::StaticEvent(EventHandler<std::int32_t> const& handler)
     {
         return m_static.add(handler);
     }

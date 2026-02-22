@@ -133,7 +133,7 @@ TEST_CASE("buffer,DataReader")
     std::array<byte, 3> a;
     byte* ptr = a.data();
     auto size = a.size();
-    reader.ReadBytes({ ptr, static_cast<uint32_t>(size) });
+    reader.ReadBytes({ ptr, static_cast<std::uint32_t>(size) });
 
     REQUIRE(3 == a.size());
     REQUIRE(1 == a[0]);
@@ -1091,12 +1091,12 @@ bool operator==(Size left, Size right)
 
 TEST_CASE("array,PropertyValue")
 {
-    SECTION("consume,array,int32_t")
+    SECTION("consume,array,std::int32_t")
     {
         auto inspectable = PropertyValue::CreateInt32Array({ 1, 2, 3 });
         auto pv = inspectable.as<IPropertyValue>();
 
-        com_array<int32_t> a;
+        com_array<std::int32_t> a;
         pv.GetInt32Array(a);
 
         REQUIRE(3 == a.size());
@@ -1105,11 +1105,11 @@ TEST_CASE("array,PropertyValue")
         REQUIRE(a[2] == 3);
     }
 
-    SECTION("produce,array,int32_t")
+    SECTION("produce,array,std::int32_t")
     {
         auto pv = make<produce_IPropertyValue>();
 
-        com_array<int32_t> a;
+        com_array<std::int32_t> a;
         pv.GetInt32Array(a);
 
         REQUIRE(3 == a.size());
@@ -1279,29 +1279,29 @@ TEST_CASE("array_view,ctad")
 #define REQUIRE_DEDUCED_AS(T, ...) \
     static_assert(std::is_same_v<array_view<T>, decltype(array_view(__VA_ARGS__))>)
 
-    uint8_t a[3]{};
-    REQUIRE_DEDUCED_AS(uint8_t, &a[0], &a[0]);
-    REQUIRE_DEDUCED_AS(uint8_t, &a[0], 3);
-    REQUIRE_DEDUCED_AS(uint8_t, a);
+    std::uint8_t a[3]{};
+    REQUIRE_DEDUCED_AS(std::uint8_t, &a[0], &a[0]);
+    REQUIRE_DEDUCED_AS(std::uint8_t, &a[0], 3);
+    REQUIRE_DEDUCED_AS(std::uint8_t, a);
 
-    std::array<uint8_t, 3> ar{};
-    REQUIRE_DEDUCED_AS(uint8_t, ar);
+    std::array<std::uint8_t, 3> ar{};
+    REQUIRE_DEDUCED_AS(std::uint8_t, ar);
 
-    std::vector<uint8_t> v{};
-    REQUIRE_DEDUCED_AS(uint8_t, v);
+    std::vector<std::uint8_t> v{};
+    REQUIRE_DEDUCED_AS(std::uint8_t, v);
 
-    uint8_t const ca[3]{};
-    REQUIRE_DEDUCED_AS(uint8_t const, &ca[0], &ca[0]);
-    REQUIRE_DEDUCED_AS(uint8_t const, ca);
+    std::uint8_t const ca[3]{};
+    REQUIRE_DEDUCED_AS(std::uint8_t const, &ca[0], &ca[0]);
+    REQUIRE_DEDUCED_AS(std::uint8_t const, ca);
 
-    std::array<uint8_t, 3> const car{};
-    REQUIRE_DEDUCED_AS(uint8_t const, car);
+    std::array<std::uint8_t, 3> const car{};
+    REQUIRE_DEDUCED_AS(std::uint8_t const, car);
 
-    std::array<uint8_t const, 3> arc{};
-    REQUIRE_DEDUCED_AS(uint8_t const, arc);
+    std::array<std::uint8_t const, 3> arc{};
+    REQUIRE_DEDUCED_AS(std::uint8_t const, arc);
 
-    std::vector<uint8_t> const cv{};
-    REQUIRE_DEDUCED_AS(uint8_t const, cv);
+    std::vector<std::uint8_t> const cv{};
+    REQUIRE_DEDUCED_AS(std::uint8_t const, cv);
 
 #undef REQUIRE_DEDUCED_AS
 }
@@ -1325,29 +1325,29 @@ TEST_CASE("com_array,ctad")
 #define REQUIRE_DEDUCED_AS(T, ...) \
     static_assert(std::is_same_v<com_array<T>, decltype(com_array(__VA_ARGS__))>)
 
-    REQUIRE_DEDUCED_AS(uint8_t, 3, uint8_t(5));
+    REQUIRE_DEDUCED_AS(std::uint8_t, 3, std::uint8_t(5));
 
     // Note that this looks like both an array and an initializer_list.
-    REQUIRE_DEDUCED_AS(uint8_t, { uint8_t(5) });
+    REQUIRE_DEDUCED_AS(std::uint8_t, { std::uint8_t(5) });
 
-    REQUIRE_DEDUCED_AS(uint8_t, com_array<uint8_t>());
+    REQUIRE_DEDUCED_AS(std::uint8_t, com_array<std::uint8_t>());
 
-    uint8_t a[3]{};
-    REQUIRE_DEDUCED_AS(uint8_t, &a[0], &a[0]);
-    REQUIRE_DEDUCED_AS(uint8_t, a);
+    std::uint8_t a[3]{};
+    REQUIRE_DEDUCED_AS(std::uint8_t, &a[0], &a[0]);
+    REQUIRE_DEDUCED_AS(std::uint8_t, a);
 
-    std::array<uint8_t, 3> ar{};
-    REQUIRE_DEDUCED_AS(uint8_t, ar);
+    std::array<std::uint8_t, 3> ar{};
+    REQUIRE_DEDUCED_AS(std::uint8_t, ar);
 
-    std::vector<uint8_t> v{};
-    REQUIRE_DEDUCED_AS(uint8_t, v);
+    std::vector<std::uint8_t> v{};
+    REQUIRE_DEDUCED_AS(std::uint8_t, v);
 
-    uint8_t const ca[3]{};
-    REQUIRE_DEDUCED_AS(uint8_t, &ca[0], &ca[0]);
-    REQUIRE_DEDUCED_AS(uint8_t, ca);
+    std::uint8_t const ca[3]{};
+    REQUIRE_DEDUCED_AS(std::uint8_t, &ca[0], &ca[0]);
+    REQUIRE_DEDUCED_AS(std::uint8_t, ca);
 
-    std::array<uint8_t const, 3> arc{};
-    REQUIRE_DEDUCED_AS(uint8_t, arc);
+    std::array<std::uint8_t const, 3> arc{};
+    REQUIRE_DEDUCED_AS(std::uint8_t, arc);
 
 #undef REQUIRE_DEDUCED_AS
 }

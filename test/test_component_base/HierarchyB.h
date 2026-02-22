@@ -9,7 +9,7 @@ namespace winrt::test_component_base::implementation
         HierarchyB() = default;
 
         HierarchyB(hstring const& name);
-        HierarchyB(int32_t dummy, hstring const& name);
+        HierarchyB(std::int32_t dummy, hstring const& name);
         void HierarchyB_Method();
         void HierarchyB_TestInnerProtected();
     };

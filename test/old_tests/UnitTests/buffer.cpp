@@ -7,7 +7,7 @@ using namespace Windows::Storage::Streams;
 TEST_CASE("buffer")
 {
     Buffer buffer{ 3 };
-    uint8_t* ptr = buffer.data();
+    std::uint8_t* ptr = buffer.data();
     ptr[0] = 1;
     ptr[1] = 2;
     ptr[2] = 3;

@@ -9,7 +9,7 @@ namespace
 {
     struct DECLSPEC_UUID("ed0dd761-c31e-4803-8cf9-22a2cb20ec47") IBadInterop : ::IInspectable
     {
-        virtual int32_t __stdcall JustSayNo() noexcept = 0;
+        virtual std::int32_t __stdcall JustSayNo() noexcept = 0;
     };
 }
 
@@ -57,7 +57,7 @@ namespace
 #pragma GCC diagnostic pop
 #endif
 
-        int32_t __stdcall JustSayNo() noexcept final
+        std::int32_t __stdcall JustSayNo() noexcept final
         {
             return 123;
         }

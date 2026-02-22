@@ -14,14 +14,14 @@ using namespace FastForwarderTest;
     REQUIRE(std::wstring(s1).compare(std::wstring(s2)) == 0)
 
 template<typename TForwarder, typename TOwner>
-auto make_fast_forwarder(TOwner const& owner, size_t offset)
+auto make_fast_forwarder(TOwner const& owner, std::size_t offset)
 {
     return TForwarder{
         winrt::make_fast_abi_forwarder(get_abi(owner), guid_of<TForwarder>(), offset),
         take_ownership_from_abi };
 }
 
-static inline size_t s_instances = 0;
+static inline std::size_t s_instances = 0;
 
 namespace winrt::FastForwarderTest::implementation
 {
@@ -53,27 +53,27 @@ namespace winrt::FastForwarderTest::implementation
         {
             m_char = value;
         }
-        int16_t Int16Prop()
+        std::int16_t Int16Prop()
         {
             return m_int16;
         }
-        void Int16Prop(int16_t value)
+        void Int16Prop(std::int16_t value)
         {
             m_int16 = value;
         }
-        int32_t Int32Prop()
+        std::int32_t Int32Prop()
         {
             return m_int32;
         }
-        void Int32Prop(int32_t value)
+        void Int32Prop(std::int32_t value)
         {
             m_int32 = value;
         }
-        int64_t Int64Prop()
+        std::int64_t Int64Prop()
         {
             return m_int64;
         }
-        void Int64Prop(int64_t value)
+        void Int64Prop(std::int64_t value)
         {
             m_int64 = value;
         }
@@ -85,35 +85,35 @@ namespace winrt::FastForwarderTest::implementation
         {
             m_single = value;
         }
-        uint8_t UInt8Prop()
+        std::uint8_t UInt8Prop()
         {
             return m_uint8;
         }
-        void UInt8Prop(uint8_t value)
+        void UInt8Prop(std::uint8_t value)
         {
             m_uint8 = value;
         }
-        uint16_t UInt16Prop()
+        std::uint16_t UInt16Prop()
         {
             return m_uint16;
         }
-        void UInt16Prop(uint16_t value)
+        void UInt16Prop(std::uint16_t value)
         {
             m_uint16 = value;
         }
-        uint32_t UInt32Prop()
+        std::uint32_t UInt32Prop()
         {
             return m_uint32;
         }
-        void UInt32Prop(uint32_t value)
+        void UInt32Prop(std::uint32_t value)
         {
             m_uint32 = value;
         }
-        uint64_t UInt64Prop()
+        std::uint64_t UInt64Prop()
         {
             return m_uint64;
         }
-        void UInt64Prop(uint64_t value)
+        void UInt64Prop(std::uint64_t value)
         {
             m_uint64 = value;
         }
@@ -145,7 +145,7 @@ namespace winrt::FastForwarderTest::implementation
         }
 
         // Interface3
-        Struct BigMethod(bool arg1, char16_t arg2, int16_t arg3, int32_t arg4, int64_t arg5, uint8_t arg6, uint16_t arg7, uint32_t arg8, uint64_t arg9,
+        Struct BigMethod(bool arg1, char16_t arg2, std::int16_t arg3, std::int32_t arg4, std::int64_t arg5, std::uint8_t arg6, std::uint16_t arg7, std::uint32_t arg8, std::uint64_t arg9,
             float arg10, double arg11, float arg12, double arg13, float arg14, double arg15, float arg16, double arg17, float arg18)
         {
             REQUIRE(arg1 == true);
@@ -171,14 +171,14 @@ namespace winrt::FastForwarderTest::implementation
 
         bool m_bool;
         char16_t m_char;
-        int16_t m_int16;
-        int32_t m_int32;
-        int64_t m_int64;
+        std::int16_t m_int16;
+        std::int32_t m_int32;
+        std::int64_t m_int64;
         float m_single;
-        uint8_t m_uint8;
-        uint16_t m_uint16;
-        uint32_t m_uint32;
-        uint64_t m_uint64;
+        std::uint8_t m_uint8;
+        std::uint16_t m_uint16;
+        std::uint32_t m_uint32;
+        std::uint64_t m_uint64;
         double m_double;
         winrt::guid m_guid;
         hstring m_string;

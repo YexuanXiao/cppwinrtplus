@@ -9,7 +9,7 @@ TEST_CASE("FastStrings")
 {
     {
         IVector<hstring> c = single_threaded_vector<hstring>();
-        uint32_t index = 123;
+        std::uint32_t index = 123;
         c.IndexOf(L"hello"sv, index);
         c.Append(L"hello"sv);
         c.SetAt(0, L"hello"sv);
@@ -35,7 +35,7 @@ TEST_CASE("FastStrings")
     }
     
     {
-        uint32_t index = 0;
+        std::uint32_t index = 0;
         single_threaded_vector<int>().GetView().IndexOf(0, index);
         single_threaded_vector<int>().IndexOf(0, index);
         single_threaded_vector<int>().InsertAt(0, 0);

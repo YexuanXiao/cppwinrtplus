@@ -5,7 +5,7 @@
 using namespace winrt;
 using namespace test_component_fast;
 
-hstring invoke_by_interface_vtable_offset(Nomadic const& nomadic, ptrdiff_t offset)
+hstring invoke_by_interface_vtable_offset(Nomadic const& nomadic, std::ptrdiff_t offset)
 {
     // NOTE: Behavior guaranteed by Windows ABI; see the "C style interface" for WinRT/COM types for more info. Note
     //       that IInspectable has 6 functions in total (including those inherited from IUnknown)

@@ -6,7 +6,7 @@ namespace winrt::Component::factory_implementation
 {
     struct NonCachedStatic : NonCachedStaticT<NonCachedStatic, void, non_agile, static_lifetime>
     {
-        winrt::event_token StaticEvent(Windows::Foundation::EventHandler<int32_t> const& handler)
+        winrt::event_token StaticEvent(Windows::Foundation::EventHandler<std::int32_t> const& handler)
         {
             return m_static.add(handler);
         }
@@ -16,11 +16,11 @@ namespace winrt::Component::factory_implementation
             m_static.remove(cookie);
         }
 
-        void RaiseStaticEvent(int32_t value)
+        void RaiseStaticEvent(std::int32_t value)
         {
             m_static(nullptr, value);
         }
 
-        event<Windows::Foundation::EventHandler<int32_t>> m_static;
+        event<Windows::Foundation::EventHandler<std::int32_t>> m_static;
     };
 }

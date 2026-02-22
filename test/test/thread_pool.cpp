@@ -9,7 +9,7 @@ namespace
     {
         thread_pool m_pool;
 
-        AsyncQueue(uint32_t const high, uint32_t const low)
+        AsyncQueue(std::uint32_t const high, std::uint32_t const low)
         {
             m_pool.thread_limits(high, low);
         }
@@ -21,13 +21,13 @@ namespace
         }
     };
 
-    uint32_t test(uint32_t const iterations, uint32_t const high, uint32_t const low)
+    std::uint32_t test(std::uint32_t const iterations, std::uint32_t const high, std::uint32_t const low)
     {
         AsyncQueue queue(high, low);
         std::vector<IAsyncAction> results;
-        uint32_t counter{};
+        std::uint32_t counter{};
 
-        for (uint32_t i = 0; i < iterations; ++i)
+        for (std::uint32_t i = 0; i < iterations; ++i)
         {
             results.push_back(queue.Async([&]
                 {
@@ -48,10 +48,10 @@ namespace
 
 TEST_CASE("thread_pool")
 {
-    uint32_t const test_iterations = 100;
+    std::uint32_t const test_iterations = 100;
 
-    uint32_t const stable_counter = test(test_iterations, 1, 1);
-    uint32_t const unstable_counter = test(test_iterations, 10, 10);
+    std::uint32_t const stable_counter = test(test_iterations, 1, 1);
+    std::uint32_t const unstable_counter = test(test_iterations, 10, 10);
 
     // This is deterministic since the queue is single-threaded.
     REQUIRE(stable_counter == test_iterations);

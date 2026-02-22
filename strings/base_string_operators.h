@@ -98,7 +98,7 @@ namespace winrt::impl
 {
     inline hstring concat_hstring(std::wstring_view const& left, std::wstring_view const& right)
     {
-        auto size = static_cast<uint32_t>(left.size() + right.size());
+        auto size = static_cast<std::uint32_t>(left.size() + right.size());
         if (size == 0)
         {
             return{};

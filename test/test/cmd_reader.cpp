@@ -27,8 +27,8 @@ public:
         write_response_file(input);
     }
 
-    template<size_t numOptions>
-    reader create_reader(size_t const argc, const char* argv[], const option(&options)[numOptions])
+    template<std::size_t numOptions>
+    reader create_reader(std::size_t const argc, const char* argv[], const option(&options)[numOptions])
     {
         return reader{ argc, argv, options };
     }
@@ -55,7 +55,7 @@ TEST_CASE("cmd_reader")
     // input and output
     {
         const char* argv[] = { "progname", "-in", "example_file.in", "-out", "example_file.out" };
-        const size_t argc = 5;
+        const std::size_t argc = 5;
         reader args{ argc, argv, options };
 
         REQUIRE(args.exists("input"));
@@ -71,7 +71,7 @@ TEST_CASE("cmd_reader")
     // response file #1: filename no quotes
     {
         const char* argv[] = { "progname", "@respfile.txt" };
-        const size_t argc = _countof(argv);
+        const std::size_t argc = _countof(argv);
 
         response_file rf{ R"(-in example_file.in -out example_file.out)" };
         reader args = rf.create_reader(argc, argv, options);
@@ -89,7 +89,7 @@ TEST_CASE("cmd_reader")
     // response file #2: filename with quotes
     {
         const char* argv[] = { "progname", "@respfile.txt" };
-        const size_t argc = _countof(argv);
+        const std::size_t argc = _countof(argv);
 
         response_file rf{ R"(-in "example file.in" -out "example file.out")" };
         reader args = rf.create_reader(argc, argv, options);
@@ -107,7 +107,7 @@ TEST_CASE("cmd_reader")
     // response file #3: filename with quote within name
     {
         const char* argv[] = { "progname", "@respfile.txt" };
-        const size_t argc = _countof(argv);
+        const std::size_t argc = _countof(argv);
 
         response_file rf{ R"(-in example\"file.in -out example\"file.out)" };
         reader args = rf.create_reader(argc, argv, options);
@@ -125,7 +125,7 @@ TEST_CASE("cmd_reader")
     // response file #4: really, really, long path
     {
         const char* argv[] = { "progname", "@respfile.txt" };
-        const size_t argc = _countof(argv);
+        const std::size_t argc = _countof(argv);
         std::string file_name_in(R"(C:\)");
         std::string file_name_out(R"(C:\)");
         std::string input_str("-in ");

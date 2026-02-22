@@ -44,7 +44,7 @@ namespace
         }
     }
 
-    IAsyncOperation<uint32_t> NoSuspend_IAsyncOperation()
+    IAsyncOperation<std::uint32_t> NoSuspend_IAsyncOperation()
     {
         co_await 0s;
 
@@ -58,7 +58,7 @@ namespace
         co_return 123;
     }
 
-    IAsyncOperationWithProgress<uint64_t, uint64_t> NoSuspend_IAsyncOperationWithProgress()
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> NoSuspend_IAsyncOperationWithProgress()
     {
         co_await 0s;
 
@@ -135,7 +135,7 @@ TEST_CASE("async, NoSuspend_IAsyncActionWithProgress")
 
 TEST_CASE("async, NoSuspend_IAsyncOperation")
 {
-    IAsyncOperation<uint32_t> async = NoSuspend_IAsyncOperation();
+    IAsyncOperation<std::uint32_t> async = NoSuspend_IAsyncOperation();
     REQUIRE(async.Status() == AsyncStatus::Completed);
     REQUIRE(async.ErrorCode() == S_OK);
     REQUIRE(async.Id() == 1);
@@ -145,7 +145,7 @@ TEST_CASE("async, NoSuspend_IAsyncOperation")
     bool objectMatches = false;
     bool statusMatches = false;
 
-    async.Completed([&](const IAsyncOperation<uint32_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperation<std::uint32_t> & sender, AsyncStatus status)
     {
         completed = true;
         objectMatches = (async == sender);
@@ -165,7 +165,7 @@ TEST_CASE("async, NoSuspend_IAsyncOperation")
 
 TEST_CASE("async, NoSuspend_IAsyncOperationWithProgress")
 {
-    IAsyncOperationWithProgress<uint64_t, uint64_t> async = NoSuspend_IAsyncOperationWithProgress();
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> async = NoSuspend_IAsyncOperationWithProgress();
     REQUIRE(async.Status() == AsyncStatus::Completed);
     REQUIRE(async.ErrorCode() == S_OK);
     REQUIRE(async.Id() == 1);
@@ -175,7 +175,7 @@ TEST_CASE("async, NoSuspend_IAsyncOperationWithProgress")
     bool objectMatches = false;
     bool statusMatches = false;
 
-    async.Completed([&](const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, AsyncStatus status)
     {
         completed = true;
         objectMatches = (async == sender);
@@ -214,13 +214,13 @@ namespace
         progress(789.0);
     }
 
-    IAsyncOperation<uint32_t> Suspend_IAsyncOperation(HANDLE go)
+    IAsyncOperation<std::uint32_t> Suspend_IAsyncOperation(HANDLE go)
     {
         co_await resume_on_signal(go);
         co_return 123;
     }
 
-    IAsyncOperationWithProgress<uint64_t, uint64_t> Suspend_IAsyncOperationWithProgress(HANDLE go)
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> Suspend_IAsyncOperationWithProgress(HANDLE go)
     {
         co_await resume_on_signal(go);
         auto progress = co_await get_progress_token();
@@ -293,13 +293,13 @@ TEST_CASE("async, Suspend_IAsyncActionWithProgress")
 TEST_CASE("async, Suspend_IAsyncOperation")
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperation<uint32_t> async = Suspend_IAsyncOperation(event.get());
+    IAsyncOperation<std::uint32_t> async = Suspend_IAsyncOperation(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
     async.Close();
 
     bool completed = false;
 
-    async.Completed([&](const IAsyncOperation<uint32_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperation<std::uint32_t> & sender, AsyncStatus status)
     {
         completed = true;
         REQUIRE(async == sender);
@@ -320,14 +320,14 @@ TEST_CASE("async, Suspend_IAsyncOperation")
 TEST_CASE("async, Suspend_IAsyncOperationWithProgress")
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperationWithProgress<uint64_t, uint64_t> async = Suspend_IAsyncOperationWithProgress(event.get());
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> async = Suspend_IAsyncOperationWithProgress(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
     async.Close();
 
     bool completed = false;
     bool progress = false;
 
-    async.Completed([&](const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, AsyncStatus status)
     {
         completed = true;
         REQUIRE(async == sender);
@@ -337,7 +337,7 @@ TEST_CASE("async, Suspend_IAsyncOperationWithProgress")
 
     REQUIRE_THROWS_AS(async.Completed([&](auto && ...) {}), hresult_illegal_delegate_assignment);
 
-    async.Progress([&](const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, uint64_t value)
+    async.Progress([&](const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, std::uint64_t value)
     {
         progress = true;
         REQUIRE(async == sender);
@@ -378,14 +378,14 @@ namespace
         throw hresult_invalid_argument(L"Throw_IAsyncActionWithProgress");
     }
 
-    IAsyncOperation<uint32_t> Throw_IAsyncOperation(HANDLE go)
+    IAsyncOperation<std::uint32_t> Throw_IAsyncOperation(HANDLE go)
     {
         co_await resume_on_signal(go);
         throw hresult_invalid_argument(L"Throw_IAsyncOperation");
         co_return 123;
     }
 
-    IAsyncOperationWithProgress<uint64_t, uint64_t> Throw_IAsyncOperationWithProgress(HANDLE go)
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> Throw_IAsyncOperationWithProgress(HANDLE go)
     {
         co_await resume_on_signal(go);
         throw hresult_invalid_argument(L"Throw_IAsyncOperationWithProgress");
@@ -587,7 +587,7 @@ TEST_CASE("async, Throw_IAsyncOperation")
 #endif
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperation<uint32_t> async = Throw_IAsyncOperation(event.get());
+    IAsyncOperation<std::uint32_t> async = Throw_IAsyncOperation(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
 
     SetEvent(event.get()); // signal async to run
@@ -595,7 +595,7 @@ TEST_CASE("async, Throw_IAsyncOperation")
 
     bool completed = false;
 
-    async.Completed([&](const IAsyncOperation<uint32_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperation<std::uint32_t> & sender, AsyncStatus status)
     {
         completed = true;
         REQUIRE(async == sender);
@@ -632,12 +632,12 @@ TEST_CASE("async, Throw_IAsyncOperation, 2")
 #endif
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperation<uint32_t> async = Throw_IAsyncOperation(event.get());
+    IAsyncOperation<std::uint32_t> async = Throw_IAsyncOperation(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
 
     bool completed = false;
 
-    async.Completed([&](const IAsyncOperation<uint32_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperation<std::uint32_t> & sender, AsyncStatus status)
     {
         completed = true;
         REQUIRE(async == sender);
@@ -678,7 +678,7 @@ TEST_CASE("async, Throw_IAsyncOperationWithProgress")
 #endif
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperationWithProgress<uint64_t, uint64_t> async = Throw_IAsyncOperationWithProgress(event.get());
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> async = Throw_IAsyncOperationWithProgress(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
 
     SetEvent(event.get()); // signal async to run
@@ -686,7 +686,7 @@ TEST_CASE("async, Throw_IAsyncOperationWithProgress")
 
     bool completed = false;
 
-    async.Completed([&](const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, AsyncStatus status)
     {
         completed = true;
         REQUIRE(async == sender);
@@ -723,12 +723,12 @@ TEST_CASE("async, Throw_IAsyncOperationWithProgress, 2")
 #endif
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperationWithProgress<uint64_t, uint64_t> async = Throw_IAsyncOperationWithProgress(event.get());
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> async = Throw_IAsyncOperationWithProgress(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
 
     bool completed = false;
 
-    async.Completed([&](const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, AsyncStatus status)
     {
         completed = true;
         REQUIRE(async == sender);
@@ -790,7 +790,7 @@ namespace
         SetEvent(go); // signal cancelation
     }
 
-    IAsyncOperation<uint32_t> Cancel_IAsyncOperation(HANDLE go)
+    IAsyncOperation<std::uint32_t> Cancel_IAsyncOperation(HANDLE go)
     {
         co_await resume_on_signal(go);
 
@@ -801,7 +801,7 @@ namespace
         co_return 123;
     }
 
-    IAsyncOperationWithProgress<uint64_t, uint64_t> Cancel_IAsyncOperationWithProgress(HANDLE go)
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> Cancel_IAsyncOperationWithProgress(HANDLE go)
     {
         co_await resume_on_signal(go);
 
@@ -963,7 +963,7 @@ TEST_CASE("async, Cancel_IAsyncOperation")
 #endif
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperation<uint32_t> async = Cancel_IAsyncOperation(event.get());
+    IAsyncOperation<std::uint32_t> async = Cancel_IAsyncOperation(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
     REQUIRE_THROWS_AS(async.GetResults(), hresult_illegal_method_call);
 
@@ -978,7 +978,7 @@ TEST_CASE("async, Cancel_IAsyncOperation")
     bool objectMatches = false;
     bool statusMatches = false;
 
-    async.Completed([&](const IAsyncOperation<uint32_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperation<std::uint32_t> & sender, AsyncStatus status)
     {
         completed = true;
         objectMatches = (async == sender);
@@ -998,7 +998,7 @@ TEST_CASE("async, Cancel_IAsyncOperation, 2")
 #endif
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperation<uint32_t> async = Cancel_IAsyncOperation(event.get());
+    IAsyncOperation<std::uint32_t> async = Cancel_IAsyncOperation(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
     REQUIRE_THROWS_AS(async.GetResults(), hresult_illegal_method_call);
 
@@ -1006,7 +1006,7 @@ TEST_CASE("async, Cancel_IAsyncOperation, 2")
     bool objectMatches = false;
     bool statusMatches = false;
 
-    async.Completed([&](const IAsyncOperation<uint32_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperation<std::uint32_t> & sender, AsyncStatus status)
     {
         completed = true;
         objectMatches = (async == sender);
@@ -1033,7 +1033,7 @@ TEST_CASE("async, Cancel_IAsyncOperationWithProgress")
 #endif
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperationWithProgress<uint64_t, uint64_t> async = Cancel_IAsyncOperationWithProgress(event.get());
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> async = Cancel_IAsyncOperationWithProgress(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
     // It is legal to read results of an incomplete WithProgress.
     REQUIRE_NOTHROW(async.GetResults());
@@ -1049,7 +1049,7 @@ TEST_CASE("async, Cancel_IAsyncOperationWithProgress")
     bool objectMatches = false;
     bool statusMatches = false;
 
-    async.Completed([&](const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, AsyncStatus status)
     {
         completed = true;
         objectMatches = (async == sender);
@@ -1069,7 +1069,7 @@ TEST_CASE("async, Cancel_IAsyncOperationWithProgress, 2")
 #endif
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperationWithProgress<uint64_t, uint64_t> async = Cancel_IAsyncOperationWithProgress(event.get());
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> async = Cancel_IAsyncOperationWithProgress(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
     // It is legal to read results of an incomplete WithProgress.
     REQUIRE_NOTHROW(async.GetResults());
@@ -1078,7 +1078,7 @@ TEST_CASE("async, Cancel_IAsyncOperationWithProgress, 2")
     bool objectMatches = false;
     bool statusMatches = false;
 
-    async.Completed([&](const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, AsyncStatus status)
     {
         completed = true;
         objectMatches = (async == sender);
@@ -1130,7 +1130,7 @@ namespace
         REQUIRE(false);
     }
 
-    IAsyncOperation<uint32_t> AutoCancel_IAsyncOperation(HANDLE go)
+    IAsyncOperation<std::uint32_t> AutoCancel_IAsyncOperation(HANDLE go)
     {
         signal_done d{ go };
         co_await resume_on_signal(go);
@@ -1139,7 +1139,7 @@ namespace
         co_return 0;
     }
 
-    IAsyncOperationWithProgress<uint64_t, uint64_t> AutoCancel_IAsyncOperationWithProgress(HANDLE go)
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> AutoCancel_IAsyncOperationWithProgress(HANDLE go)
     {
         signal_done d{ go };
         co_await resume_on_signal(go);
@@ -1289,7 +1289,7 @@ TEST_CASE("async, AutoCancel_IAsyncOperation")
 #endif
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperation<uint32_t> async = AutoCancel_IAsyncOperation(event.get());
+    IAsyncOperation<std::uint32_t> async = AutoCancel_IAsyncOperation(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
 
     async.Cancel();
@@ -1302,7 +1302,7 @@ TEST_CASE("async, AutoCancel_IAsyncOperation")
     bool objectMatches = false;
     bool statusMatches = false;
 
-    async.Completed([&](const IAsyncOperation<uint32_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperation<std::uint32_t> & sender, AsyncStatus status)
     {
         completed = true;
         objectMatches = (async == sender);
@@ -1322,14 +1322,14 @@ TEST_CASE("async, AutoCancel_IAsyncOperation, 2")
 #endif
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperation<uint32_t> async = AutoCancel_IAsyncOperation(event.get());
+    IAsyncOperation<std::uint32_t> async = AutoCancel_IAsyncOperation(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
 
     bool completed = false;
     bool objectMatches = false;
     bool statusMatches = false;
 
-    async.Completed([&](const IAsyncOperation<uint32_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperation<std::uint32_t> & sender, AsyncStatus status)
     {
         completed = true;
         objectMatches = (async == sender);
@@ -1355,7 +1355,7 @@ TEST_CASE("async, AutoCancel_IAsyncOperationWithProgress")
 #endif
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperationWithProgress<uint64_t, uint64_t> async = AutoCancel_IAsyncOperationWithProgress(event.get());
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> async = AutoCancel_IAsyncOperationWithProgress(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
 
     async.Cancel();
@@ -1368,7 +1368,7 @@ TEST_CASE("async, AutoCancel_IAsyncOperationWithProgress")
     bool objectMatches = false;
     bool statusMatches = false;
 
-    async.Completed([&](const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, AsyncStatus status)
     {
         completed = true;
         objectMatches = (async == sender);
@@ -1388,14 +1388,14 @@ TEST_CASE("async, AutoCancel_IAsyncOperationWithProgress, 2")
 #endif
 {
     handle event { CreateEvent(nullptr, false, false, nullptr)};
-    IAsyncOperationWithProgress<uint64_t, uint64_t> async = AutoCancel_IAsyncOperationWithProgress(event.get());
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> async = AutoCancel_IAsyncOperationWithProgress(event.get());
     REQUIRE(async.Status() == AsyncStatus::Started);
 
     bool completed = false;
     bool objectMatches = false;
     bool statusMatches = false;
 
-    async.Completed([&](const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, AsyncStatus status)
+    async.Completed([&](const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, AsyncStatus status)
     {
         completed = true;
         objectMatches = (async == sender);
@@ -1506,7 +1506,7 @@ TEST_CASE("async, get, failure")
 
 namespace
 {
-    IAsyncAction test_resume_background(uint32_t & before, uint32_t & after)
+    IAsyncAction test_resume_background(std::uint32_t & before, std::uint32_t & after)
     {
         before = GetCurrentThreadId();
         co_await resume_background();
@@ -1516,8 +1516,8 @@ namespace
 
 TEST_CASE("async, resume_background")
 {
-    uint32_t before = 0;
-    uint32_t after = 0;
+    std::uint32_t before = 0;
+    std::uint32_t after = 0;
 
     test_resume_background(before, after).get();
 
@@ -1532,7 +1532,7 @@ TEST_CASE("async, resume_background")
 
 namespace
 {
-    IAsyncAction test_resume_after(uint32_t & before, uint32_t & after)
+    IAsyncAction test_resume_after(std::uint32_t & before, std::uint32_t & after)
     {
         co_await resume_after(0s); // should not suspend
         before = GetCurrentThreadId();
@@ -1544,8 +1544,8 @@ namespace
 
 TEST_CASE("async, resume_after")
 {
-    uint32_t before = 0;
-    uint32_t after = 0;
+    std::uint32_t before = 0;
+    std::uint32_t after = 0;
 
     test_resume_after(before, after).get();
 
@@ -1561,7 +1561,7 @@ namespace
 {
     IAsyncAction test_resume_on_signal(HANDLE signal)
     {
-        const uint32_t caller = GetCurrentThreadId();
+        const std::uint32_t caller = GetCurrentThreadId();
 
         co_await resume_on_signal(signal); // should not suspend because already signaled
         REQUIRE(caller == GetCurrentThreadId()); // still on calling thread

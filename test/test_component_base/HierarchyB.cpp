@@ -9,7 +9,7 @@ namespace winrt::test_component_base::implementation
     {
         throw hresult_not_implemented();
     }
-    HierarchyB::HierarchyB(int32_t dummy, hstring const& name) : HierarchyB_base(dummy, name)
+    HierarchyB::HierarchyB(std::int32_t dummy, hstring const& name) : HierarchyB_base(dummy, name)
     {
         throw hresult_not_implemented();
     }

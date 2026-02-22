@@ -63,7 +63,7 @@ namespace
         REQUIRE(short_array[0] == 1);
         REQUIRE(short_array[1] == 2);
 
-        uint32_t index = 100;
+        std::uint32_t index = 100;
         REQUIRE(!values.IndexOf(4, index));
 
         REQUIRE(values.IndexOf(1, index));

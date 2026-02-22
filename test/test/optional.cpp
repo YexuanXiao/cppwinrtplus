@@ -17,6 +17,6 @@ TEST_CASE("optional")
     REQUIRE(object.Property().Value() == 456);
 
     object.Property(std::optional(789));
-    std::optional<int32_t> value = object.Property();
+    std::optional<std::int32_t> value = object.Property();
     REQUIRE(value == std::optional(789));
 }

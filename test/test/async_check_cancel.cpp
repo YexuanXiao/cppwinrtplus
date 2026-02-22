@@ -14,14 +14,14 @@ namespace
     static bool s_exceptionLoggerCalled = false;
 
     static struct {
-        uint32_t lineNumber;
+        std::uint32_t lineNumber;
         char const* fileName;
         char const* functionName;
         void* returnAddress;
         winrt::hresult result;
     } s_exceptionLoggerArgs{};
 
-    void __stdcall exceptionLogger(uint32_t lineNumber, char const* fileName, char const* functionName, void* returnAddress, winrt::hresult const result) noexcept
+    void __stdcall exceptionLogger(std::uint32_t lineNumber, char const* fileName, char const* functionName, void* returnAddress, winrt::hresult const result) noexcept
     {
         s_exceptionLoggerArgs = {
             /*.lineNumber =*/ lineNumber,

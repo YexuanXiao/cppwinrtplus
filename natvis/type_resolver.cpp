@@ -34,18 +34,18 @@ static guid get_guid(TypeDef const& type)
     auto args = attribute.Value().FixedArgs();
     return 
     {
-        std::get<uint32_t>(std::get<ElemSig>(args[0].value).value),
-        std::get<uint16_t>(std::get<ElemSig>(args[1].value).value),
-        std::get<uint16_t>(std::get<ElemSig>(args[2].value).value),
+        std::get<std::uint32_t>(std::get<ElemSig>(args[0].value).value),
+        std::get<std::uint16_t>(std::get<ElemSig>(args[1].value).value),
+        std::get<std::uint16_t>(std::get<ElemSig>(args[2].value).value),
         {
-            std::get<uint8_t>(std::get<ElemSig>(args[3].value).value),
-            std::get<uint8_t>(std::get<ElemSig>(args[4].value).value),
-            std::get<uint8_t>(std::get<ElemSig>(args[5].value).value),
-            std::get<uint8_t>(std::get<ElemSig>(args[6].value).value),
-            std::get<uint8_t>(std::get<ElemSig>(args[7].value).value),
-            std::get<uint8_t>(std::get<ElemSig>(args[8].value).value),
-            std::get<uint8_t>(std::get<ElemSig>(args[9].value).value),
-            std::get<uint8_t>(std::get<ElemSig>(args[10].value).value)
+            std::get<std::uint8_t>(std::get<ElemSig>(args[3].value).value),
+            std::get<std::uint8_t>(std::get<ElemSig>(args[4].value).value),
+            std::get<std::uint8_t>(std::get<ElemSig>(args[5].value).value),
+            std::get<std::uint8_t>(std::get<ElemSig>(args[6].value).value),
+            std::get<std::uint8_t>(std::get<ElemSig>(args[7].value).value),
+            std::get<std::uint8_t>(std::get<ElemSig>(args[8].value).value),
+            std::get<std::uint8_t>(std::get<ElemSig>(args[9].value).value),
+            std::get<std::uint8_t>(std::get<ElemSig>(args[10].value).value)
         }
     };
 }
@@ -231,12 +231,12 @@ private:
 
 using namespace winrt::impl;
 
-static auto calculate_sha1(std::vector<uint8_t> const& input)
+static auto calculate_sha1(std::vector<std::uint8_t> const& input)
 {
     auto input_size = input.size();
 
-    std::array<uint32_t, 5> intermediate_hash{ 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 };
-    uint32_t i = 0;
+    std::array<std::uint32_t, 5> intermediate_hash{ 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 };
+    std::uint32_t i = 0;
     while (i + 64 <= input_size)
     {
         intermediate_hash = process_msg_block(input.data(), i, intermediate_hash);
@@ -247,7 +247,7 @@ static auto calculate_sha1(std::vector<uint8_t> const& input)
     auto remainder_size = (input_size % 64) + 1;
     if (remainder_size + 8 <= 64)
     {
-        std::array<uint8_t, 64> remainder{};
+        std::array<std::uint8_t, 64> remainder{};
         std::copy(input.begin() + i, input.end(), remainder.begin());
         remainder[remainder_size - 1] = 0x80;
         std::copy(length.begin(), length.end(), remainder.end() - 8);
@@ -255,7 +255,7 @@ static auto calculate_sha1(std::vector<uint8_t> const& input)
     }
     else
     {
-        std::array<uint8_t, 64 * 2> remainder{};
+        std::array<std::uint8_t, 64 * 2> remainder{};
         std::copy(input.begin() + i, input.end(), remainder.begin());
         remainder[remainder_size - 1] = 0x80;
         std::copy(length.begin(), length.end(), remainder.end() - 8);
@@ -271,7 +271,7 @@ static guid generate_guid(GenericTypeInstSig const& type)
     constexpr guid namespace_guid = { 0xd57af411, 0x737b, 0xc042,{ 0xab, 0xae, 0x87, 0x8b, 0x1e, 0x16, 0xad, 0xee } };
     constexpr auto namespace_bytes = winrt::impl::to_array(namespace_guid);
 
-    std::vector<uint8_t> buffer{ namespace_bytes.begin(), namespace_bytes.end() };
+    std::vector<std::uint8_t> buffer{ namespace_bytes.begin(), namespace_bytes.end() };
     auto sig = signature_generator::get_signature(type);
     buffer.insert(buffer.end(), sig.begin(), sig.end());
 

@@ -17,7 +17,7 @@ namespace
 
 TEST_CASE("module_lock_dll")
 {
-    uint32_t const count = winrt::get_module_lock();
+    std::uint32_t const count = winrt::get_module_lock();
 
     ++winrt::get_module_lock();
 

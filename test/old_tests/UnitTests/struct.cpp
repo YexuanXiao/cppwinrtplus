@@ -52,7 +52,7 @@ TEST_CASE("struct, TypeName")
 // destroyed correctly. 
 //
 
-struct TestReference : implements<TestReference, IReference<uint64_t>>
+struct TestReference : implements<TestReference, IReference<std::uint64_t>>
 {
     bool * m_destroyed = nullptr;
 
@@ -73,7 +73,7 @@ struct TestReference : implements<TestReference, IReference<uint64_t>>
         }
     }
 
-    uint64_t Value()
+    std::uint64_t Value()
     {
         return 200;
     }

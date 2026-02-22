@@ -2652,20 +2652,20 @@ namespace Catch {
     class Capturer {
         std::vector<MessageInfo> m_messages;
         IResultCapture& m_resultCapture = getResultCapture();
-        size_t m_captured = 0;
+        std::size_t m_captured = 0;
     public:
         Capturer( StringRef macroName, SourceLineInfo const& lineInfo, ResultWas::OfType resultType, StringRef names );
         ~Capturer();
 
-        void captureValue( size_t index, std::string const& value );
+        void captureValue( std::size_t index, std::string const& value );
 
         template<typename T>
-        void captureValues( size_t index, T const& value ) {
+        void captureValues( std::size_t index, T const& value ) {
             captureValue( index, Catch::Detail::stringify( value ) );
         }
 
         template<typename T, typename... Ts>
-        void captureValues( size_t index, T const& value, Ts const&... values ) {
+        void captureValues( std::size_t index, T const& value, Ts const&... values ) {
             captureValue( index, Catch::Detail::stringify(value) );
             captureValues( index+1, values... );
         }
@@ -2888,15 +2888,15 @@ namespace Catch {
 
 namespace Catch {
 
-    auto getCurrentNanosecondsSinceEpoch() -> uint64_t;
-    auto getEstimatedClockResolution() -> uint64_t;
+    auto getCurrentNanosecondsSinceEpoch() -> std::uint64_t;
+    auto getEstimatedClockResolution() -> std::uint64_t;
 
     class Timer {
-        uint64_t m_nanoseconds = 0;
+        std::uint64_t m_nanoseconds = 0;
     public:
         void start();
-        auto getElapsedNanoseconds() const -> uint64_t;
-        auto getElapsedMicroseconds() const -> uint64_t;
+        auto getElapsedNanoseconds() const -> std::uint64_t;
+        auto getElapsedMicroseconds() const -> std::uint64_t;
         auto getElapsedMilliseconds() const -> unsigned int;
         auto getElapsedSeconds() const -> double;
     };
@@ -3424,7 +3424,7 @@ namespace Matchers {
 
     namespace Floating {
 
-        enum class FloatingPointKind : uint8_t;
+        enum class FloatingPointKind : std::uint8_t;
 
         struct WithinAbsMatcher : MatcherBase<double> {
             WithinAbsMatcher(double target, double margin);
@@ -3436,12 +3436,12 @@ namespace Matchers {
         };
 
         struct WithinUlpsMatcher : MatcherBase<double> {
-            WithinUlpsMatcher(double target, uint64_t ulps, FloatingPointKind baseType);
+            WithinUlpsMatcher(double target, std::uint64_t ulps, FloatingPointKind baseType);
             bool match(double const& matchee) const override;
             std::string describe() const override;
         private:
             double m_target;
-            uint64_t m_ulps;
+            std::uint64_t m_ulps;
             FloatingPointKind m_type;
         };
 
@@ -3464,8 +3464,8 @@ namespace Matchers {
 
     // The following functions create the actual matcher objects.
     // This allows the types to be inferred
-    Floating::WithinUlpsMatcher WithinULP(double target, uint64_t maxUlpDiff);
-    Floating::WithinUlpsMatcher WithinULP(float target, uint64_t maxUlpDiff);
+    Floating::WithinUlpsMatcher WithinULP(double target, std::uint64_t maxUlpDiff);
+    Floating::WithinUlpsMatcher WithinULP(float target, std::uint64_t maxUlpDiff);
     Floating::WithinAbsMatcher WithinAbs(double target, double margin);
     Floating::WithinRelMatcher WithinRel(double target, double eps);
     // defaults epsilon to 100*numeric_limits<double>::epsilon()
@@ -3969,7 +3969,7 @@ namespace Generators {
             "FixedValuesGenerator does not support bools because of std::vector<bool>"
             "specialization, use SingleValue Generator instead.");
         std::vector<T> m_values;
-        size_t m_idx = 0;
+        std::size_t m_idx = 0;
     public:
         FixedValuesGenerator( std::initializer_list<T> values ) : m_values( values ) {}
 
@@ -4009,7 +4009,7 @@ namespace Generators {
     template<typename T>
     class Generators : public IGenerator<T> {
         std::vector<GeneratorWrapper<T>> m_generators;
-        size_t m_current = 0;
+        std::size_t m_current = 0;
 
         void populate(GeneratorWrapper<T>&& generator) {
             m_generators.emplace_back(std::move(generator));
@@ -4119,10 +4119,10 @@ namespace Generators {
     template <typename T>
     class TakeGenerator : public IGenerator<T> {
         GeneratorWrapper<T> m_generator;
-        size_t m_returned = 0;
-        size_t m_target;
+        std::size_t m_returned = 0;
+        std::size_t m_target;
     public:
-        TakeGenerator(size_t target, GeneratorWrapper<T>&& generator):
+        TakeGenerator(std::size_t target, GeneratorWrapper<T>&& generator):
             m_generator(std::move(generator)),
             m_target(target)
         {
@@ -4148,7 +4148,7 @@ namespace Generators {
     };
 
     template <typename T>
-    GeneratorWrapper<T> take(size_t target, GeneratorWrapper<T>&& generator) {
+    GeneratorWrapper<T> take(std::size_t target, GeneratorWrapper<T>&& generator) {
         return GeneratorWrapper<T>(pf::make_unique<TakeGenerator<T>>(target, std::move(generator)));
     }
 
@@ -4203,11 +4203,11 @@ namespace Generators {
             "because of std::vector<bool> specialization");
         GeneratorWrapper<T> m_generator;
         mutable std::vector<T> m_returned;
-        size_t m_target_repeats;
-        size_t m_current_repeat = 0;
-        size_t m_repeat_index = 0;
+        std::size_t m_target_repeats;
+        std::size_t m_current_repeat = 0;
+        std::size_t m_repeat_index = 0;
     public:
-        RepeatGenerator(size_t repeats, GeneratorWrapper<T>&& generator):
+        RepeatGenerator(std::size_t repeats, GeneratorWrapper<T>&& generator):
             m_generator(std::move(generator)),
             m_target_repeats(repeats)
         {
@@ -4248,7 +4248,7 @@ namespace Generators {
     };
 
     template <typename T>
-    GeneratorWrapper<T> repeat(size_t repeats, GeneratorWrapper<T>&& generator) {
+    GeneratorWrapper<T> repeat(std::size_t repeats, GeneratorWrapper<T>&& generator) {
         return GeneratorWrapper<T>(pf::make_unique<RepeatGenerator<T>>(repeats, std::move(generator)));
     }
 
@@ -4296,17 +4296,17 @@ namespace Generators {
     template <typename T>
     class ChunkGenerator final : public IGenerator<std::vector<T>> {
         std::vector<T> m_chunk;
-        size_t m_chunk_size;
+        std::size_t m_chunk_size;
         GeneratorWrapper<T> m_generator;
         bool m_used_up = false;
     public:
-        ChunkGenerator(size_t size, GeneratorWrapper<T> generator) :
+        ChunkGenerator(std::size_t size, GeneratorWrapper<T> generator) :
             m_chunk_size(size), m_generator(std::move(generator))
         {
             m_chunk.reserve(m_chunk_size);
             if (m_chunk_size != 0) {
                 m_chunk.push_back(m_generator.get());
-                for (size_t i = 1; i < m_chunk_size; ++i) {
+                for (std::size_t i = 1; i < m_chunk_size; ++i) {
                     if (!m_generator.next()) {
                         Catch::throw_exception(GeneratorException("Not enough values to initialize the first chunk"));
                     }
@@ -4319,7 +4319,7 @@ namespace Generators {
         }
         bool next() override {
             m_chunk.clear();
-            for (size_t idx = 0; idx < m_chunk_size; ++idx) {
+            for (std::size_t idx = 0; idx < m_chunk_size; ++idx) {
                 if (!m_generator.next()) {
                     return false;
                 }
@@ -4330,7 +4330,7 @@ namespace Generators {
     };
 
     template <typename T>
-    GeneratorWrapper<std::vector<T>> chunk(size_t size, GeneratorWrapper<T>&& generator) {
+    GeneratorWrapper<std::vector<T>> chunk(std::size_t size, GeneratorWrapper<T>&& generator) {
         return GeneratorWrapper<std::vector<T>>(
             pf::make_unique<ChunkGenerator<T>>(size, std::move(generator))
         );
@@ -4572,7 +4572,7 @@ namespace Catch {
         explicit SimplePcg32(result_type seed_);
 
         void seed(result_type seed_);
-        void discard(uint64_t skip);
+        void discard(std::uint64_t skip);
 
         result_type operator()();
 
@@ -4715,7 +4715,7 @@ class IteratorGenerator final : public IGenerator<T> {
         "because of std::vector<bool> specialization");
 
     std::vector<T> m_elems;
-    size_t m_current = 0;
+    std::size_t m_current = 0;
 public:
     template <typename InputIterator, typename InputSentinel>
     IteratorGenerator(InputIterator first, InputSentinel last):m_elems(first, last) {
@@ -8492,29 +8492,29 @@ class Columns;
 
 class Column {
 	std::vector<std::string> m_strings;
-	size_t m_width = CATCH_CLARA_TEXTFLOW_CONFIG_CONSOLE_WIDTH;
-	size_t m_indent = 0;
-	size_t m_initialIndent = std::string::npos;
+	std::size_t m_width = CATCH_CLARA_TEXTFLOW_CONFIG_CONSOLE_WIDTH;
+	std::size_t m_indent = 0;
+	std::size_t m_initialIndent = std::string::npos;
 
 public:
 	class iterator {
 		friend Column;
 
 		Column const& m_column;
-		size_t m_stringIndex = 0;
-		size_t m_pos = 0;
+		std::size_t m_stringIndex = 0;
+		std::size_t m_pos = 0;
 
-		size_t m_len = 0;
-		size_t m_end = 0;
+		std::size_t m_len = 0;
+		std::size_t m_end = 0;
 		bool m_suffix = false;
 
-		iterator(Column const& column, size_t stringIndex)
+		iterator(Column const& column, std::size_t stringIndex)
 			: m_column(column),
 			m_stringIndex(stringIndex) {}
 
 		auto line() const -> std::string const& { return m_column.m_strings[m_stringIndex]; }
 
-		auto isBoundary(size_t at) const -> bool {
+		auto isBoundary(std::size_t at) const -> bool {
 			assert(at > 0);
 			assert(at <= line().size());
 
@@ -8539,7 +8539,7 @@ public:
 			if (m_end < m_pos + width) {
 				m_len = m_end - m_pos;
 			} else {
-				size_t len = width;
+				std::size_t len = width;
 				while (len > 0 && !isBoundary(m_pos + len))
 					--len;
 				while (len > 0 && isWhitespace(line()[m_pos + len - 1]))
@@ -8554,7 +8554,7 @@ public:
 			}
 		}
 
-		auto indent() const -> size_t {
+		auto indent() const -> std::size_t {
 			auto initial = m_pos == 0 && m_stringIndex == 0 ? m_column.m_initialIndent : std::string::npos;
 			return initial == std::string::npos ? m_column.m_indent : initial;
 		}
@@ -8620,21 +8620,21 @@ public:
 
 	explicit Column(std::string const& text) { m_strings.push_back(text); }
 
-	auto width(size_t newWidth) -> Column& {
+	auto width(std::size_t newWidth) -> Column& {
 		assert(newWidth > 0);
 		m_width = newWidth;
 		return *this;
 	}
-	auto indent(size_t newIndent) -> Column& {
+	auto indent(std::size_t newIndent) -> Column& {
 		m_indent = newIndent;
 		return *this;
 	}
-	auto initialIndent(size_t newIndent) -> Column& {
+	auto initialIndent(std::size_t newIndent) -> Column& {
 		m_initialIndent = newIndent;
 		return *this;
 	}
 
-	auto width() const -> size_t { return m_width; }
+	auto width() const -> std::size_t { return m_width; }
 	auto begin() const -> iterator { return iterator(*this); }
 	auto end() const -> iterator { return { *this, m_strings.size() }; }
 
@@ -8662,7 +8662,7 @@ public:
 class Spacer : public Column {
 
 public:
-	explicit Spacer(size_t spaceWidth) : Column("") {
+	explicit Spacer(std::size_t spaceWidth) : Column("") {
 		width(spaceWidth);
 	}
 };
@@ -8678,7 +8678,7 @@ public:
 
 		std::vector<Column> const& m_columns;
 		std::vector<Column::iterator> m_iterators;
-		size_t m_activeIterators;
+		std::size_t m_activeIterators;
 
 		iterator(Columns const& columns, EndTag)
 			: m_columns(columns.m_columns),
@@ -8714,7 +8714,7 @@ public:
 		auto operator *() const -> std::string {
 			std::string row, padding;
 
-			for (size_t i = 0; i < m_columns.size(); ++i) {
+			for (std::size_t i = 0; i < m_columns.size(); ++i) {
 				auto width = m_columns[i].width();
 				if (m_iterators[i] != m_columns[i].end()) {
 					std::string col = *m_iterators[i];
@@ -8730,7 +8730,7 @@ public:
 			return row;
 		}
 		auto operator ++() -> iterator& {
-			for (size_t i = 0; i < m_columns.size(); ++i) {
+			for (std::size_t i = 0; i < m_columns.size(); ++i) {
 				if (m_iterators[i] != m_columns[i].end())
 					++m_iterators[i];
 			}
@@ -8885,7 +8885,7 @@ namespace detail {
                     } else {
                         if( next[1] != '-' && next.size() > 2 ) {
                             std::string opt = "- ";
-                            for( size_t i = 1; i < next.size(); ++i ) {
+                            for( std::size_t i = 1; i < next.size(); ++i ) {
                                 opt[1] = next[i];
                                 m_tokenBuffer.push_back( { TokenType::Option, opt } );
                             }
@@ -8910,7 +8910,7 @@ namespace detail {
             return !m_tokenBuffer.empty() || it != itEnd;
         }
 
-        auto count() const -> size_t { return m_tokenBuffer.size() + (itEnd - it); }
+        auto count() const -> std::size_t { return m_tokenBuffer.size() + (itEnd - it); }
 
         auto operator*() const -> Token {
             assert( !m_tokenBuffer.empty() );
@@ -9227,7 +9227,7 @@ namespace detail {
         virtual ~ParserBase() = default;
         virtual auto validate() const -> Result { return Result::ok(); }
         virtual auto parse( std::string const& exeName, TokenStream const &tokens) const -> InternalParseResult  = 0;
-        virtual auto cardinality() const -> size_t { return 1; }
+        virtual auto cardinality() const -> std::size_t { return 1; }
 
         auto parse( Args const &args ) const -> InternalParseResult {
             return parse( args.exeName(), TokenStream( args ) );
@@ -9287,7 +9287,7 @@ namespace detail {
             return m_optionality == Optionality::Optional;
         }
 
-        auto cardinality() const -> size_t override {
+        auto cardinality() const -> std::size_t override {
             if( m_ref->isContainer() )
                 return 0;
             else
@@ -9560,8 +9560,8 @@ namespace detail {
             }
 
             auto rows = getHelpColumns();
-            size_t consoleWidth = CATCH_CLARA_CONFIG_CONSOLE_WIDTH;
-            size_t optWidth = 0;
+            std::size_t consoleWidth = CATCH_CLARA_CONFIG_CONSOLE_WIDTH;
+            std::size_t optWidth = 0;
             for( auto const &cols : rows )
                 optWidth = (std::max)(optWidth, cols.left.size() + 2);
 
@@ -9601,15 +9601,15 @@ namespace detail {
 
             struct ParserInfo {
                 ParserBase const* parser = nullptr;
-                size_t count = 0;
+                std::size_t count = 0;
             };
-            const size_t totalParsers = m_options.size() + m_args.size();
+            const std::size_t totalParsers = m_options.size() + m_args.size();
             assert( totalParsers < 512 );
             // ParserInfo parseInfos[totalParsers]; // <-- this is what we really want to do
             ParserInfo parseInfos[512];
 
             {
-                size_t i = 0;
+                std::size_t i = 0;
                 for (auto const &opt : m_options) parseInfos[i++].parser = &opt;
                 for (auto const &arg : m_args) parseInfos[i++].parser = &arg;
             }
@@ -9620,7 +9620,7 @@ namespace detail {
             while( result.value().remainingTokens() ) {
                 bool tokenParsed = false;
 
-                for( size_t i = 0; i < totalParsers; ++i ) {
+                for( std::size_t i = 0; i < totalParsers; ++i ) {
                     auto&  parseInfo = parseInfos[i];
                     if( parseInfo.parser->cardinality() == 0 || parseInfo.count < parseInfo.parser->cardinality() ) {
                         result = parseInfo.parser->parse(exeName, result.value().remainingTokens());
@@ -10593,7 +10593,7 @@ namespace Catch {
             // In other words, it returns the Blue part of Bikeshed::Colour::Blue
             StringRef extractInstanceName(StringRef enumInstance) {
                 // Find last occurrence of ":"
-                size_t name_start = enumInstance.size();
+                std::size_t name_start = enumInstance.size();
                 while (name_start > 0 && enumInstance[name_start - 1] != ':') {
                     --name_start;
                 }
@@ -10920,7 +10920,7 @@ namespace Catch {
     FatalConditionHandler::FatalConditionHandler() {
         assert(!altStackMem && "Cannot initialize POSIX signal handler when one already exists");
         if (altStackSize == 0) {
-            altStackSize = std::max(static_cast<size_t>(SIGSTKSZ), minStackSizeForErrors);
+            altStackSize = std::max(static_cast<std::size_t>(SIGSTKSZ), minStackSizeForErrors);
         }
         altStackMem = new char[altStackSize]();
     }
@@ -11308,7 +11308,7 @@ namespace Catch {
     }
 
     std::string TagInfo::all() const {
-        size_t size = 0;
+        std::size_t size = 0;
         for (auto const& spelling : spellings) {
             // Add 2 for the brackets
             size += spelling.size() + 2;
@@ -11482,22 +11482,22 @@ namespace Catch {
 namespace Catch {
 namespace {
 
-    int32_t convert(float f) {
-        static_assert(sizeof(float) == sizeof(int32_t), "Important ULP matcher assumption violated");
-        int32_t i;
+    std::int32_t convert(float f) {
+        static_assert(sizeof(float) == sizeof(std::int32_t), "Important ULP matcher assumption violated");
+        std::int32_t i;
         std::memcpy(&i, &f, sizeof(f));
         return i;
     }
 
-    int64_t convert(double d) {
-        static_assert(sizeof(double) == sizeof(int64_t), "Important ULP matcher assumption violated");
-        int64_t i;
+    std::int64_t convert(double d) {
+        static_assert(sizeof(double) == sizeof(std::int64_t), "Important ULP matcher assumption violated");
+        std::int64_t i;
         std::memcpy(&i, &d, sizeof(d));
         return i;
     }
 
     template <typename FP>
-    bool almostEqualUlps(FP lhs, FP rhs, uint64_t maxUlpDiff) {
+    bool almostEqualUlps(FP lhs, FP rhs, std::uint64_t maxUlpDiff) {
         // Comparison with NaN should always be false.
         // This way we can rule it out before getting into the ugly details
         if (Catch::isnan(lhs) || Catch::isnan(rhs)) {
@@ -11514,7 +11514,7 @@ namespace {
 
         // static cast as a workaround for IBM XLC
         auto ulpDiff = std::abs(static_cast<FP>(lc - rc));
-        return static_cast<uint64_t>(ulpDiff) <= maxUlpDiff;
+        return static_cast<std::uint64_t>(ulpDiff) <= maxUlpDiff;
     }
 
 #if defined(CATCH_CONFIG_GLOBAL_NEXTAFTER)
@@ -11530,8 +11530,8 @@ namespace {
 #endif // ^^^ CATCH_CONFIG_GLOBAL_NEXTAFTER ^^^
 
 template <typename FP>
-FP step(FP start, FP direction, uint64_t steps) {
-    for (uint64_t i = 0; i < steps; ++i) {
+FP step(FP start, FP direction, std::uint64_t steps) {
+    for (std::uint64_t i = 0; i < steps; ++i) {
 #if defined(CATCH_CONFIG_GLOBAL_NEXTAFTER)
         start = Catch::nextafter(start, direction);
 #else
@@ -11559,7 +11559,7 @@ void write(std::ostream& out, FloatingPoint num) {
 namespace Matchers {
 namespace Floating {
 
-    enum class FloatingPointKind : uint8_t {
+    enum class FloatingPointKind : std::uint8_t {
         Float,
         Double
     };
@@ -11580,10 +11580,10 @@ namespace Floating {
         return "is within " + ::Catch::Detail::stringify(m_margin) + " of " + ::Catch::Detail::stringify(m_target);
     }
 
-    WithinUlpsMatcher::WithinUlpsMatcher(double target, uint64_t ulps, FloatingPointKind baseType)
+    WithinUlpsMatcher::WithinUlpsMatcher(double target, std::uint64_t ulps, FloatingPointKind baseType)
         :m_target{ target }, m_ulps{ ulps }, m_type{ baseType } {
         CATCH_ENFORCE(m_type == FloatingPointKind::Double
-                   || m_ulps < (std::numeric_limits<uint32_t>::max)(),
+                   || m_ulps < (std::numeric_limits<std::uint32_t>::max)(),
             "Provided ULP is impossibly large for a float comparison.");
     }
 
@@ -11657,11 +11657,11 @@ namespace Floating {
 
 }// namespace Floating
 
-Floating::WithinUlpsMatcher WithinULP(double target, uint64_t maxUlpDiff) {
+Floating::WithinUlpsMatcher WithinULP(double target, std::uint64_t maxUlpDiff) {
     return Floating::WithinUlpsMatcher(target, maxUlpDiff, Floating::FloatingPointKind::Double);
 }
 
-Floating::WithinUlpsMatcher WithinULP(float target, uint64_t maxUlpDiff) {
+Floating::WithinUlpsMatcher WithinULP(float target, std::uint64_t maxUlpDiff) {
     return Floating::WithinUlpsMatcher(target, maxUlpDiff, Floating::FloatingPointKind::Float);
 }
 
@@ -11863,7 +11863,7 @@ namespace Catch {
     }
 
     Capturer::Capturer( StringRef macroName, SourceLineInfo const& lineInfo, ResultWas::OfType resultType, StringRef names ) {
-        auto trimmed = [&] (size_t start, size_t end) {
+        auto trimmed = [&] (std::size_t start, std::size_t end) {
             while (names[start] == ',' || isspace(static_cast<unsigned char>(names[start]))) {
                 ++start;
             }
@@ -11872,7 +11872,7 @@ namespace Catch {
             }
             return names.substr(start, end - start + 1);
         };
-        auto skipq = [&] (size_t start, char quote) {
+        auto skipq = [&] (std::size_t start, char quote) {
             for (auto i = start + 1; i < names.size() ; ++i) {
                 if (names[i] == quote)
                     return i;
@@ -11882,9 +11882,9 @@ namespace Catch {
             CATCH_INTERNAL_ERROR("CAPTURE parsing encountered unmatched quote");
         };
 
-        size_t start = 0;
+        std::size_t start = 0;
         std::stack<char> openings;
-        for (size_t pos = 0; pos < names.size(); ++pos) {
+        for (std::size_t pos = 0; pos < names.size(); ++pos) {
             char c = names[pos];
             switch (c) {
             case '[':
@@ -11922,12 +11922,12 @@ namespace Catch {
     Capturer::~Capturer() {
         if ( !uncaught_exceptions() ){
             assert( m_captured == m_messages.size() );
-            for( size_t i = 0; i < m_captured; ++i  )
+            for( std::size_t i = 0; i < m_captured; ++i  )
                 m_resultCapture.popScopedMessage( m_messages[i] );
         }
     }
 
-    void Capturer::captureValue( size_t index, std::string const& value ) {
+    void Capturer::captureValue( std::size_t index, std::string const& value ) {
         assert( index < m_messages.size() );
         m_messages[index].message += value;
         m_resultCapture.pushScopedMessage( m_messages[index] );
@@ -12217,8 +12217,8 @@ namespace {
 #pragma warning(disable:4146) // we negate uint32 during the rotate
 #endif
         // Safe rotr implementation thanks to John Regehr
-        uint32_t rotate_right(uint32_t val, uint32_t count) {
-            const uint32_t mask = 31;
+        std::uint32_t rotate_right(std::uint32_t val, std::uint32_t count) {
+            const std::uint32_t mask = 31;
             count &= mask;
             return (val >> count) | (val << (-count & mask));
         }
@@ -12240,17 +12240,17 @@ namespace {
         (*this)();
     }
 
-    void SimplePcg32::discard(uint64_t skip) {
+    void SimplePcg32::discard(std::uint64_t skip) {
         // We could implement this to run in O(log n) steps, but this
         // should suffice for our use case.
-        for (uint64_t s = 0; s < skip; ++s) {
+        for (std::uint64_t s = 0; s < skip; ++s) {
             static_cast<void>((*this)());
         }
     }
 
     SimplePcg32::result_type SimplePcg32::operator()() {
         // prepare the output value
-        const uint32_t xorshifted = static_cast<uint32_t>(((m_state >> 18u) ^ m_state) >> 27u);
+        const std::uint32_t xorshifted = static_cast<std::uint32_t>(((m_state >> 18u) ^ m_state) >> 27u);
         const auto output = rotate_right(xorshifted, m_state >> 59u);
 
         // advance state
@@ -13850,9 +13850,9 @@ namespace Catch {
         const auto is_ws = [](char c) {
             return c == ' ' || c == '\t' || c == '\n' || c == '\r';
         };
-        size_t real_begin = 0;
+        std::size_t real_begin = 0;
         while (real_begin < ref.size() && is_ws(ref[real_begin])) { ++real_begin; }
-        size_t real_end = ref.size();
+        std::size_t real_end = ref.size();
         while (real_end > real_begin && is_ws(ref[real_end - 1])) { --real_end; }
 
         return ref.substr(real_begin, real_end - real_begin);
@@ -14194,12 +14194,12 @@ namespace Catch {
 
     namespace {
         struct TestHasher {
-            using hash_t = uint64_t;
+            using hash_t = std::uint64_t;
 
             explicit TestHasher( hash_t hashSuffix ):
                 m_hashSuffix{ hashSuffix } {}
 
-            uint32_t operator()( TestCase const& t ) const {
+            std::uint32_t operator()( TestCase const& t ) const {
                 // FNV-1a hash with multiplication fold.
                 const hash_t prime = 1099511628211u;
                 hash_t hash = 14695981039346656037u;
@@ -14209,8 +14209,8 @@ namespace Catch {
                 }
                 hash ^= m_hashSuffix;
                 hash *= prime;
-                const uint32_t low{ static_cast<uint32_t>( hash ) };
-                const uint32_t high{ static_cast<uint32_t>( hash >> 32 ) };
+                const std::uint32_t low{ static_cast<std::uint32_t>( hash ) };
+                const std::uint32_t high{ static_cast<std::uint32_t>( hash >> 32 ) };
                 return low * high;
             }
 
@@ -14936,25 +14936,25 @@ namespace Catch {
 
 #include <chrono>
 
-static const uint64_t nanosecondsInSecond = 1000000000;
+static const std::uint64_t nanosecondsInSecond = 1000000000;
 
 namespace Catch {
 
-    auto getCurrentNanosecondsSinceEpoch() -> uint64_t {
+    auto getCurrentNanosecondsSinceEpoch() -> std::uint64_t {
         return std::chrono::duration_cast<std::chrono::nanoseconds>( std::chrono::high_resolution_clock::now().time_since_epoch() ).count();
     }
 
     namespace {
-        auto estimateClockResolution() -> uint64_t {
-            uint64_t sum = 0;
-            static const uint64_t iterations = 1000000;
+        auto estimateClockResolution() -> std::uint64_t {
+            std::uint64_t sum = 0;
+            static const std::uint64_t iterations = 1000000;
 
             auto startTime = getCurrentNanosecondsSinceEpoch();
 
             for( std::size_t i = 0; i < iterations; ++i ) {
 
-                uint64_t ticks;
-                uint64_t baseTicks = getCurrentNanosecondsSinceEpoch();
+                std::uint64_t ticks;
+                std::uint64_t baseTicks = getCurrentNanosecondsSinceEpoch();
                 do {
                     ticks = getCurrentNanosecondsSinceEpoch();
                 } while( ticks == baseTicks );
@@ -14975,7 +14975,7 @@ namespace Catch {
             return sum/iterations;
         }
     }
-    auto getEstimatedClockResolution() -> uint64_t {
+    auto getEstimatedClockResolution() -> std::uint64_t {
         static auto s_resolution = estimateClockResolution();
         return s_resolution;
     }
@@ -14983,10 +14983,10 @@ namespace Catch {
     void Timer::start() {
        m_nanoseconds = getCurrentNanosecondsSinceEpoch();
     }
-    auto Timer::getElapsedNanoseconds() const -> uint64_t {
+    auto Timer::getElapsedNanoseconds() const -> std::uint64_t {
         return getCurrentNanosecondsSinceEpoch() - m_nanoseconds;
     }
-    auto Timer::getElapsedMicroseconds() const -> uint64_t {
+    auto Timer::getElapsedMicroseconds() const -> std::uint64_t {
         return getElapsedNanoseconds()/1000;
     }
     auto Timer::getElapsedMilliseconds() const -> unsigned int {
@@ -15442,7 +15442,7 @@ namespace Catch {
 
 namespace {
 
-    size_t trailingBytes(unsigned char c) {
+    std::size_t trailingBytes(unsigned char c) {
         if ((c & 0xE0) == 0xC0) {
             return 2;
         }
@@ -15455,7 +15455,7 @@ namespace {
         CATCH_INTERNAL_ERROR("Invalid multibyte utf-8 start byte encountered");
     }
 
-    uint32_t headerValue(unsigned char c) {
+    std::uint32_t headerValue(unsigned char c) {
         if ((c & 0xE0) == 0xC0) {
             return c & 0x1F;
         }
@@ -15568,7 +15568,7 @@ namespace {
                 // The next encBytes bytes must together be a valid utf-8
                 // This means: bitpattern 10XX XXXX and the extracted value is sane (ish)
                 bool valid = true;
-                uint32_t value = headerValue(c);
+                std::uint32_t value = headerValue(c);
                 for (std::size_t n = 1; n < encBytes; ++n) {
                     unsigned char nc = m_str[idx + n];
                     valid &= ((nc & 0xC0) == 0x80);
@@ -16302,10 +16302,10 @@ class Duration {
         Seconds,
         Minutes
     };
-    static const uint64_t s_nanosecondsInAMicrosecond = 1000;
-    static const uint64_t s_nanosecondsInAMillisecond = 1000 * s_nanosecondsInAMicrosecond;
-    static const uint64_t s_nanosecondsInASecond = 1000 * s_nanosecondsInAMillisecond;
-    static const uint64_t s_nanosecondsInAMinute = 60 * s_nanosecondsInASecond;
+    static const std::uint64_t s_nanosecondsInAMicrosecond = 1000;
+    static const std::uint64_t s_nanosecondsInAMillisecond = 1000 * s_nanosecondsInAMicrosecond;
+    static const std::uint64_t s_nanosecondsInASecond = 1000 * s_nanosecondsInAMillisecond;
+    static const std::uint64_t s_nanosecondsInAMinute = 60 * s_nanosecondsInASecond;
 
     double m_inNanoseconds;
     Unit m_units;

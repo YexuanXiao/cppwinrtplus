@@ -15,23 +15,23 @@ namespace
     }
 
 #ifdef _MSC_VER
-    __declspec(noinline) uintptr_t approximate_stack_pointer()
+    __declspec(noinline) std::uintptr_t approximate_stack_pointer()
     {
-        return reinterpret_cast<uintptr_t>(_AddressOfReturnAddress());
+        return reinterpret_cast<std::uintptr_t>(_AddressOfReturnAddress());
     }
 #else
     // gcc, clang, and icc all support this.
-    __attribute__((noinline)) uintptr_t approximate_stack_pointer()
+    __attribute__((noinline)) std::uintptr_t approximate_stack_pointer()
     {
-        return reinterpret_cast<uintptr_t>(__builtin_frame_address(0));
+        return reinterpret_cast<std::uintptr_t>(__builtin_frame_address(0));
     }
 #endif
 
     IAsyncAction SyncCompletion()
     {
-        uintptr_t initial = approximate_stack_pointer();
+        std::uintptr_t initial = approximate_stack_pointer();
         co_await AlreadyCompleted();
-        uintptr_t consumed = initial - approximate_stack_pointer();
+        std::uintptr_t consumed = initial - approximate_stack_pointer();
         REQUIRE(consumed == 0);
     }
 
@@ -42,9 +42,9 @@ namespace
     {
         winrt::apartment_context same_context;
 
-        uintptr_t initial = approximate_stack_pointer();
+        std::uintptr_t initial = approximate_stack_pointer();
         co_await same_context;
-        uintptr_t consumed = initial - approximate_stack_pointer();
+        std::uintptr_t consumed = initial - approximate_stack_pointer();
         REQUIRE(consumed == 0);
     }
 }

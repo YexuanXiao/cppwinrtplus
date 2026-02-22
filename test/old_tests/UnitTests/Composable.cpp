@@ -14,7 +14,7 @@ namespace
     constexpr auto Base_OverridableMethod{ L"Base::OverridableMethod"sv };
     constexpr auto Base_OverridableVirtualMethod{ L"Base::OverridableVirtualMethod"sv };
     constexpr auto Base_OverridableNoexceptMethod{ 42 };
-    constexpr auto Base_ProtectedMethod{ static_cast<int32_t>(0xDEADBEEF) };
+    constexpr auto Base_ProtectedMethod{ static_cast<std::int32_t>(0xDEADBEEF) };
 
     constexpr auto Derived_VirtualMethod{ L"Derived::VirtualMethod"sv };
     constexpr auto Derived_OverridableVirtualMethod{ L"Derived::OverridableVirtualMethod"sv };
@@ -58,12 +58,12 @@ TEST_CASE("Composable.OverriddenBase")
                 return hstring(OverriddenBase_OverridableVirtualMethod);
             }
 
-            int32_t OverridableNoexceptMethod() const noexcept
+            std::int32_t OverridableNoexceptMethod() const noexcept
             {
                 return OverriddenBase_OverridableNoexceptMethod;
             }
 
-            int32_t CallProtectedMethod()
+            std::int32_t CallProtectedMethod()
             {
                 return ProtectedMethod();
             }
@@ -80,7 +80,7 @@ TEST_CASE("Composable.OverriddenBase")
     {
         const std::wstring OverridableMethodResult = std::wstring(OverriddenBase_OverridableMethod) + L"=>" + Base_OverridableMethod.data();
         const std::wstring OverridableVirtualMethodResult = std::wstring(OverriddenBase_OverridableVirtualMethod) + L"=>" + Base_OverridableVirtualMethod.data();
-        const int32_t OverridableNoexceptMethodResult = OverriddenBase_OverridableNoexceptMethod + Base_OverridableNoexceptMethod;
+        const std::int32_t OverridableNoexceptMethodResult = OverriddenBase_OverridableNoexceptMethod + Base_OverridableNoexceptMethod;
 
         struct OverriddenBase : BaseT<OverriddenBase>
         {
@@ -94,7 +94,7 @@ TEST_CASE("Composable.OverriddenBase")
                 return OverriddenBase_OverridableVirtualMethod + L"=>" + BaseT<OverriddenBase>::OverridableVirtualMethod();
             }
 
-            int32_t OverridableNoexceptMethod() const noexcept
+            std::int32_t OverridableNoexceptMethod() const noexcept
             {
                 return OverriddenBase_OverridableNoexceptMethod + BaseT<OverriddenBase>::OverridableNoexceptMethod();
             }

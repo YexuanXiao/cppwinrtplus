@@ -359,17 +359,17 @@ namespace cppwinrt
         using std::get;
 
         w.write_printf("0x%08X,0x%04X,0x%04X,{ 0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X }",
-            get<uint32_t>(get<ElemSig>(args[0].value).value),
-            get<uint16_t>(get<ElemSig>(args[1].value).value),
-            get<uint16_t>(get<ElemSig>(args[2].value).value),
-            get<uint8_t>(get<ElemSig>(args[3].value).value),
-            get<uint8_t>(get<ElemSig>(args[4].value).value),
-            get<uint8_t>(get<ElemSig>(args[5].value).value),
-            get<uint8_t>(get<ElemSig>(args[6].value).value),
-            get<uint8_t>(get<ElemSig>(args[7].value).value),
-            get<uint8_t>(get<ElemSig>(args[8].value).value),
-            get<uint8_t>(get<ElemSig>(args[9].value).value),
-            get<uint8_t>(get<ElemSig>(args[10].value).value));
+            get<std::uint32_t>(get<ElemSig>(args[0].value).value),
+            get<std::uint16_t>(get<ElemSig>(args[1].value).value),
+            get<std::uint16_t>(get<ElemSig>(args[2].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[3].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[4].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[5].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[6].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[7].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[8].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[9].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[10].value).value));
     }
 
     static void write_guid_comment(writer& w, std::vector<FixedArgSig> const& args)
@@ -377,17 +377,17 @@ namespace cppwinrt
         using std::get;
 
         w.write_printf("%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
-            get<uint32_t>(get<ElemSig>(args[0].value).value),
-            get<uint16_t>(get<ElemSig>(args[1].value).value),
-            get<uint16_t>(get<ElemSig>(args[2].value).value),
-            get<uint8_t>(get<ElemSig>(args[3].value).value),
-            get<uint8_t>(get<ElemSig>(args[4].value).value),
-            get<uint8_t>(get<ElemSig>(args[5].value).value),
-            get<uint8_t>(get<ElemSig>(args[6].value).value),
-            get<uint8_t>(get<ElemSig>(args[7].value).value),
-            get<uint8_t>(get<ElemSig>(args[8].value).value),
-            get<uint8_t>(get<ElemSig>(args[9].value).value),
-            get<uint8_t>(get<ElemSig>(args[10].value).value));
+            get<std::uint32_t>(get<ElemSig>(args[0].value).value),
+            get<std::uint16_t>(get<ElemSig>(args[1].value).value),
+            get<std::uint16_t>(get<ElemSig>(args[2].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[3].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[4].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[5].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[6].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[7].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[8].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[9].value).value),
+            get<std::uint8_t>(get<ElemSig>(args[10].value).value));
     }
 
     static void write_category(writer& w, TypeDef const& type, std::string_view const& category)
@@ -561,15 +561,15 @@ namespace cppwinrt
 
                 if (param.Flags().In())
                 {
-                    format = "uint32_t%, %";
+                    format = "std::uint32_t%, %";
                 }
                 else if (param_signature->ByRef())
                 {
-                    format = "uint32_t*%, %*";
+                    format = "std::uint32_t*%, %*";
                 }
                 else
                 {
-                    format = "uint32_t%, %";
+                    format = "std::uint32_t%, %";
                 }
 
                 w.write(format, bind<write_array_size_name>(param), bind<write_abi_arg_out>(param_signature->Type()));
@@ -605,7 +605,7 @@ namespace cppwinrt
 
             if (type.is_szarray())
             {
-                w.write("uint32_t* __%Size, %**", method_signature.return_param_name(), type);
+                w.write("std::uint32_t* __%Size, %**", method_signature.return_param_name(), type);
             }
             else
             {
@@ -743,7 +743,7 @@ namespace cppwinrt
                 break;
             }
 
-            auto format = R"(            virtual int32_t __stdcall %(%) noexcept = 0;
+            auto format = R"(            virtual std::int32_t __stdcall %(%) noexcept = 0;
 )";
 
             for (auto&& method : info.type.MethodList())
@@ -783,7 +783,7 @@ namespace cppwinrt
         }
 
 
-        auto format = R"(            virtual int32_t __stdcall %(%) noexcept = 0;
+        auto format = R"(            virtual std::int32_t __stdcall %(%) noexcept = 0;
 )";
 
         auto abi_guard = w.push_abi_types(true);
@@ -816,7 +816,7 @@ namespace cppwinrt
     {
         struct WINRT_IMPL_ABI_DECL type : unknown_abi
         {
-            virtual int32_t __stdcall Invoke(%) noexcept = 0;
+            virtual std::int32_t __stdcall Invoke(%) noexcept = 0;
         };
     };
 )";
@@ -1049,7 +1049,7 @@ namespace cppwinrt
         if (category == param_category::array_type)
         {
             auto format = R"(
-        uint32_t %_impl_size{};
+        std::uint32_t %_impl_size{};
         %* %{};)";
 
             auto abi_guard = w.push_abi_types(true);
@@ -1352,7 +1352,7 @@ namespace cppwinrt
             w.write(R"(
         auto data() const
         {
-            uint8_t* data{};
+            std::uint8_t* data{};
             static_cast<D const&>(*this).template as<IBufferByteAccess>()->Buffer(&data);
             return data;
         }
@@ -1363,8 +1363,8 @@ namespace cppwinrt
             w.write(R"(
         auto data() const
         {
-            uint8_t* data{};
-            uint32_t capacity{};
+            std::uint8_t* data{};
+            std::uint32_t capacity{};
             check_hresult(static_cast<D const&>(*this).template as<IMemoryBufferByteAccess>()->GetBuffer(&data, &capacity));
             return data;
         }
@@ -1515,7 +1515,7 @@ namespace cppwinrt
         using iterator_concept = std::input_iterator_tag;
         using iterator_category = std::input_iterator_tag;
         using value_type = T;
-        using difference_type = ptrdiff_t;
+        using difference_type = std::ptrdiff_t;
         using pointer = void;
         using reference = T;
 )");
@@ -1526,7 +1526,7 @@ namespace cppwinrt
         using iterator_concept = std::input_iterator_tag;
         using iterator_category = std::input_iterator_tag;
         using value_type = Windows::Foundation::IInspectable;
-        using difference_type = ptrdiff_t;
+        using difference_type = std::ptrdiff_t;
         using pointer = void;
         using reference = Windows::Foundation::IInspectable;
 )");
@@ -1909,7 +1909,7 @@ namespace cppwinrt
 
         if (is_noexcept(method))
         {
-            format = R"(        int32_t __stdcall %(%) noexcept final
+            format = R"(        std::int32_t __stdcall %(%) noexcept final
         {
 %            typename D::abi_guard guard(this->shim());
             %
@@ -1919,7 +1919,7 @@ namespace cppwinrt
         }
         else
         {
-            format = R"(        int32_t __stdcall %(%) noexcept final try
+            format = R"(        std::int32_t __stdcall %(%) noexcept final try
         {
 %            typename D::abi_guard guard(this->shim());
             %
@@ -1941,7 +1941,7 @@ namespace cppwinrt
         {
             // Special-case IMap*::Lookup to look for a TryLookup here, to avoid extranous throw/originates
             std::string tryLookupUpCall = "this->shim().TryLookup";
-            format = R"(        int32_t __stdcall %(%) noexcept final try
+            format = R"(        std::int32_t __stdcall %(%) noexcept final try
         {
 %            typename D::abi_guard guard(this->shim());
             if constexpr (has_TryLookup_v<D, K>)
@@ -2631,7 +2631,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
     {
         delegate(H&& handler) : implements_delegate<%, H>(std::forward<H>(handler)) {}
 
-        int32_t __stdcall Invoke(%) noexcept final try
+        std::int32_t __stdcall Invoke(%) noexcept final try
         {
 %            %
             return 0;
@@ -2836,7 +2836,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
 
     static void write_struct_equality(writer& w, std::vector<std::pair<std::string_view, std::string>> const& fields)
     {
-        for (size_t i = 0; i != fields.size(); ++i)
+        for (std::size_t i = 0; i != fields.size(); ++i)
         {
             w.write(" left.% == right.%", fields[i].first, fields[i].first);
 
@@ -2912,9 +2912,9 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
             return false;
         };
 
-        for (size_t left = 0; left < structs.size(); ++left)
+        for (std::size_t left = 0; left < structs.size(); ++left)
         {
-            for (size_t right = left + 1; right < structs.size(); ++right)
+            for (std::size_t right = left + 1; right < structs.size(); ++right)
             {
                 if (depends(w, structs[left], structs[right]))
                 {

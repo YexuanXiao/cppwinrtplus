@@ -6,9 +6,9 @@ using namespace Windows::Foundation;
 
 struct DECLSPEC_UUID("5fb96f8d-409c-42a9-99a7-8a95c1459dbd") ICapture : ::IUnknown
 {
-    virtual int32_t __stdcall GetValue() noexcept = 0;
-    virtual int32_t __stdcall CreateMemberCapture(int32_t value, GUID const& iid, void** object) noexcept = 0;
-    virtual int32_t __stdcall CreateMemberCapture2(int32_t value, GUID const& iid, ::IUnknown** object) noexcept = 0;
+    virtual std::int32_t __stdcall GetValue() noexcept = 0;
+    virtual std::int32_t __stdcall CreateMemberCapture(std::int32_t value, GUID const& iid, void** object) noexcept = 0;
+    virtual std::int32_t __stdcall CreateMemberCapture2(std::int32_t value, GUID const& iid, ::IUnknown** object) noexcept = 0;
 };
 
 #ifdef __CRT_UUID_DECL
@@ -17,25 +17,25 @@ __CRT_UUID_DECL(ICapture, 0x5fb96f8d, 0x409c, 0x42a9, 0x99, 0xa7, 0x8a, 0x95, 0x
 
 struct Capture : implements<Capture, ICapture>
 {
-    int32_t const m_value{};
+    std::int32_t const m_value{};
 
-    Capture(int32_t value) :
+    Capture(std::int32_t value) :
         m_value{ value }
     {
     }
 
-    int32_t __stdcall GetValue() noexcept override
+    std::int32_t __stdcall GetValue() noexcept override
     {
         return m_value;
     }
 
-    int32_t __stdcall CreateMemberCapture(int32_t value, GUID const& iid, void** object) noexcept override
+    std::int32_t __stdcall CreateMemberCapture(std::int32_t value, GUID const& iid, void** object) noexcept override
     {
         auto capture = make<Capture>(value);
         return capture->QueryInterface(iid, object);
     }
 
-    int32_t __stdcall CreateMemberCapture2(int32_t value, GUID const& iid, ::IUnknown** object) noexcept override
+    std::int32_t __stdcall CreateMemberCapture2(std::int32_t value, GUID const& iid, ::IUnknown** object) noexcept override
     {
         auto capture = make<Capture>(value);
         return capture->QueryInterface(iid, reinterpret_cast<void**>(object));

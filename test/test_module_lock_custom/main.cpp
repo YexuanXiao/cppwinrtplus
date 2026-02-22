@@ -13,17 +13,17 @@ namespace winrt
     {
         struct lock
         {
-            uint32_t operator++() noexcept
+            std::uint32_t operator++() noexcept
             {
                 return 123;
             }
 
-            uint32_t operator--() noexcept
+            std::uint32_t operator--() noexcept
             {
                 return 321;
             }
 
-            operator uint32_t() const noexcept
+            operator std::uint32_t() const noexcept
             {
                 return 101;
             }

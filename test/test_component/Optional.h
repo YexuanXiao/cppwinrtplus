@@ -7,17 +7,17 @@ namespace winrt::test_component::implementation
     {
         Optional() = default;
 
-        Windows::Foundation::IReference<int32_t> Property()
+        Windows::Foundation::IReference<std::int32_t> Property()
         {
             return m_property;
         }
 
-        void Property(Windows::Foundation::IReference<int32_t> const& value)
+        void Property(Windows::Foundation::IReference<std::int32_t> const& value)
         {
             m_property = value;
         }
 
-        std::optional<int32_t> m_property;
+        std::optional<std::int32_t> m_property;
     };
 }
 namespace winrt::test_component::factory_implementation

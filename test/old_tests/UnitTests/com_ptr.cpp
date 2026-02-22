@@ -46,7 +46,7 @@ TEST_CASE("com_ptr, ::IUnknown")
     REQUIRE(!destroyed);
 
     com_ptr<::IUnknown> a; // default ctor
-    com_ptr<::IUnknown> b = nullptr; // nullptr_t ctor
+    com_ptr<::IUnknown> b = nullptr; // std::nullptr_t ctor
 
     REQUIRE(S_OK == get_unknown(stringable)->QueryInterface(b.put())); // attach
 
@@ -82,7 +82,7 @@ TEST_CASE("com_ptr, Windows::Foundation::IUnknown")
     REQUIRE(!destroyed);
 
     com_ptr<Windows::Foundation::IUnknown> a; // default ctor
-    com_ptr<Windows::Foundation::IUnknown> b = nullptr; // nullptr_t ctor
+    com_ptr<Windows::Foundation::IUnknown> b = nullptr; // std::nullptr_t ctor
 
     REQUIRE(S_OK == get_unknown(stringable)->QueryInterface(guid_of<Windows::Foundation::IUnknown>(), b.put_void())); // attach
 
@@ -141,7 +141,7 @@ TEST_CASE("com_ptr,duck typing")
     struct CanQI : CanAddRef
     {
         bool qiCalled = false;
-        int32_t QueryInterface(guid const&, void** result)
+        std::int32_t QueryInterface(guid const&, void** result)
         {
             qiCalled = true;
             *result = nullptr;
@@ -236,7 +236,7 @@ TEST_CASE("com_ptr, accessors")
 }
 
 //
-// No runtime behaviour, merely testing the existence of the default and nullptr_t constructors.
+// No runtime behaviour, merely testing the existence of the default and std::nullptr_t constructors.
 //
 TEST_CASE("com_ptr, nullptr")
 {

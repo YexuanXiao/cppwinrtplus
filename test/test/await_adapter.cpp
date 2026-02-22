@@ -40,7 +40,7 @@ namespace
 
         // This exercises one STA thread waiting on another thus one context callback
         // completing on another.
-        uint32_t id = GetCurrentThreadId();
+        std::uint32_t id = GetCurrentThreadId();
         co_await OtherForegroundAsync(dispatcher2);
         REQUIRE(id == GetCurrentThreadId());
 

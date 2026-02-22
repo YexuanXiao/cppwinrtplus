@@ -120,7 +120,7 @@ TEST_CASE("single_threaded_vector of bool")
     values.SetAt(2, false);
     REQUIRE(values.Size() == 5);
     REQUIRE(!values.GetAt(0));
-    uint32_t index;
+    std::uint32_t index;
     REQUIRE((values.IndexOf(true, index) && (index == 4)));
 
     auto itr = values.First();

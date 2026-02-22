@@ -19,7 +19,7 @@ using namespace Windows::Management::Deployment;
 
 struct AsyncInfo : implements<AsyncInfo, IAsyncInfo>
 {
-    uint32_t Id() { return 123; }
+    std::uint32_t Id() { return 123; }
     AsyncStatus Status() { return AsyncStatus::Started; }
     HRESULT ErrorCode() { return S_FALSE; }
     void Cancel() {}
@@ -211,9 +211,9 @@ struct AsyncOperation : implements<AsyncOperation<T>, IAsyncOperation<T>>
 
 TEST_CASE("produce_IAsyncOperation_uint32_t")
 {
-    IAsyncOperation<uint32_t> operation = make<AsyncOperation<uint32_t>>(123);
+    IAsyncOperation<std::uint32_t> operation = make<AsyncOperation<std::uint32_t>>(123);
 
-    AsyncOperationCompletedHandler<uint32_t> completed = [&] (const IAsyncOperation<uint32_t> & sender, const AsyncStatus args)
+    AsyncOperationCompletedHandler<std::uint32_t> completed = [&] (const IAsyncOperation<std::uint32_t> & sender, const AsyncStatus args)
     {
         REQUIRE(sender == operation);
         REQUIRE(args == AsyncStatus::Completed);
@@ -317,15 +317,15 @@ struct AsyncOperationWithProgress : implements<AsyncOperationWithProgress<TResul
 
 TEST_CASE("produce_IAsyncOperationWithProgress_uint64_t_uint64_t")
 {
-    IAsyncOperationWithProgress<uint64_t, uint64_t> operation = make<AsyncOperationWithProgress<uint64_t, uint64_t>>(234, 123);
+    IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> operation = make<AsyncOperationWithProgress<std::uint64_t, std::uint64_t>>(234, 123);
 
-    AsyncOperationProgressHandler<uint64_t, uint64_t> progress = [&](const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, uint64_t args)
+    AsyncOperationProgressHandler<std::uint64_t, std::uint64_t> progress = [&](const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, std::uint64_t args)
     {
         REQUIRE(sender == operation);
         REQUIRE(args == 123);
     };
 
-    AsyncOperationWithProgressCompletedHandler<uint64_t, uint64_t> completed = [&](const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, const AsyncStatus args)
+    AsyncOperationWithProgressCompletedHandler<std::uint64_t, std::uint64_t> completed = [&](const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, const AsyncStatus args)
     {
         REQUIRE(sender == operation);
         REQUIRE(args == AsyncStatus::Completed);

@@ -12,7 +12,7 @@ using namespace Windows::Networking::Sockets;
 template<typename T, typename U = T>
 void compare(T const& expected, U const& actual)
 {
-    REQUIRE(memcmp(&expected, &actual, sizeof(T)) == 0);
+    REQUIRE(std::memcmp(&expected, &actual, sizeof(T)) == 0);
 }
 
 template<>

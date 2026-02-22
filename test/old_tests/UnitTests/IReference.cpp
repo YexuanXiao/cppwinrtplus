@@ -36,9 +36,9 @@ TEST_CASE("IReference guids")
 
 TEST_CASE("IReference, constructor and getter")
 {
-    uint64_t val_uint64 = 100;
-    uint64_t const & ref_uint64 = val_uint64;
-    IReference<uint64_t> obj_uint64(ref_uint64);
+    std::uint64_t val_uint64 = 100;
+    std::uint64_t const & ref_uint64 = val_uint64;
+    IReference<std::uint64_t> obj_uint64(ref_uint64);
     REQUIRE(obj_uint64.Value() == 100);
 
     hstring val_hstring = L"Everything is awesome";

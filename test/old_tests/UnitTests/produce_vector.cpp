@@ -18,11 +18,11 @@ using namespace Windows::Data::Json;
 // IVectorChangedEventArgs
 //
 
-// This producer tests that IVector may be specialized with a value type (int32_t).
+// This producer tests that IVector may be specialized with a value type (std::int32_t).
 
 TEST_CASE("produce_IVector_int32_t")
 {
-    IVector<int32_t> v = single_threaded_observable_vector<int32_t>({ 1, 2, 3 });
+    IVector<std::int32_t> v = single_threaded_observable_vector<std::int32_t>({ 1, 2, 3 });
 
     REQUIRE(v.GetAt(0) == 1);
     REQUIRE(v.GetAt(2) == 3);
@@ -30,10 +30,10 @@ TEST_CASE("produce_IVector_int32_t")
 
     REQUIRE(v.Size() == 3);
 
-    IVectorView<int32_t> view = v.GetView();
-    REQUIRE(view.as<IVector<int32_t>>() == v);
+    IVectorView<std::int32_t> view = v.GetView();
+    REQUIRE(view.as<IVector<std::int32_t>>() == v);
 
-    uint32_t index = 0;
+    std::uint32_t index = 0;
     REQUIRE(v.IndexOf(2, index));
     REQUIRE(index == 1);
     REQUIRE(!v.IndexOf(4, index));
@@ -43,10 +43,10 @@ TEST_CASE("produce_IVector_int32_t")
     REQUIRE_THROWS_AS(v.SetAt(v.Size(), 0), hresult_out_of_bounds);
     v.SetAt(1, 2);
 
-    IObservableVector<int32_t> ov = v.as<IObservableVector<int32_t>>();
+    IObservableVector<std::int32_t> ov = v.as<IObservableVector<std::int32_t>>();
     int handlerCount = 0; // Tracks the number of times the handler is called.
 
-    event_token token = ov.VectorChanged([&](IObservableVector<int32_t> const & sender, IVectorChangedEventArgs const & args)
+    event_token token = ov.VectorChanged([&](IObservableVector<std::int32_t> const & sender, IVectorChangedEventArgs const & args)
     {
         ++handlerCount;
         REQUIRE(sender == ov);
@@ -102,12 +102,12 @@ TEST_CASE("produce_IVector_int32_t")
 
 TEST_CASE("produce_IVector_array_int32_t")
 {
-    IVector<int32_t> v = single_threaded_observable_vector<int32_t>({ 1, 2, 3 });
+    IVector<std::int32_t> v = single_threaded_observable_vector<std::int32_t>({ 1, 2, 3 });
 
     {
         // Exact number of values.
 
-        std::array<int32_t, 3> many {};
+        std::array<std::int32_t, 3> many {};
         REQUIRE(3 == v.GetMany(0, many));
         REQUIRE(many[0] == 1);
         REQUIRE(many[1] == 2);
@@ -117,7 +117,7 @@ TEST_CASE("produce_IVector_array_int32_t")
     {
         // Array is larger than IVector.
 
-        std::array<int32_t, 4> many{};
+        std::array<std::int32_t, 4> many{};
         REQUIRE(3 == v.GetMany(0, many));
         REQUIRE(many[0] == 1);
         REQUIRE(many[1] == 2);
@@ -128,7 +128,7 @@ TEST_CASE("produce_IVector_array_int32_t")
     {
         // Array is smaller than IVector.
 
-        std::array<int32_t, 2> many{};
+        std::array<std::int32_t, 2> many{};
         REQUIRE(2 == v.GetMany(0, many));
         REQUIRE(many[0] == 1);
         REQUIRE(many[1] == 2);
@@ -137,7 +137,7 @@ TEST_CASE("produce_IVector_array_int32_t")
     {
         // Using a non-zero start index to end of collection.
 
-        std::array<int32_t, 2> many{};
+        std::array<std::int32_t, 2> many{};
         REQUIRE(2 == v.GetMany(1, many));
         REQUIRE(many[0] == 2);
         REQUIRE(many[1] == 3);
@@ -146,7 +146,7 @@ TEST_CASE("produce_IVector_array_int32_t")
     {
         // Using a non-zero start index and array is not large enough for rest of collection.
 
-        std::array<int32_t, 1> many{};
+        std::array<std::int32_t, 1> many{};
         REQUIRE(1 == v.GetMany(1, many));
         REQUIRE(many[0] == 2);
     }
@@ -154,14 +154,14 @@ TEST_CASE("produce_IVector_array_int32_t")
     {
         // Start index doesn't include any values.
 
-        std::array<int32_t, 2> many{};
+        std::array<std::int32_t, 2> many{};
         REQUIRE(0 == v.GetMany(v.Size(), many));
         REQUIRE(many[0] == 0);
         REQUIRE(many[1] == 0);
     }
 
     {
-        std::array<int32_t, 2> many { 10, 20 };
+        std::array<std::int32_t, 2> many { 10, 20 };
         REQUIRE(v.Size() == 3);
         v.ReplaceAll(many);
         REQUIRE(v.Size() == 2);
@@ -174,7 +174,7 @@ TEST_CASE("produce_IVector_array_int32_t")
 
 TEST_CASE("produce_IVector_IIterable_int32_t")
 {
-    IVector<int32_t> v = single_threaded_observable_vector<int32_t>({ 1, 2, 3 });
+    IVector<std::int32_t> v = single_threaded_observable_vector<std::int32_t>({ 1, 2, 3 });
 
     IIterable<int> iterable = v;
 
@@ -194,7 +194,7 @@ TEST_CASE("produce_IVector_IIterable_int32_t")
     REQUIRE(i.HasCurrent());
     REQUIRE(!i.MoveNext());
 
-    std::array<int32_t, 4> many{};
+    std::array<std::int32_t, 4> many{};
     REQUIRE(0 == i.GetMany(many));
 
     // Reset iterator
@@ -221,7 +221,7 @@ TEST_CASE("produce_IVector_hstring")
     IVectorView<hstring> view = v.GetView();
     REQUIRE(view.as<IVector<hstring>>() == v);
 
-    uint32_t index = 0;
+    std::uint32_t index = 0;
     REQUIRE(v.IndexOf(L"2", index));
     REQUIRE(index == 1);
     REQUIRE(!v.IndexOf(L"4", index));
@@ -360,12 +360,12 @@ TEST_CASE("produce_IVector_IIterable_hstring")
 
 // This producer tests that IVector may be specialized with a structure containing resources.
 
-struct produce_Reference : implements<produce_Reference, IReference<uint64_t>>
+struct produce_Reference : implements<produce_Reference, IReference<std::uint64_t>>
 {
-    uint64_t m_value = 0;
-    static uint32_t s_references;
+    std::uint64_t m_value = 0;
+    static std::uint32_t s_references;
 
-    produce_Reference(uint64_t value) :
+    produce_Reference(std::uint64_t value) :
         m_value(value)
     {
         ++s_references;
@@ -376,15 +376,15 @@ struct produce_Reference : implements<produce_Reference, IReference<uint64_t>>
         --s_references;
     }
 
-    uint64_t Value()
+    std::uint64_t Value()
     {
         return m_value;
     }
 };
 
-uint32_t produce_Reference::s_references = 0;
+std::uint32_t produce_Reference::s_references = 0;
 
-HttpProgress make_HttpProgress(const uint32_t seed)
+HttpProgress make_HttpProgress(const std::uint32_t seed)
 {
     return
     {
@@ -414,7 +414,7 @@ TEST_CASE("produce_IVector_HttpProgress")
     IVectorView<HttpProgress> view = v.GetView();
     REQUIRE(view.as<IVector<HttpProgress>>() == v);
 
-    uint32_t index = 0;
+    std::uint32_t index = 0;
     REQUIRE(v.IndexOf(make_HttpProgress(2), index));
     REQUIRE(index == 1);
     REQUIRE(!v.IndexOf(make_HttpProgress(4), index));

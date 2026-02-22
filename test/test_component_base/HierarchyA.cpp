@@ -7,7 +7,7 @@ namespace winrt::test_component_base::implementation
     {
         throw hresult_not_implemented();
     }
-    HierarchyA::HierarchyA(int32_t /*dummy*/, hstring const& /*name*/)
+    HierarchyA::HierarchyA(std::int32_t /*dummy*/, hstring const& /*name*/)
     {
         throw hresult_not_implemented();
     }
@@ -24,5 +24,5 @@ namespace winrt::test_component_base::implementation
         return 42;
     }
 
-    static_assert(!std::is_constructible_v<test_component_base::HierarchyA, int32_t, hstring const&>);
+    static_assert(!std::is_constructible_v<test_component_base::HierarchyA, std::int32_t, hstring const&>);
 }

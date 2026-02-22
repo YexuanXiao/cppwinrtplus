@@ -21,14 +21,14 @@ g_categoryData[] =
 {
     { L"b", L"bool" },
     { L"c", L"wchar_t" },
-    { L"i1", L"int8_t" },
-    { L"u1", L"uint8_t" },
-    { L"i2", L"int16_t" },
-    { L"u2", L"uint16_t" },
-    { L"i4", L"int32_t" },
-    { L"u4", L"uint32_t" },
-    { L"i8", L"int64_t" },
-    { L"u8", L"uint64_t" },
+    { L"i1", L"std::int8_t" },
+    { L"u1", L"std::uint8_t" },
+    { L"i2", L"std::int16_t" },
+    { L"u2", L"std::uint16_t" },
+    { L"i4", L"std::int32_t" },
+    { L"u4", L"std::uint32_t" },
+    { L"i8", L"std::int64_t" },
+    { L"u8", L"std::uint64_t" },
     { L"r4", L"float" },
     { L"r8", L"double" },
     { L"s,sh", L"winrt::hstring" },
@@ -449,28 +449,28 @@ struct writer
             write("wchar_t");
             break;
         case ElementType::I1:
-            write("int8_t");
+            write("std::int8_t");
             break;
         case ElementType::U1:
-            write("uint8_t");
+            write("std::uint8_t");
             break;
         case ElementType::I2:
-            write("int16_t");
+            write("std::int16_t");
             break;
         case ElementType::U2:
-            write("uint16_t");
+            write("std::uint16_t");
             break;
         case ElementType::I4:
-            write("int32_t");
+            write("std::int32_t");
             break;
         case ElementType::U4:
-            write("uint32_t");
+            write("std::uint32_t");
             break;
         case ElementType::I8:
-            write("int64_t");
+            write("std::int64_t");
             break;
         case ElementType::U8:
-            write("uint64_t");
+            write("std::uint64_t");
             break;
         case ElementType::R4:
             write("float");
@@ -636,7 +636,7 @@ void GetInterfaceData(
         return;
     }
 
-    int32_t propIndex = -1;
+    std::int32_t propIndex = -1;
     for (auto&& method : type.MethodList())
     {
         propIndex++;
@@ -891,7 +891,7 @@ HRESULT object_visualizer::GetChildren(
 
     com_ptr<DkmEvaluationResultEnumContext> pEnumContext;
     IF_FAIL_RET(DkmEvaluationResultEnumContext::Create(
-        static_cast<uint32_t>(m_propertyData.size()),
+        static_cast<std::uint32_t>(m_propertyData.size()),
         m_pVisualizedExpression->StackFrame(),
         pInspectionContext,
         this,
@@ -912,13 +912,13 @@ HRESULT object_visualizer::GetItems(
     _Out_ DkmArray<DkmChildVisualizedExpression*>* pItems)
 {
     CAutoDkmArray<DkmChildVisualizedExpression*> resultValues;
-    IF_FAIL_RET(DkmAllocArray(std::min(m_propertyData.size(), size_t(Count)), &resultValues));
+    IF_FAIL_RET(DkmAllocArray(std::min(m_propertyData.size(), std::size_t(Count)), &resultValues));
 
     auto pParent = pVisualizedExpression;
-    auto childCount = std::min(m_propertyData.size() - StartIndex, (size_t)Count);
-    for(size_t i = 0; i < childCount; ++i)
+    auto childCount = std::min(m_propertyData.size() - StartIndex, (std::size_t)Count);
+    for(std::size_t i = 0; i < childCount; ++i)
     {
-        auto& prop = m_propertyData[i + (size_t)StartIndex];
+        auto& prop = m_propertyData[i + (std::size_t)StartIndex];
         com_ptr<DkmChildVisualizedExpression> pPropertyVisualized;
         if(FAILED(CreateChildVisualizedExpression(prop, pParent, m_objectType, pPropertyVisualized.put())))
         {

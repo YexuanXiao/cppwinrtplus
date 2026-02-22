@@ -8,12 +8,12 @@ namespace winrt::test_component_fast::Composition::implementation
     {
         Visual(Composition::Compositor const& compositor);
 
-        int32_t Offset();
-        void Offset(int32_t value);
+        std::int32_t Offset();
+        void Offset(std::int32_t value);
         void ParentForTransform(Composition::Visual const& value);
 
     private:
 
-        int32_t m_offset{};
+        std::int32_t m_offset{};
     };
 }

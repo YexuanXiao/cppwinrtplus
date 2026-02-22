@@ -13,12 +13,12 @@ namespace winrt::test_component::implementation
         {
         }
 
-        static int32_t StaticTestReturn()
+        static std::int32_t StaticTestReturn()
         {
             return 0;
         }
 
-        static int32_t StaticProperty()
+        static std::int32_t StaticProperty()
         {
             return 0;
         }
@@ -36,12 +36,12 @@ namespace winrt::test_component::implementation
             }
         }
 
-        Class(Windows::Foundation::Collections::IIterable<hstring> const& arg, int32_t dummy1);
-        Class(Windows::Foundation::Collections::IIterable<Windows::Foundation::Collections::IKeyValuePair<hstring, hstring>> const& arg, int32_t dummy1, int32_t dummy2);
-        Class(Windows::Foundation::Collections::IMap<hstring, hstring> const& arg, int32_t dummy1, int32_t dummy2, int32_t dummy3);
-        Class(Windows::Foundation::Collections::IMapView<hstring, hstring> const& arg, int32_t dummy1, int32_t dummy2, int32_t dummy3, int32_t dummy4);
-        Class(Windows::Foundation::Collections::IVector<hstring> const& arg, int32_t dummy1, int32_t dummy2, int32_t dummy3, int32_t dummy4, int32_t dummy5);
-        Class(Windows::Foundation::Collections::IVectorView<hstring> const& arg, int32_t dummy1, int32_t dummy2, int32_t dummy3, int32_t dummy4, int32_t dummy5, int32_t dummy6);
+        Class(Windows::Foundation::Collections::IIterable<hstring> const& arg, std::int32_t dummy1);
+        Class(Windows::Foundation::Collections::IIterable<Windows::Foundation::Collections::IKeyValuePair<hstring, hstring>> const& arg, std::int32_t dummy1, std::int32_t dummy2);
+        Class(Windows::Foundation::Collections::IMap<hstring, hstring> const& arg, std::int32_t dummy1, std::int32_t dummy2, std::int32_t dummy3);
+        Class(Windows::Foundation::Collections::IMapView<hstring, hstring> const& arg, std::int32_t dummy1, std::int32_t dummy2, std::int32_t dummy3, std::int32_t dummy4);
+        Class(Windows::Foundation::Collections::IVector<hstring> const& arg, std::int32_t dummy1, std::int32_t dummy2, std::int32_t dummy3, std::int32_t dummy4, std::int32_t dummy5);
+        Class(Windows::Foundation::Collections::IVectorView<hstring> const& arg, std::int32_t dummy1, std::int32_t dummy2, std::int32_t dummy3, std::int32_t dummy4, std::int32_t dummy5, std::int32_t dummy6);
 
         static hstring InIterable(Windows::Foundation::Collections::IIterable<hstring> const& value);
         static hstring InIterablePair(Windows::Foundation::Collections::IIterable<Windows::Foundation::Collections::IKeyValuePair<hstring, hstring>> const& value);
@@ -54,7 +54,7 @@ namespace winrt::test_component::implementation
         static hstring InVectorView(Windows::Foundation::Collections::IVectorView<hstring> const& value);
         static Windows::Foundation::IAsyncOperation<hstring> InAsyncVectorView(Windows::Foundation::Collections::IVectorView<hstring> value);
 
-        hstring InInt32(int32_t value);
+        hstring InInt32(std::int32_t value);
         hstring InString(hstring const& value);
         hstring InObject(Windows::Foundation::IInspectable const& value);
         hstring InStringable(Windows::Foundation::IStringable const& value);
@@ -62,42 +62,42 @@ namespace winrt::test_component::implementation
         hstring InStructRef(Struct const& value);
         hstring InEnum(Signed const& value);
 
-        void OutInt32(int32_t& value);
+        void OutInt32(std::int32_t& value);
         void OutString(hstring& value);
         void OutObject(Windows::Foundation::IInspectable& value);
         void OutStringable(Windows::Foundation::IStringable& value);
         void OutStruct(Struct& value);
         void OutEnum(Signed& value);
 
-        int32_t ReturnInt32();
+        std::int32_t ReturnInt32();
         hstring ReturnString();
         Windows::Foundation::IInspectable ReturnObject();
         Windows::Foundation::IStringable ReturnStringable();
         Struct ReturnStruct();
         Signed ReturnEnum();
 
-        hstring InInt32Array(array_view<int32_t const> value);
+        hstring InInt32Array(array_view<std::int32_t const> value);
         hstring InStringArray(array_view<hstring const> value);
         hstring InObjectArray(array_view<Windows::Foundation::IInspectable const> value);
         hstring InStringableArray(array_view<Windows::Foundation::IStringable const> value);
         hstring InStructArray(array_view<Struct const> value);
         hstring InEnumArray(array_view<Signed const> value);
 
-        void OutInt32Array(com_array<int32_t>& value);
+        void OutInt32Array(com_array<std::int32_t>& value);
         void OutStringArray(com_array<hstring>& value);
         void OutObjectArray(com_array<Windows::Foundation::IInspectable>& value);
         void OutStringableArray(com_array<Windows::Foundation::IStringable>& value);
         void OutStructArray(com_array<Struct>& value);
         void OutEnumArray(com_array<Signed>& value);
 
-        void RefInt32Array(array_view<int32_t> value);
+        void RefInt32Array(array_view<std::int32_t> value);
         void RefStringArray(array_view<hstring> value);
         void RefObjectArray(array_view<Windows::Foundation::IInspectable> value);
         void RefStringableArray(array_view<Windows::Foundation::IStringable> value);
         void RefStructArray(array_view<Struct> value);
         void RefEnumArray(array_view<Signed> value);
 
-        com_array<int32_t> ReturnInt32Array();
+        com_array<std::int32_t> ReturnInt32Array();
         com_array<hstring> ReturnStringArray();
         com_array<Windows::Foundation::IInspectable> ReturnObjectArray();
         com_array<Windows::Foundation::IStringable> ReturnStringableArray();
@@ -105,7 +105,7 @@ namespace winrt::test_component::implementation
         com_array<Signed> ReturnEnumArray();
 
         void NoexceptVoid() noexcept;
-        int32_t NoexceptInt32() noexcept;
+        std::int32_t NoexceptInt32() noexcept;
         hstring NoexceptString() noexcept;
 
         event_token DeferrableEvent(Windows::Foundation::TypedEventHandler<test_component::Class, test_component::DeferrableEventArgs> const& handler);
@@ -114,12 +114,12 @@ namespace winrt::test_component::implementation
 
         static bool TestNoMakeDetection();
 
-        static int32_t StaticPropertyWithAsyncSetter()
+        static std::int32_t StaticPropertyWithAsyncSetter()
         {
             return 0;
         }
 
-        static fire_and_forget StaticPropertyWithAsyncSetter(int32_t)
+        static fire_and_forget StaticPropertyWithAsyncSetter(std::int32_t)
         {
             co_return;
         }

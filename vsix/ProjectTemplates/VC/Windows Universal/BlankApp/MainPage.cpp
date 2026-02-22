@@ -7,12 +7,12 @@ using namespace Windows::UI::Xaml;
 
 namespace winrt::$safeprojectname$::implementation
 {
-    int32_t MainPage::MyProperty()
+    std::int32_t MainPage::MyProperty()
     {
         throw hresult_not_implemented();
     }
 
-    void MainPage::MyProperty(int32_t /* value */)
+    void MainPage::MyProperty(std::int32_t /* value */)
     {
         throw hresult_not_implemented();
     }

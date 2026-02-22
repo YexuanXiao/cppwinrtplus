@@ -43,7 +43,7 @@ namespace cppwinrt::strings {
         strings_h.write(R"(extern char const %[%];
 )",
             name.string(),
-            static_cast<uint64_t>(view.size() + 1));
+            static_cast<std::uint64_t>(view.size() + 1));
 
         strings_cpp.write(R"(extern char const %[] = R"xyz()xyz"
 )",
@@ -53,7 +53,7 @@ namespace cppwinrt::strings {
 
         while (!remainder.empty())
         {
-            auto const size = std::min(size_t{ 16'000 }, remainder.size());
+            auto const size = std::min(std::size_t{ 16'000 }, remainder.size());
             auto const chunk = remainder.substr(0, size);
 
             strings_cpp.write(R"(R"xyz(%)xyz"

@@ -22,21 +22,21 @@ namespace
         hstring m_value;
     };
 
-    uint32_t get_ref_count(IStringable const& object)
+    std::uint32_t get_ref_count(IStringable const& object)
     {
         get_unknown(object)->AddRef();
         return get_unknown(object)->Release();
     }
 
     template <typename T>
-    uint32_t get_ref_count(T* object)
+    std::uint32_t get_ref_count(T* object)
     {
         object->AddRef();
         return object->Release();
     }
 
     template <typename T>
-    uint32_t get_ref_count(com_ptr<T> const& object)
+    std::uint32_t get_ref_count(com_ptr<T> const& object)
     {
         return get_ref_count(object.get());
     }
@@ -46,7 +46,7 @@ template <> inline constexpr winrt::guid winrt::impl::guid_v<IClassicComInterfac
 
 TEST_CASE("interop")
 {
-    uint32_t const before = get_module_lock();
+    std::uint32_t const before = get_module_lock();
 
     IStringable s = make<Stringable>();
     REQUIRE(get_ref_count(s) == 1);

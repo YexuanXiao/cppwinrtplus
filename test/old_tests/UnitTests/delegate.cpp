@@ -185,7 +185,7 @@ struct AsyncActionCompletedHandler_Member
 TEST_CASE("delegate,AsyncActionCompletedHandler")
 {
     //
-    // This section verifies that the default and nullptr_t constructor is present.
+    // This section verifies that the default and std::nullptr_t constructor is present.
     //
     SECTION("default")
     {
@@ -236,7 +236,7 @@ struct AsyncActionProgressHandler_Member
 TEST_CASE("delegate,AsyncActionProgressHandler")
 {
     //
-    // This section verifies that the default and nullptr_t constructor is present.
+    // This section verifies that the default and std::nullptr_t constructor is present.
     //
     SECTION("default")
     {
@@ -287,7 +287,7 @@ struct AsyncActionWithProgressCompletedHandler_Member
 TEST_CASE("delegate,AsyncActionWithProgressCompletedHandler")
 {
     //
-    // This section verifies that the default and nullptr_t constructor is present.
+    // This section verifies that the default and std::nullptr_t constructor is present.
     //
     SECTION("default")
     {
@@ -320,7 +320,7 @@ TEST_CASE("delegate,AsyncActionWithProgressCompletedHandler")
     }
 }
 
-static void AsyncOperationProgressHandler_Free(const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, uint64_t args)
+static void AsyncOperationProgressHandler_Free(const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, std::uint64_t args)
 {
     REQUIRE(sender == nullptr);
     REQUIRE(args == 123);
@@ -328,7 +328,7 @@ static void AsyncOperationProgressHandler_Free(const IAsyncOperationWithProgress
 
 struct AsyncOperationProgressHandler_Member
 {
-    void Handler(const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, uint64_t args)
+    void Handler(const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, std::uint64_t args)
     {
         REQUIRE(sender == nullptr);
         REQUIRE(args == 123);
@@ -338,17 +338,17 @@ struct AsyncOperationProgressHandler_Member
 TEST_CASE("delegate,AsyncOperationProgressHandler")
 {
     //
-    // This section verifies that the default and nullptr_t constructor is present.
+    // This section verifies that the default and std::nullptr_t constructor is present.
     //
     SECTION("default")
     {
-        AsyncOperationProgressHandler<uint64_t, uint64_t> a;
-        AsyncOperationProgressHandler<uint64_t, uint64_t> b = nullptr;
+        AsyncOperationProgressHandler<std::uint64_t, std::uint64_t> a;
+        AsyncOperationProgressHandler<std::uint64_t, std::uint64_t> b = nullptr;
     }
 
     SECTION("lambda")
     {
-        AsyncOperationProgressHandler<uint64_t, uint64_t> h = [](const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, uint64_t args)
+        AsyncOperationProgressHandler<std::uint64_t, std::uint64_t> h = [](const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, std::uint64_t args)
         {
             REQUIRE(sender == nullptr);
             REQUIRE(args == 123);
@@ -359,19 +359,19 @@ TEST_CASE("delegate,AsyncOperationProgressHandler")
 
     SECTION("free function")
     {
-        AsyncOperationProgressHandler<uint64_t, uint64_t> h = AsyncOperationProgressHandler_Free;
+        AsyncOperationProgressHandler<std::uint64_t, std::uint64_t> h = AsyncOperationProgressHandler_Free;
         h(nullptr, 123);
     }
 
     SECTION("member function")
     {
         AsyncOperationProgressHandler_Member object;
-        AsyncOperationProgressHandler<uint64_t, uint64_t> h{ &object, &AsyncOperationProgressHandler_Member::Handler };
+        AsyncOperationProgressHandler<std::uint64_t, std::uint64_t> h{ &object, &AsyncOperationProgressHandler_Member::Handler };
         h(nullptr, 123);
     }
 }
 
-static void AsyncOperationWithProgressCompletedHandler_Free(const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, const AsyncStatus args)
+static void AsyncOperationWithProgressCompletedHandler_Free(const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, const AsyncStatus args)
 {
     REQUIRE(sender == nullptr);
     REQUIRE(args == AsyncStatus::Completed);
@@ -379,7 +379,7 @@ static void AsyncOperationWithProgressCompletedHandler_Free(const IAsyncOperatio
 
 struct AsyncOperationWithProgressCompletedHandler_Member
 {
-    void Handler(const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, const AsyncStatus args)
+    void Handler(const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, const AsyncStatus args)
     {
         REQUIRE(sender == nullptr);
         REQUIRE(args == AsyncStatus::Completed);
@@ -389,17 +389,17 @@ struct AsyncOperationWithProgressCompletedHandler_Member
 TEST_CASE("delegate,AsyncOperationWithProgressCompletedHandler")
 {
     //
-    // This section verifies that the default and nullptr_t constructor is present.
+    // This section verifies that the default and std::nullptr_t constructor is present.
     //
     SECTION("default")
     {
-        AsyncOperationWithProgressCompletedHandler<uint64_t, uint64_t> a;
-        AsyncOperationWithProgressCompletedHandler<uint64_t, uint64_t> b = nullptr;
+        AsyncOperationWithProgressCompletedHandler<std::uint64_t, std::uint64_t> a;
+        AsyncOperationWithProgressCompletedHandler<std::uint64_t, std::uint64_t> b = nullptr;
     }
 
     SECTION("lambda")
     {
-        AsyncOperationWithProgressCompletedHandler<uint64_t, uint64_t> h = [](const IAsyncOperationWithProgress<uint64_t, uint64_t> & sender, const AsyncStatus args)
+        AsyncOperationWithProgressCompletedHandler<std::uint64_t, std::uint64_t> h = [](const IAsyncOperationWithProgress<std::uint64_t, std::uint64_t> & sender, const AsyncStatus args)
         {
             REQUIRE(sender == nullptr);
             REQUIRE(args == AsyncStatus::Completed);
@@ -410,14 +410,14 @@ TEST_CASE("delegate,AsyncOperationWithProgressCompletedHandler")
 
     SECTION("free function")
     {
-        AsyncOperationWithProgressCompletedHandler<uint64_t, uint64_t> h = AsyncOperationWithProgressCompletedHandler_Free;
+        AsyncOperationWithProgressCompletedHandler<std::uint64_t, std::uint64_t> h = AsyncOperationWithProgressCompletedHandler_Free;
         h(nullptr, AsyncStatus::Completed);
     }
 
     SECTION("member function")
     {
         AsyncOperationWithProgressCompletedHandler_Member object;
-        AsyncOperationWithProgressCompletedHandler<uint64_t, uint64_t> h{ &object, &AsyncOperationWithProgressCompletedHandler_Member::Handler };
+        AsyncOperationWithProgressCompletedHandler<std::uint64_t, std::uint64_t> h{ &object, &AsyncOperationWithProgressCompletedHandler_Member::Handler };
         h(nullptr, AsyncStatus::Completed);
     }
 }
@@ -440,7 +440,7 @@ struct AsyncOperationCompletedHandler_Member
 TEST_CASE("delegate,AsyncOperationCompletedHandler")
 {
     //
-    // This section verifies that the default and nullptr_t constructor is present.
+    // This section verifies that the default and std::nullptr_t constructor is present.
     //
     SECTION("default")
     {
@@ -491,7 +491,7 @@ struct EventHandler_Member
 TEST_CASE("delegate,EventHandler")
 {
     //
-    // This section verifies that the default and nullptr_t constructor is present.
+    // This section verifies that the default and std::nullptr_t constructor is present.
     //
     SECTION("default")
     {
@@ -542,7 +542,7 @@ struct TypedEventHandler_Member
 TEST_CASE("delegate,TypedEventHandler")
 {
     //
-    // This section verifies that the default and nullptr_t constructor is present.
+    // This section verifies that the default and std::nullptr_t constructor is present.
     //
     SECTION("default")
     {
@@ -593,7 +593,7 @@ struct VectorChangedEventHandler_Member
 TEST_CASE("delegate,VectorChangedEventHandler")
 {
     //
-    // This section verifies that the default and nullptr_t constructor is present.
+    // This section verifies that the default and std::nullptr_t constructor is present.
     //
     SECTION("default")
     {
@@ -644,7 +644,7 @@ struct MapChangedEventHandler_Member
 TEST_CASE("delegate,MapChangedEventHandler")
 {
     //
-    // This section verifies that the default and nullptr_t constructor is present.
+    // This section verifies that the default and std::nullptr_t constructor is present.
     //
     SECTION("default")
     {
