@@ -3,7 +3,7 @@ WINRT_EXPORT namespace winrt::param
 {
     struct hstring
     {
-#ifdef _MSC_VER
+#ifdef _MSC_VER // T
 #pragma warning(suppress: 26495)
 #endif
         hstring() noexcept : m_handle(nullptr) {}
@@ -11,7 +11,7 @@ WINRT_EXPORT namespace winrt::param
         hstring& operator=(hstring const& values) = delete;
         hstring(std::nullptr_t) = delete;
 
-#ifdef _MSC_VER
+#ifdef _MSC_VER // T
 #pragma warning(suppress: 26495)
 #endif
         hstring(winrt::hstring const& value) noexcept : m_handle(get_abi(value))

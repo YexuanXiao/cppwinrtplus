@@ -361,7 +361,7 @@ namespace winrt::impl
     template <typename ... T>
     struct uncloaked_iids<interface_list<T...>>
     {
-#ifdef _MSC_VER
+#ifdef _MSC_VER // T
 #pragma warning(suppress: 4307)
 #endif
         static constexpr std::array<guid, sizeof...(T)> value{ winrt::guid_of<T>() ... };
@@ -1390,7 +1390,7 @@ namespace winrt::impl
 
 WINRT_EXPORT namespace winrt
 {
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(push)
 #pragma warning(disable: 4702) // Compiler bug causing spurious "unreachable code" warnings
 #endif
@@ -1447,7 +1447,7 @@ WINRT_EXPORT namespace winrt
             return { impl::create_and_initialize<D>(std::forward<Args>(args)...), take_ownership_from_abi };
         }
     }
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(pop)
 #endif
 

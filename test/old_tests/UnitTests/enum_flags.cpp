@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "catch.hpp"
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(disable:4471) // a forward declaration of an unscoped enumeration must have an underlying type
 #endif
 #include <Windows.ApplicationModel.Appointments.h>

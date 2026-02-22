@@ -185,7 +185,7 @@ namespace winrt::impl
 
 #ifdef _WIN64
     inline constexpr std::uint32_t memory_allocation_alignment{ 16 };
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(push)
 #pragma warning(disable:4324) // structure was padded due to alignment specifier
 #endif
@@ -208,7 +208,7 @@ namespace winrt::impl
             std::uint64_t reserved4 : 60;
         } reserved2;
     };
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(pop)
 #endif
 #else

@@ -1,7 +1,7 @@
 
 namespace winrt::impl
 {
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(push)
 #pragma warning(disable:4458) // declaration hides class member (okay because we do not use named members of base class)
 #endif
@@ -215,7 +215,7 @@ namespace winrt::impl
         }
     };
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(pop)
 #endif
 }

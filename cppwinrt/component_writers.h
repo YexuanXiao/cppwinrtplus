@@ -175,7 +175,7 @@ void* __stdcall %_get_activation_factory([[maybe_unused]] std::wstring_view cons
 std::int32_t __stdcall WINRT_CanUnloadNow() noexcept
 {
 #ifdef _WRL_MODULE_H_
-#ifdef _MSC_VER
+#ifdef _MSC_VER // T
 #pragma warning(suppress: 4324) // structure was padded due to alignment specifier
 #endif
     if (!::Microsoft::WRL::Module<::Microsoft::WRL::InProc>::GetModule().Terminate())

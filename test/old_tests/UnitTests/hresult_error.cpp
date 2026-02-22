@@ -482,7 +482,7 @@ TEST_CASE("hresult, exception")
     }
 }
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(disable: 4702)  // unreachable code
 #endif
 TEST_CASE("hresult, throw_last_error")
