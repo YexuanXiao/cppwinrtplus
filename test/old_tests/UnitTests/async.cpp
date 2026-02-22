@@ -14,11 +14,6 @@ using namespace std::chrono;
 
 namespace
 {
-#ifdef __cpp_lib_coroutine
-    using std::suspend_never;
-#else
-    using std::experimental::suspend_never;
-#endif
 
     IAsyncAction NoSuspend_IAsyncAction()
     {
@@ -1118,7 +1113,7 @@ namespace
     {
         signal_done d{ go };
         co_await resume_on_signal(go);
-        co_await suspend_never{};
+        co_await std::suspend_never{};
         REQUIRE(false);
     }
 
@@ -1126,7 +1121,7 @@ namespace
     {
         signal_done d{ go };
         co_await resume_on_signal(go);
-        co_await suspend_never{};
+        co_await std::suspend_never{};
         REQUIRE(false);
     }
 
@@ -1134,7 +1129,7 @@ namespace
     {
         signal_done d{ go };
         co_await resume_on_signal(go);
-        co_await suspend_never{};
+        co_await std::suspend_never{};
         REQUIRE(false);
         co_return 0;
     }
@@ -1143,7 +1138,7 @@ namespace
     {
         signal_done d{ go };
         co_await resume_on_signal(go);
-        co_await suspend_never{};
+        co_await std::suspend_never{};
         REQUIRE(false);
         co_return 0;
     }

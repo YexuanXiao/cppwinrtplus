@@ -5,11 +5,6 @@ using namespace Windows::Foundation;
 
 namespace
 {
-#ifdef __cpp_lib_coroutine
-    using std::suspend_never;
-#else
-    using std::experimental::suspend_never;
-#endif
 
     static bool s_exceptionLoggerCalled = false;
 
@@ -48,7 +43,7 @@ namespace
             canceled = true;
         }
 
-        co_await suspend_never();
+        co_await std::suspend_never();
         REQUIRE(false);
     }
 
@@ -63,7 +58,7 @@ namespace
             canceled = true;
         }
 
-        co_await suspend_never();
+        co_await std::suspend_never();
         REQUIRE(false);
     }
 
@@ -78,7 +73,7 @@ namespace
             canceled = true;
         }
 
-        co_await suspend_never();
+        co_await std::suspend_never();
         REQUIRE(false);
         co_return 1;
     }
@@ -95,7 +90,7 @@ namespace
             canceled = true;
         }
 
-        co_await suspend_never();
+        co_await std::suspend_never();
         REQUIRE(false);
         co_return 1;
     }
@@ -120,7 +115,7 @@ namespace
         winrt_throw_hresult_handler = nullptr;
         s_exceptionLoggerCalled = false;
 
-        co_await suspend_never();
+        co_await std::suspend_never();
 
         REQUIRE(false);
         co_return;
@@ -147,7 +142,7 @@ namespace
         winrt_throw_hresult_handler = nullptr;
         s_exceptionLoggerCalled = false;
 
-        co_await suspend_never();
+        co_await std::suspend_never();
 
         REQUIRE(false);
         co_return;

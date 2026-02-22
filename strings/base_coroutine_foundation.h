@@ -104,7 +104,7 @@ namespace winrt::impl
     template<bool preserve_context, typename Awaiter>
     struct disconnect_aware_handler : private std::conditional_t<preserve_context, resume_apartment_context, ignore_apartment_context>
     {
-        disconnect_aware_handler(Awaiter* awaiter, coroutine_handle<> handle) noexcept
+        disconnect_aware_handler(Awaiter* awaiter, std::coroutine_handle<> handle) noexcept
             : m_awaiter(awaiter), m_handle(handle) { }
 
         disconnect_aware_handler(disconnect_aware_handler&& other) = default;
@@ -123,7 +123,7 @@ namespace winrt::impl
 
     private:
         movable_primitive<Awaiter*> m_awaiter;
-        movable_primitive<coroutine_handle<>, nullptr> m_handle;
+        movable_primitive<std::coroutine_handle<>, nullptr> m_handle;
 
         void Complete()
         {
@@ -149,7 +149,6 @@ namespace winrt::impl
         }
     };
 
-#ifdef WINRT_IMPL_COROUTINES
     template <typename Async, bool preserve_context = true>
     struct await_adapter : cancellable_awaiter<await_adapter<Async, preserve_context>>
     {
@@ -175,7 +174,7 @@ namespace winrt::impl
         }
 
         template <typename T>
-        bool await_suspend(coroutine_handle<T> handle)
+        bool await_suspend(std::coroutine_handle<T> handle)
         {
             this->set_cancellable_promise_from_handle(handle);
             return register_completed_callback(handle);
@@ -189,7 +188,7 @@ namespace winrt::impl
         }
 
     private:
-        bool register_completed_callback(coroutine_handle<> handle)
+        bool register_completed_callback(std::coroutine_handle<> handle)
         {
             if constexpr (!preserve_context)
             {
@@ -212,7 +211,6 @@ namespace winrt::impl
             }
         }
     };
-#endif
 
     template <typename D>
     auto consume_Windows_Foundation_IAsyncAction<D>::get() const
@@ -259,7 +257,6 @@ namespace winrt::impl
     }
 }
 
-#ifdef WINRT_IMPL_COROUTINES
 WINRT_EXPORT namespace winrt
 {
     template<typename Async, typename = std::enable_if_t<std::is_convertible_v<Async, winrt::Windows::Foundation::IAsyncInfo>>>
@@ -294,7 +291,6 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
         return{ async };
     }
 }
-#endif
 
 WINRT_EXPORT namespace winrt
 {
@@ -327,7 +323,7 @@ namespace winrt::impl
             return true;
         }
 
-        void await_suspend(coroutine_handle<>) const noexcept
+        void await_suspend(std::coroutine_handle<>) const noexcept
         {
         }
 
@@ -373,7 +369,7 @@ namespace winrt::impl
             return true;
         }
 
-        void await_suspend(coroutine_handle<>) const noexcept
+        void await_suspend(std::coroutine_handle<>) const noexcept
         {
         }
 
@@ -411,7 +407,7 @@ namespace winrt::impl
             if (remaining == 0)
             {
                 std::atomic_thread_fence(std::memory_order_acquire);
-                coroutine_handle<Derived>::from_promise(*static_cast<Derived*>(this)).destroy();
+                std::coroutine_handle<Derived>::from_promise(*static_cast<Derived*>(this)).destroy();
             }
 
             return remaining;
@@ -577,7 +573,7 @@ namespace winrt::impl
             }
         }
 
-        suspend_never initial_suspend() const noexcept
+        std::suspend_never initial_suspend() const noexcept
         {
             return{};
         }
@@ -595,7 +591,7 @@ namespace winrt::impl
             {
             }
 
-            bool await_suspend(coroutine_handle<>) const noexcept
+            bool await_suspend(std::coroutine_handle<>) const noexcept
             {
                 promise->set_completed();
                 std::uint32_t const remaining = promise->subtract_reference();
@@ -705,11 +701,7 @@ namespace winrt::impl
     };
 }
 
-#ifdef __cpp_lib_coroutine
 namespace std
-#else
-namespace std::experimental
-#endif
 {
     template <typename... Args>
     struct coroutine_traits<winrt::Windows::Foundation::IAsyncAction, Args...>
@@ -844,7 +836,6 @@ namespace std::experimental
 
 WINRT_EXPORT namespace winrt
 {
-#ifdef WINRT_IMPL_COROUTINES
     template <typename... T>
     Windows::Foundation::IAsyncAction when_all(T... async)
     {
@@ -890,5 +881,4 @@ WINRT_EXPORT namespace winrt
         impl::check_status_canceled(shared->status);
         co_return shared->result.GetResults();
     }
-#endif
 }
