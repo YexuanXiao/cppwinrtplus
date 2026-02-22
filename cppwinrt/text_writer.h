@@ -66,7 +66,7 @@ namespace cppwinrt
 #if defined(_DEBUG)
             if (debug_trace)
             {
-                ::std::printf("%.*s", static_cast<int>(value.size()), value.data());
+                std::printf("%.*s", static_cast<int>(value.size()), value.data());
             }
 #endif
         }
@@ -78,7 +78,7 @@ namespace cppwinrt
 #if defined(_DEBUG)
             if (debug_trace)
             {
-                ::std::printf("%c", value);
+                std::printf("%c", value);
             }
 #endif
         }

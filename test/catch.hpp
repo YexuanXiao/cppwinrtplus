@@ -9023,7 +9023,7 @@ namespace detail {
             assert( m_type != ResultBase::LogicError );
             assert( m_type != ResultBase::RuntimeError );
             if( m_type != ResultBase::Ok )
-                std::std::abort();
+                std::abort();
         }
 
         std::string m_errorMessage; // Only populated if resultType is an error
@@ -9084,7 +9084,7 @@ namespace detail {
     }
     inline auto convertInto( std::string const &source, bool &target ) -> ParserResult {
         std::string srcLC = source;
-        std::transform( srcLC.begin(), srcLC.end(), srcLC.begin(), []( unsigned char c ) { return static_cast<char>( std::std::tolower(c) ); } );
+        std::transform( srcLC.begin(), srcLC.end(), srcLC.begin(), []( unsigned char c ) { return static_cast<char>( std::tolower(c) ); } );
         if (srcLC == "y" || srcLC == "1" || srcLC == "true" || srcLC == "yes" || srcLC == "on")
             target = true;
         else if (srcLC == "n" || srcLC == "0" || srcLC == "false" || srcLC == "no" || srcLC == "off")
@@ -13811,7 +13811,7 @@ namespace Catch {
 
     namespace {
         char toLowerCh(char c) {
-            return static_cast<char>( std::std::tolower( static_cast<unsigned char>(c) ) );
+            return static_cast<char>( std::tolower( static_cast<unsigned char>(c) ) );
         }
     }
 

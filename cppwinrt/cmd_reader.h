@@ -586,7 +586,7 @@ namespace cppwinrt
             std::filesystem::path response_path{ std::string{ arg } };
             std::string extension = response_path.extension().generic_string();
             std::transform(extension.begin(), extension.end(), extension.begin(),
-                [](auto c) { return static_cast<unsigned char>(::std::tolower(c)); });
+                [](auto c) { return static_cast<unsigned char>(std::tolower(c)); });
 
             // Check if misuse of @ prefix, so if directory or metadata file instead of response file.
             if (is_directory(response_path) || extension == ".winmd")
