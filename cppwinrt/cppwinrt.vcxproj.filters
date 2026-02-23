@@ -103,6 +103,9 @@
     <ClInclude Include="..\strings\base_marshaler.h">
       <Filter>strings</Filter>
     </ClInclude>
+    <ClInclude Include="..\strings\base_source_location.h">
+      <Filter>strings</Filter>
+    </ClInclude>
     <ClInclude Include="..\strings\base_meta.h">
       <Filter>strings</Filter>
     </ClInclude>
