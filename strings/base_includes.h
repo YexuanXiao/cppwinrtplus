@@ -7,8 +7,11 @@
 #include <chrono>
 #include <cstddef>
 #include <cstring>
+#include <cwchar>
+#include <cwctype>
 #include <exception>
 #include <iterator>
+#include <limits>
 #include <map>
 #include <memory>
 #include <optional>
@@ -26,9 +29,14 @@
 #include <version>
 #endif
 
+// <windowsnumerics.impl.h> pulls in large, hard-to-control legacy headers. In header builds we keep the
+// existing behavior, but in module builds it's provided by the winrt.numerics module.
+#ifndef WINRT_MODULE
 #if __has_include(<windowsnumerics.impl.h>)
 #define WINRT_IMPL_NUMERICS
 #include <directxmath.h>
+#endif
+
 #endif
 
 #ifndef WINRT_LEAN_AND_MEAN

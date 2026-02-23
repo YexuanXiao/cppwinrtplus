@@ -1,5 +1,5 @@
 
-namespace winrt::impl
+WINRT_EXPORT namespace winrt::impl
 {
     struct atomic_ref_count
     {
@@ -77,7 +77,7 @@ namespace winrt::impl
         WINRT_ASSERT(length != 0);
         std::uint64_t bytes_required = static_cast<std::uint64_t>(sizeof(shared_hstring_header)) + static_cast<std::uint64_t>(sizeof(wchar_t)) * static_cast<std::uint64_t>(length);
 
-        if (bytes_required > UINT_MAX)
+        if (bytes_required > (std::numeric_limits<std::uint32_t>::max)())
         {
             throw std::invalid_argument("length");
         }
@@ -105,7 +105,7 @@ namespace winrt::impl
         }
 
         auto header = precreate_hstring_on_heap(length);
-        memcpy_s(header->buffer, sizeof(wchar_t) * length, value, sizeof(wchar_t) * length);
+        std::memcpy(header->buffer, value, sizeof(wchar_t) * length);
         return header;
     }
 
@@ -433,7 +433,7 @@ WINRT_EXPORT namespace winrt
 
     inline void* detach_abi(wchar_t const* const value)
     {
-        return impl::create_hstring_on_heap(value, static_cast<std::uint32_t>(wcslen(value)));
+        return impl::create_hstring_on_heap(value, static_cast<std::uint32_t>(std::wcslen(value)));
     }
 }
 
@@ -442,7 +442,7 @@ template<>
 struct std::formatter<winrt::hstring, wchar_t> : std::formatter<std::wstring_view, wchar_t> {};
 #endif
 
-namespace winrt::impl
+WINRT_EXPORT namespace winrt::impl
 {
     template <> struct abi<hstring>
     {
@@ -688,7 +688,7 @@ WINRT_EXPORT namespace winrt
     {
         wchar_t buffer[40];
         //{00000000-0000-0000-0000-000000000000}
-        swprintf_s(buffer, L"{%08x-%04hx-%04hx-%02hhx%02hhx-%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx}",
+        std::swprintf(buffer, std::size(buffer), L"{%08x-%04hx-%04hx-%02hhx%02hhx-%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx}",
             value.Data1, value.Data2, value.Data3, value.Data4[0], value.Data4[1],
             value.Data4[2], value.Data4[3], value.Data4[4], value.Data4[5], value.Data4[6], value.Data4[7]);
         return hstring{ buffer };

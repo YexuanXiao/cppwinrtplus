@@ -14,6 +14,7 @@ namespace cppwinrt
             w.write(strings::base_macros);
             w.write(strings::base_types);
             w.write(strings::base_extern);
+            w.write(strings::base_source_location);
             w.write(strings::base_meta);
             w.write(strings::base_identity);
             w.write(strings::base_handle);
@@ -52,6 +53,16 @@ namespace cppwinrt
         write_preamble(w);
         {
             auto wrap_file_guard = wrap_open_file_guard(w, "FAST_FORWARD");
+
+            w.write(R"(// Transition: compatibility
+#ifndef WINRT_MODULE
+
+#ifndef WINRT_EXPORT
+#define WINRT_EXPORT
+#endif
+
+#endif
+)");
 
             auto const fast_abi_size = get_fastabi_size(w, classes);
 
