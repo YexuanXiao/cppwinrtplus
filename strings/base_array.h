@@ -36,7 +36,7 @@ WINRT_EXPORT namespace winrt
         array_view(std::span<C, extent> span) noexcept :
             array_view(span.data(), static_cast<size_type>(span.size())) 
         {
-            WINRT_ASSERT(span.size() <= UINT_MAX);
+            WINRT_ASSERT(span.size() <= (std::numeric_limits<size_type>::max)());
         }
 
         operator std::span<T>() const noexcept
@@ -298,7 +298,7 @@ WINRT_EXPORT namespace winrt
         explicit com_array(std::span<U, extent> span) noexcept : 
             com_array(span.data(), span.data() + span.size()) 
         {
-            WINRT_ASSERT(span.size() <= UINT_MAX);
+            WINRT_ASSERT(span.size() <= (std::numeric_limits<size_type>::max)());
         }
 #endif
 
@@ -483,7 +483,7 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-namespace winrt::impl
+WINRT_EXPORT namespace winrt::impl
 {
     template <typename T>
     struct array_size_proxy

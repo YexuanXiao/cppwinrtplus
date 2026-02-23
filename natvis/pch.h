@@ -14,6 +14,7 @@
 #include "base_macros.h"
 #include "base_types.h"
 #include "base_extern.h"
+#include "base_source_location.h"
 #include "base_meta.h"
 #include "base_identity.h"
 #include "base_handle.h"

@@ -94,7 +94,7 @@ WINRT_EXPORT namespace winrt
     bool operator>=(std::nullptr_t left, hstring const& right) = delete;
 }
 
-namespace winrt::impl
+WINRT_EXPORT namespace winrt::impl
 {
     inline hstring concat_hstring(std::wstring_view const& left, std::wstring_view const& right)
     {
@@ -104,8 +104,8 @@ namespace winrt::impl
             return{};
         }
         hstring_builder text(size);
-        memcpy_s(text.data(), left.size() * sizeof(wchar_t), left.data(), left.size() * sizeof(wchar_t));
-        memcpy_s(text.data() + left.size(), right.size() * sizeof(wchar_t), right.data(), right.size() * sizeof(wchar_t));
+        std::memcpy(text.data(), left.data(), left.size() * sizeof(wchar_t));
+        std::memcpy(text.data() + left.size(), right.data(), right.size() * sizeof(wchar_t));
         return text.to_hstring();
     }
 }
