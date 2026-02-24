@@ -5,7 +5,7 @@
     <Description ID="1018" Package="FIXME-PACKAGEGUID" />
     <ProjectType>VC</ProjectType>
     <SortOrder>42</SortOrder>
-    <TemplateID>microsoft.Windows.CppWinRT.ViewModel</TemplateID>
+    <TemplateID>YexuanXiao.CppWinRTPlus.ViewModel</TemplateID>
     <TemplateGroupID>WinRT-Native-UAP</TemplateGroupID>
     <AppliesTo>VisualC + WindowsXaml</AppliesTo>
     <NumberOfParentCategoriesToRollUp>0</NumberOfParentCategoriesToRollUp>
@@ -24,8 +24,8 @@
     <FullClassName>NuGet.VisualStudio.TemplateWizard</FullClassName>
   </WizardExtension>
   <WizardData>
-    <packages repository="extension" repositoryId="Microsoft.Windows.CppWinRT">
-      <package id="Microsoft.Windows.CppWinRT" version="1.0.0.0" />
+    <packages repository="extension" repositoryId="YexuanXiao.CppWinRTPlus">
+      <package id="YexuanXiao.CppWinRTPlus" version="1.0.0.0" />
     </packages>
   </WizardData>
 </VSTemplate>

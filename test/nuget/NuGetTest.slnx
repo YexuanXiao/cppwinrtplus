@@ -5,8 +5,8 @@
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/Solution Items/">
-    <File Path="../../nuget/Microsoft.Windows.CppWinRT.props" />
-    <File Path="../../nuget/Microsoft.Windows.CppWinRT.targets" />
+    <File Path="../../nuget/YexuanXiao.CppWinRTPlus.props" />
+    <File Path="../../nuget/YexuanXiao.CppWinRTPlus.targets" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
   </Folder>

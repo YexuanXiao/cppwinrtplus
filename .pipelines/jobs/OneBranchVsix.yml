@@ -18,15 +18,15 @@ jobs:
       Standalone:
         Deployment: 'Standalone'
         VsVersion: 'Dev17'
-        VsixFilename: Microsoft.Windows.CppWinRT.$(VsVersion)
+        VsixFilename: YexuanXiao.CppWinRTPlus.$(VsVersion)
       Component:
         Deployment: 'Component'
         VsVersion: 'Dev17'
-        VsixFilename: Microsoft.Windows.CppWinRT.$(VsVersion)
+        VsixFilename: YexuanXiao.CppWinRTPlus.$(VsVersion)
       Dev16:
         Deployment: 'Standalone'
         VsVersion: 'Dev16'
-        VsixFilename: Microsoft.Windows.CppWinRT
+        VsixFilename: YexuanXiao.CppWinRTPlus
   
   variables:
     ob_outputDirectory: $(Build.SourcesDirectory)\out

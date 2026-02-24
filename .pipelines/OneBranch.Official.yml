@@ -120,8 +120,8 @@ extends:
                   cd %TargetDir%
 
                   copy $(Build.SourcesDirectory)\vsix\Microsoft.Cpp.CppWinRT.props
-                  copy $(Build.SourcesDirectory)\nuget\Microsoft.Windows.CppWinRT.props Microsoft.Cpp.CppWinRTEnabled.props 
-                  copy $(Build.SourcesDirectory)\nuget\Microsoft.Windows.CppWinRT.targets Microsoft.Cpp.CppWinRTEnabled.targets
+                  copy $(Build.SourcesDirectory)\nuget\YexuanXiao.CppWinRTPlus.props Microsoft.Cpp.CppWinRTEnabled.props 
+                  copy $(Build.SourcesDirectory)\nuget\YexuanXiao.CppWinRTPlus.targets Microsoft.Cpp.CppWinRTEnabled.targets
                   copy $(Build.SourcesDirectory)\nuget\CppWinrtRules.Project.xml CppWinrtRules.Project.xml
                   echo d | xcopy $(Build.SourcesDirectory)\x86\cppwinrt_fast_forwarder.lib build\native\lib\i386
                   echo d | xcopy $(Build.SourcesDirectory)\x86\cppwinrt_fast_forwarder.lib build\native\lib\Win32

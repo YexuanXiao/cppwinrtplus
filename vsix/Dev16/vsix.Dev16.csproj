@@ -8,8 +8,8 @@
     <ProjectGuid>{2F0C4AFA-FEFA-4D37-B824-0426CEB32DBA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Microsoft.Windows.CppWinRT</RootNamespace>
-    <AssemblyName>Microsoft.Windows.CppWinRT</AssemblyName>
+    <RootNamespace>YexuanXiao.CppWinRTPlus</RootNamespace>
+    <AssemblyName>YexuanXiao.CppWinRTPlus</AssemblyName>
     <TargetFramework>net472</TargetFramework>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
@@ -41,8 +41,8 @@
       <Link>%(Filename)%(Extension)</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="$(NupkgDir)\Microsoft.Windows.CppWinRT.$(NugetPackageVersion).nupkg">
-      <Link>Packages\Microsoft.Windows.CppWinRT.$(NugetPackageVersion).nupkg</Link>
+    <Content Include="$(NupkgDir)\YexuanXiao.CppWinRTPlus.$(NugetPackageVersion).nupkg">
+      <Link>Packages\YexuanXiao.CppWinRTPlus.$(NugetPackageVersion).nupkg</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="$(VSIXRootDir)..\natvis\cppwinrt.natvis">
