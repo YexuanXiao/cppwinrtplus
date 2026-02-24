@@ -113,6 +113,8 @@ namespace cppwinrt
         }
     }
 
+#if 0
+    // It was used to conditionally include C++20 header files, but it is no longer needed now.
     [[nodiscard]] static finish_with wrap_ifdef(writer& w, std::string_view macro)
     {
         auto format = R"(#ifdef %
@@ -122,7 +124,7 @@ namespace cppwinrt
 
         return { w, write_endif };
     }
-
+#endif
 
     static void write_module_aware_export_macro_push(writer& w)
     {
