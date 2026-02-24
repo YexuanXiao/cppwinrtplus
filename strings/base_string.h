@@ -327,7 +327,6 @@ WINRT_EXPORT namespace winrt
             return rend();
         }
         
-#ifdef __cpp_lib_starts_ends_with
         bool starts_with(wchar_t const value) const noexcept
         {
             return operator std::wstring_view().starts_with(value);
@@ -357,7 +356,6 @@ WINRT_EXPORT namespace winrt
         {
             return operator std::wstring_view().ends_with(pointer);
         }
-#endif
         
         bool empty() const noexcept
         {
@@ -437,10 +435,8 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-#ifdef __cpp_lib_format
 template<>
 struct std::formatter<winrt::hstring, wchar_t> : std::formatter<std::wstring_view, wchar_t> {};
-#endif
 
 WINRT_EXPORT namespace winrt::impl
 {
@@ -574,7 +570,7 @@ WINRT_EXPORT namespace winrt::impl
         // when non-const (e.g. ranges::filter_view) so taking a const reference
         // as parameter wouldn't work for all scenarios.
         auto const size = std::formatted_size(args...);
-        WINRT_ASSERT(size < INT_MAX);
+        WINRT_ASSERT(size < (std::numeric_limits<std::int32_t>::max)());
         auto const size32 = static_cast<std::int32_t>(size);
 
         hstring_builder builder(size32);
