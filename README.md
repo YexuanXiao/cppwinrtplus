@@ -8,7 +8,7 @@ With development on the original project slowing, we believe it's time for the c
 
 ## How to use
 
-Unfortunately, for reasons I don't currently understand, the package ID Microsoft.Windows.CppWinRT cannot be modified. Therefore, it cannot be published to NuGet either. Until a solution is found for this issue, C++/WinRT Plus will only release the package on GitHub. You can add a NuGet.config file with the following content in your root sln/slnx directory, and place the packages into LocalPackages, so that NuGet can find them.
+You can add a NuGet.config file with the following content in your root sln/slnx directory, and place the packages into LocalPackages, so that NuGet can find them.
 
 ```config
 <?xml version="1.0" encoding="utf-8"?>
@@ -25,12 +25,11 @@ Microsoft's C++/WinRT version number format is 2.0.{yymmdd}.1. Since Microsoft's
 ## Changelog
 
 2026/2/22: Removed support for C++17 and C++/CX. Existing projects need to upgrade their C++ standard to C++20.
+2026/2/24: C++/WinRT Plus now supports C++ standard modules. See the [blog post](./about_module.md) for details.
 
 <hr>
 
 The following content is from the original C++/WinRT documentation and remains a valuable resource.
-
-<hr>
 
 # The C++/WinRT language projection
 

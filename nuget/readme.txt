@@ -1,5 +1,5 @@
 ========================================================================
-The YexuanXiao.CppWinRT Plus NuGet package automatically generates C++/WinRT projection headers, 
+The YexuanXiao.CppWinRTPlus NuGet package automatically generates C++/WinRT projection headers, 
 enabling you to both consume and produce Windows Runtime classes.
 ========================================================================
 

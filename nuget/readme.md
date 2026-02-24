@@ -1,4 +1,6 @@
-# Microsoft.Windows.CppWinRT NuGet Package
+# YexuanXiao.CppWinRTPlus NuGet Package
+
+Please read the [repository](https://github.com/YexuanXiao/cppwinrtplus)'s README.md for usage instructions.
 
 ## Overview
 
@@ -64,7 +66,6 @@ C++/WinRT behavior can be customized with these project properties:
 | CppWinRTMergeNoValidate | true \| *false | Disables mdmerge validation |
 | CppWinRTUsePrefixes | *true \| false | Uses a dotted prefix namespace convention (versus a nested folder convention) |
 | CppWinRTUseModules | true \| *false | Generate and compile C++/WinRT namespace modules (.ixx) instead of winrt.ixx; disables PCH for generated files |
-| CppWinRTConfigFile | path | Configuration file for including or excluding namespaces or other declarations/definitions |
 | CppWinRTPath | ...\cppwinrt.exe | NuGet package-relative path to cppwinrt.exe, for custom build rule invocation |
 | CppWinRTParameters | "" | Custom cppwinrt.exe command-line parameters (be sure to append to existing) |
 | CppWinRTFastAbi | true \| *false | Enables Fast ABI feature for both consuming and producing projections |
@@ -74,10 +75,12 @@ C++/WinRT behavior can be customized with these project properties:
 | CppWinRTEnableDefaultPrivateFalse | true \| *false | Indicates whether this project uses C++/WinRT optimized default for copying binaries to the output directory |
 \*Default value
 
-To customize common C++/WinRT project properties: 
+To customize common C++/WinRT project properties:
 * right-click the project node
 * expand the Common Properties item
 * select the C++/WinRT property page
+
+You can prevent unnecessary namespaces from being generated, such as, by adding a CppWinRT.config file to the solution directory. Since some modules are very large, this can effectively reduce compilation time.
 
 The format of the configuration file is:
 
@@ -86,17 +89,19 @@ The format of the configuration file is:
 <configuration>
     <include>
         <prefix>Windows.Foundation</prefix>
-        <prefix>Windows.UI</prefix>
     </include>
     <exclude>
-        <prefix>Windows.UI.Composition</prefix>
+        <prefix>Windows.UI.Xaml</prefix>
+        <prefix>Windows.ApplicationModel.Store</prefix>
     </exclude>
 </configuration>
 ```
 
-It is equivalent to passing -config \<path\> to cppwinrt.exe, which combines the -include and -exclude options.
+It is equivalent to passing `-config <path\` to cppwinrt.exe, which combines the `-include` and `-exclude` options.
 
-Configuration files are only supported on Windows.
+Note that namespace exclusion occurs at a very early stage of the build process, so a clean build needs to be performed for it to take effect.
+
+It's suggest excluding Windows.UI.Xaml and Windows.ApplicationModel.Store, as the latter depends on the former. By excluding Windows.UI.Xaml, the BMI size can be reduced by one-third.
 
 ## InitializeComponent
 
