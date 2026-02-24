@@ -6,6 +6,7 @@
     <title>C++/WinRT Plus Build Support</title>
     <authors>YexuanXiao</authors>
     <owners>YexuanXiao</owners>
+    <readme>readme.md</readme>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>C++/WinRT Plus is a standard C++ language projection for the Windows Runtime implemented solely in header files. It allows you to both author and consume Windows Runtime APIs using any standards-compliant C++ compiler. C++/WinRT Plus is designed to provide C++ developers with first-class access to the modern Windows API.</description>
     <releaseNotes></releaseNotes>
@@ -25,5 +26,6 @@
     <file src="YexuanXiao.CppWinRTPlus.targets" target="build\native"/>
     <file src="CppWinrtRules.Project.xml" target="build\native"/>
     <file src="readme.txt"/>
+    <file src="readme.md"/>
   </files>
 </package>

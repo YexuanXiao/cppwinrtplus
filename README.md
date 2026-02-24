@@ -8,17 +8,7 @@ With development on the original project slowing, we believe it's time for the c
 
 ## How to use
 
-You can add a NuGet.config file with the following content in your root sln/slnx directory, and place the packages into LocalPackages, so that NuGet can find them.
-
-```config
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <packageSources>
-    <add key="LocalPackages" value="LocalPackages" />
-    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
-  </packageSources>
-</configuration>
-```
+You can install the package directly via NuGet with the ID YexuanXiao.CppWinRTPlus.
 
 Microsoft's C++/WinRT version number format is 2.0.{yymmdd}.1. Since Microsoft's C++/WinRT development has almost stalled at present, C++/WinRT Plus will increment the minor version number by 1 to indicate that it is newer.
 
