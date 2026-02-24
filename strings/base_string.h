@@ -570,7 +570,7 @@ WINRT_EXPORT namespace winrt::impl
         // when non-const (e.g. ranges::filter_view) so taking a const reference
         // as parameter wouldn't work for all scenarios.
         auto const size = std::formatted_size(args...);
-        WINRT_ASSERT(size < (std::numeric_limits<std::int32_t>::max)());
+        WINRT_ASSERT(size < static_cast<std::size_t>((std::numeric_limits<std::int32_t>::max)()));
         auto const size32 = static_cast<std::int32_t>(size);
 
         hstring_builder builder(size32);
