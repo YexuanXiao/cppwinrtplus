@@ -25,10 +25,6 @@
 #include <utility>
 #include <vector>
 
-#if __has_include(<version>)
-#include <version>
-#endif
-
 // <windowsnumerics.impl.h> pulls in large, hard-to-control legacy headers. In header builds we keep the
 // existing behavior, but in module builds it's provided by the winrt.numerics module.
 #ifndef WINRT_MODULE
@@ -43,20 +39,10 @@
 #include <ostream>
 #endif
 
-#ifdef __cpp_lib_span
+// C++ 20 headers
+
+#include <version>
 #include <span>
-#endif
-
-#ifdef __cpp_lib_format
 #include <format>
-#endif
-
-#ifdef __cpp_lib_source_location
 #include <source_location>
-#endif
-
-#ifdef __cpp_lib_coroutine
 #include <coroutine>
-#else
-#error C++/WinRT requires coroutine support, which is currently missing. Try enabling C++20 in your compiler.
-#endif

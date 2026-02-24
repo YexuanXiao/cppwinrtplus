@@ -31,7 +31,6 @@ WINRT_EXPORT namespace winrt
             array_view(value.begin(), static_cast<size_type>(value.size()))
         {}
 
-#ifdef __cpp_lib_span
         template <typename C, std::size_t extent>
         array_view(std::span<C, extent> span) noexcept :
             array_view(span.data(), static_cast<size_type>(span.size())) 
@@ -43,7 +42,6 @@ WINRT_EXPORT namespace winrt
         {
             return { m_data, m_size };
         }
-#endif
 
         template <typename C, size_type N>
         array_view(C(&value)[N]) noexcept :
@@ -237,24 +235,22 @@ WINRT_EXPORT namespace winrt
     template <typename C, std::size_t N> array_view(std::array<C, N>& value) -> array_view<C>;
     template <typename C, std::size_t N> array_view(std::array<C, N> const& value) -> array_view<C const>;
 
-#ifdef __cpp_lib_span
     template <typename C, std::size_t extent> array_view(std::span<C, extent>& value) -> array_view<C>;
     template <typename C, std::size_t extent> array_view(std::span<C, extent> const& value) -> array_view<C const>;
-#endif
 
     template <typename T>
     struct com_array : array_view<T>
     {
-        using typename array_view<T>::value_type;
-        using typename array_view<T>::size_type;
-        using typename array_view<T>::reference;
-        using typename array_view<T>::const_reference;
-        using typename array_view<T>::pointer;
-        using typename array_view<T>::const_pointer;
-        using typename array_view<T>::iterator;
-        using typename array_view<T>::const_iterator;
-        using typename array_view<T>::reverse_iterator;
-        using typename array_view<T>::const_reverse_iterator;
+        using value_type = typename array_view<T>::value_type;
+        using size_type = typename array_view<T>::size_type;
+        using reference = typename array_view<T>::reference;
+        using const_reference = typename array_view<T>::const_reference;
+        using pointer = typename array_view<T>::pointer;
+        using const_pointer = typename array_view<T>::const_pointer;
+        using iterator = typename array_view<T>::iterator;
+        using const_iterator = typename array_view<T>::const_iterator;
+        using reverse_iterator = typename array_view<T>::reverse_iterator;
+        using const_reverse_iterator = typename array_view<T>::const_reverse_iterator;
 
         com_array(com_array const&) = delete;
         com_array& operator=(com_array const&) = delete;
@@ -293,14 +289,12 @@ WINRT_EXPORT namespace winrt
             com_array(value.begin(), value.end())
         {}
 
-#ifdef __cpp_lib_span
         template <typename U, std::size_t extent>
         explicit com_array(std::span<U, extent> span) noexcept : 
             com_array(span.data(), span.data() + span.size()) 
         {
             WINRT_ASSERT(span.size() <= (std::numeric_limits<size_type>::max)());
         }
-#endif
 
         template <typename U, std::size_t N>
         explicit com_array(U const(&value)[N]) :
@@ -403,9 +397,7 @@ WINRT_EXPORT namespace winrt
     template <std::size_t N, typename C> com_array(C const(&)[N]) -> com_array<std::decay_t<C>>;
     template <typename C> com_array(std::initializer_list<C>) -> com_array<std::decay_t<C>>;
 
-#ifdef __cpp_lib_span
     template <typename C, std::size_t extent> com_array(std::span<C, extent> const& value) -> com_array<std::decay_t<C>>;
-#endif
 
 
     namespace impl
