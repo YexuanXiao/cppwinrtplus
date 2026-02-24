@@ -11,6 +11,7 @@
     <File Path="Directory.Build.targets" />
   </Folder>
   <Project Path="ConsoleApplication1/ConsoleApplication1.vcxproj" />
+  <Project Path="TestCxxModule/TestCxxModule.vcxproj" />
   <Project Path="TestApp/TestApp.vcxproj">
     <Deploy />
   </Project>
