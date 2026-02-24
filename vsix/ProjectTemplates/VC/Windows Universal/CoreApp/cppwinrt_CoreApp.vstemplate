@@ -4,7 +4,7 @@
     <Description ID="1008" Package="FIXME-PACKAGEGUID" />
     <ProjectType>VC</ProjectType>
     <SortOrder>2000</SortOrder>
-    <TemplateID>microsoft.Windows.CppWinRT.CoreApp</TemplateID>
+    <TemplateID>YexuanXiao.CppWinRTPlus.CoreApp</TemplateID>
     <CreateNewFolder>true</CreateNewFolder>
     <DefaultName>CoreApp</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
@@ -44,8 +44,8 @@
     <FullClassName>NuGet.VisualStudio.TemplateWizard</FullClassName>
   </WizardExtension>
   <WizardData>
-    <packages repository="extension" repositoryId="Microsoft.Windows.CppWinRT">
-      <package id="Microsoft.Windows.CppWinRT" version="1.0.0.0" />
+    <packages repository="extension" repositoryId="YexuanXiao.CppWinRTPlus">
+      <package id="YexuanXiao.CppWinRTPlus" version="1.0.0.0" />
     </packages>
   </WizardData>
 </VSTemplate>

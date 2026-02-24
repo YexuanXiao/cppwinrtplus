@@ -4,7 +4,7 @@
     <Description ID="1006" Package="FIXME-PACKAGEGUID" />
     <ProjectType>VC</ProjectType>
     <SortOrder>1000</SortOrder>
-    <TemplateID>microsoft.Windows.CppWinRT.BlankApp</TemplateID>
+    <TemplateID>YexuanXiao.CppWinRTPlus.BlankApp</TemplateID>
     <CreateNewFolder>true</CreateNewFolder>
     <DefaultName>BlankApp</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
@@ -51,8 +51,8 @@
     <FullClassName>NuGet.VisualStudio.TemplateWizard</FullClassName>
   </WizardExtension>
   <WizardData>
-    <packages repository="extension" repositoryId="Microsoft.Windows.CppWinRT">
-      <package id="Microsoft.Windows.CppWinRT" version="1.0.0.0" />
+    <packages repository="extension" repositoryId="YexuanXiao.CppWinRTPlus">
+      <package id="YexuanXiao.CppWinRTPlus" version="1.0.0.0" />
     </packages>
   </WizardData>
 </VSTemplate>

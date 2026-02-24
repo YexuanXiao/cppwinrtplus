@@ -254,7 +254,7 @@ jobs:
   - task: CmdLine@2
     displayName: Stage MSBuild vpack
     inputs:
-      script: "set TargetDir=$(Build.SourcesDirectory)\\msbuild\nrd /s /q %TargetDir% >nul 2>&1\nmd %TargetDir%\ncd %TargetDir%\n\ncopy $(Build.SourcesDirectory)\\vsix\\Microsoft.Cpp.CppWinRT.props\ncopy $(Build.SourcesDirectory)\\nuget\\Microsoft.Windows.CppWinRT.props Microsoft.Cpp.CppWinRTEnabled.props \ncopy $(Build.SourcesDirectory)\\nuget\\Microsoft.Windows.CppWinRT.targets Microsoft.Cpp.CppWinRTEnabled.targets\ncopy $(Build.SourcesDirectory)\\nuget\\CppWinrtRules.Project.xml CppWinrtRules.Project.xml\necho d | xcopy $(Build.SourcesDirectory)\\x86\\cppwinrt_fast_forwarder.lib build\\native\\lib\\i386\necho d | xcopy $(Build.SourcesDirectory)\\x86\\cppwinrt_fast_forwarder.lib build\\native\\lib\\Win32\necho d | xcopy $(Build.SourcesDirectory)\\x64\\cppwinrt_fast_forwarder.lib  build\\native\\lib\\amd64\necho d | xcopy $(Build.SourcesDirectory)\\x64\\cppwinrt_fast_forwarder.lib  build\\native\\lib\\x64\necho d | xcopy $(Build.SourcesDirectory)\\arm64\\cppwinrt_fast_forwarder.lib  build\\native\\lib\\arm64\n"
+      script: "set TargetDir=$(Build.SourcesDirectory)\\msbuild\nrd /s /q %TargetDir% >nul 2>&1\nmd %TargetDir%\ncd %TargetDir%\n\ncopy $(Build.SourcesDirectory)\\vsix\\Microsoft.Cpp.CppWinRT.props\ncopy $(Build.SourcesDirectory)\\nuget\\YexuanXiao.CppWinRTPlus.props Microsoft.Cpp.CppWinRTEnabled.props \ncopy $(Build.SourcesDirectory)\\nuget\\YexuanXiao.CppWinRTPlus.targets Microsoft.Cpp.CppWinRTEnabled.targets\ncopy $(Build.SourcesDirectory)\\nuget\\CppWinrtRules.Project.xml CppWinrtRules.Project.xml\necho d | xcopy $(Build.SourcesDirectory)\\x86\\cppwinrt_fast_forwarder.lib build\\native\\lib\\i386\necho d | xcopy $(Build.SourcesDirectory)\\x86\\cppwinrt_fast_forwarder.lib build\\native\\lib\\Win32\necho d | xcopy $(Build.SourcesDirectory)\\x64\\cppwinrt_fast_forwarder.lib  build\\native\\lib\\amd64\necho d | xcopy $(Build.SourcesDirectory)\\x64\\cppwinrt_fast_forwarder.lib  build\\native\\lib\\x64\necho d | xcopy $(Build.SourcesDirectory)\\arm64\\cppwinrt_fast_forwarder.lib  build\\native\\lib\\arm64\n"
       failOnStderr: true
 
   - task: PkgESVPack@12
@@ -414,7 +414,7 @@ jobs:
     displayName: Build NuGet
     inputs:
       command: pack
-      searchPatternPack: nuget/Microsoft.Windows.CppWinRT.nuspec
+      searchPatternPack: nuget/YexuanXiao.CppWinRTPlus.nuspec
       versioningScheme: byBuildNumber
       buildProperties: 'target_version=$(Build.BuildNumber);cppwinrt_exe=$(Build.ArtifactStagingDirectory)\x86\cppwinrt.exe;cppwinrt_fast_fwd_x86=$(Build.SourcesDirectory)\x86\cppwinrt_fast_forwarder.lib;cppwinrt_fast_fwd_x64=$(Build.SourcesDirectory)\x64\cppwinrt_fast_forwarder.lib;cppwinrt_fast_fwd_arm64=$(Build.SourcesDirectory)\arm64\cppwinrt_fast_forwarder.lib '
 
@@ -426,7 +426,7 @@ jobs:
     inputs:
       ConnectedServiceName: 81cc6790-027c-4ef3-928d-65e8b96a691a
       FolderPath: $(Build.ArtifactStagingDirectory)
-      Pattern: Microsoft.Windows.CppWinRT.*.nupkg
+      Pattern: YexuanXiao.CppWinRTPlus.*.nupkg
       UseMinimatch: true
       signConfigType: inlineSignParams
       inlineOperation: |
@@ -450,7 +450,7 @@ jobs:
   - task: PkgESNuGetPublisher@0
     displayName: Publish NuGet Package
     inputs:
-      searchPattern: $(System.ArtifactsDirectory)\Microsoft.Windows.CppWinRT.$(Build.BuildNumber).nupkg
+      searchPattern: $(System.ArtifactsDirectory)\YexuanXiao.CppWinRTPlus.$(Build.BuildNumber).nupkg
       nuGetFeedType: internal
       feedName: https://microsoft.pkgs.visualstudio.com/_packaging/CppWinRT/nuget/v3/index.json
 
@@ -465,16 +465,16 @@ jobs:
   - task: ExtractFiles@1
     displayName: Extract Component VSIX files for signing
     inputs:
-      archiveFilePatterns: $(Build.SourcesDirectory)\vsix\Dev17\bin\Release\Component\Microsoft.Windows.CppWinRT.Dev17.vsix
-      destinationFolder: $(Agent.TempDirectory)\Microsoft.Windows.CppWinRT.Dev17.vsix
+      archiveFilePatterns: $(Build.SourcesDirectory)\vsix\Dev17\bin\Release\Component\YexuanXiao.CppWinRTPlus.Dev17.vsix
+      destinationFolder: $(Agent.TempDirectory)\YexuanXiao.CppWinRTPlus.Dev17.vsix
       overwriteExistingFiles: true
 
   - task: EsrpCodeSigning@2
     displayName: ESRP CodeSign VSIX contents
     inputs:
       ConnectedServiceName: 81cc6790-027c-4ef3-928d-65e8b96a691a
-      FolderPath: $(Agent.TempDirectory)\Microsoft.Windows.CppWinRT.Dev17.vsix
-      Pattern: '**/Microsoft.Windows.CppWinRT.*.dll'
+      FolderPath: $(Agent.TempDirectory)\YexuanXiao.CppWinRTPlus.Dev17.vsix
+      Pattern: '**/YexuanXiao.CppWinRTPlus.*.dll'
       UseMinimatch: true
       signConfigType: inlineSignParams
       inlineOperation: |
@@ -511,9 +511,9 @@ jobs:
   - task: ArchiveFiles@2
     displayName: Repack signed VSIX contents
     inputs:
-      rootFolderOrFile: $(Agent.TempDirectory)\Microsoft.Windows.CppWinRT.Dev17.vsix
+      rootFolderOrFile: $(Agent.TempDirectory)\YexuanXiao.CppWinRTPlus.Dev17.vsix
       includeRootFolder: false
-      archiveFile: $(Build.SourcesDirectory)\vsix\Dev17\bin\Release\Component\Microsoft.Windows.CppWinRT.Dev17.vsix
+      archiveFile: $(Build.SourcesDirectory)\vsix\Dev17\bin\Release\Component\YexuanXiao.CppWinRTPlus.Dev17.vsix
 
   - task: VSBuild@1
     displayName: Build Standalone VSIXes
@@ -529,10 +529,10 @@ jobs:
       ConnectedServiceName: 81cc6790-027c-4ef3-928d-65e8b96a691a
       FolderPath: $(Build.SourcesDirectory)\vsix\
       Pattern: |
-        Dev16\bin\Release\Component\Microsoft.Windows.CppWinRT.vsix
-        Dev16\bin\Release\Standalone\Microsoft.Windows.CppWinRT.vsix
-        Dev17\bin\Release\Component\Microsoft.Windows.CppWinRT.Dev17.vsix
-        Dev17\bin\Release\Standalone\Microsoft.Windows.CppWinRT.Dev17.vsix
+        Dev16\bin\Release\Component\YexuanXiao.CppWinRTPlus.vsix
+        Dev16\bin\Release\Standalone\YexuanXiao.CppWinRTPlus.vsix
+        Dev17\bin\Release\Component\YexuanXiao.CppWinRTPlus.Dev17.vsix
+        Dev17\bin\Release\Standalone\YexuanXiao.CppWinRTPlus.Dev17.vsix
       UseMinimatch: true
       signConfigType: inlineSignParams
       inlineOperation: |
@@ -559,9 +559,9 @@ jobs:
     displayName: Stage Component VSIX (Dev17)
     inputs:
       script: |
-        echo F|xcopy /S /Q /Y /F Microsoft.Windows.CppWinRT.Dev17.vsix $(Build.ArtifactStagingDirectory)\Component\Dev17\Microsoft.Windows.CppWinRT.Dev17.vsix
-        echo F|xcopy /S /Q /Y /F Microsoft.Windows.CppWinRT.Dev17.json $(Build.ArtifactStagingDirectory)\Component\Dev17\Microsoft.Windows.CppWinRT.Dev17.json
-        echo F|xcopy /S /Q /Y /F Microsoft.Windows.CppWinRT.Dev17.pdb $(Build.ArtifactStagingDirectory)\Component\Dev17\Microsoft.Windows.CppWinRT.Dev17.pdb
+        echo F|xcopy /S /Q /Y /F YexuanXiao.CppWinRTPlus.Dev17.vsix $(Build.ArtifactStagingDirectory)\Component\Dev17\YexuanXiao.CppWinRTPlus.Dev17.vsix
+        echo F|xcopy /S /Q /Y /F YexuanXiao.CppWinRTPlus.Dev17.json $(Build.ArtifactStagingDirectory)\Component\Dev17\YexuanXiao.CppWinRTPlus.Dev17.json
+        echo F|xcopy /S /Q /Y /F YexuanXiao.CppWinRTPlus.Dev17.pdb $(Build.ArtifactStagingDirectory)\Component\Dev17\YexuanXiao.CppWinRTPlus.Dev17.pdb
       workingDirectory: $(Build.SourcesDirectory)\vsix\Dev17\bin\Release\Component
       failOnStderr: true
 
@@ -578,7 +578,7 @@ jobs:
   - task: CmdLine@2
     displayName: Stage Standalone VSIX (Dev16)
     inputs:
-      script: echo F|xcopy /S /Q /Y /F Microsoft.Windows.CppWinRT.vsix $(Build.ArtifactStagingDirectory)\Standalone\Dev16\Microsoft.Windows.CppWinRT.vsix
+      script: echo F|xcopy /S /Q /Y /F YexuanXiao.CppWinRTPlus.vsix $(Build.ArtifactStagingDirectory)\Standalone\Dev16\YexuanXiao.CppWinRTPlus.vsix
       workingDirectory: $(Build.SourcesDirectory)\vsix\Dev16\bin\$(BuildConfiguration)\Standalone
       failOnStderr: true
 
@@ -595,7 +595,7 @@ jobs:
   - task: CmdLine@2
     displayName: Stage Standalone VSIX (Dev17)
     inputs:
-      script: echo F|xcopy /S /Q /Y /F Microsoft.Windows.CppWinRT.Dev17.vsix $(Build.ArtifactStagingDirectory)\Standalone\Dev17\Microsoft.Windows.CppWinRT.Dev17.vsix
+      script: echo F|xcopy /S /Q /Y /F YexuanXiao.CppWinRTPlus.Dev17.vsix $(Build.ArtifactStagingDirectory)\Standalone\Dev17\YexuanXiao.CppWinRTPlus.Dev17.vsix
       workingDirectory: $(Build.SourcesDirectory)\vsix\Dev17\bin\$(BuildConfiguration)\Standalone
       failOnStderr: true
 
@@ -634,7 +634,7 @@ jobs:
     displayName: Publish Component VSIX symbols
     inputs:
       SymbolsFolder: $(Build.ArtifactStagingDirectory)
-      SearchPattern: '**/Microsoft.Windows.CppWinRT.Dev17.pdb'
+      SearchPattern: '**/YexuanXiao.CppWinRTPlus.Dev17.pdb'
       SymbolServerType: TeamServices
       SymbolsProduct: CppWinRT
 ...
