@@ -26,6 +26,10 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         <CppWinRTPackageDir Condition="'$(CppWinRTPackage)' == 'true' and '$(CppWinRTPackageDir)'==''">$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)))..\..\</CppWinRTPackageDir>
         <CppWinRTPackageDir Condition="'$(CppWinRTPackage)' != 'true' and '$(CppWinRTPackageDir)'==''">$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)))</CppWinRTPackageDir>
         <CppWinRTParameters Condition="'$(CppWinRTFastAbi)'=='true'">$(CppWinRTParameters) -fastabi</CppWinRTParameters>
+        <CppWinRTCommandUseModules Condition="'$(CppWinRTUseModules)' == 'true'">-modules</CppWinRTCommandUseModules>
+        <CppWinRTConfigFile Condition="'$(CppWinRTConfigFile)' == '' and '$(SolutionDir)' != '' and Exists('$(SolutionDir)CppWinRT.config')">$([System.IO.Path]::GetFullPath('$(SolutionDir)CppWinRT.config'))</CppWinRTConfigFile>
+        <CppWinRTConfigFile Condition="'$(CppWinRTConfigFile)' == '' and Exists('$(MSBuildProjectDirectory)\\CppWinRT.config')">$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\\CppWinRT.config'))</CppWinRTConfigFile>
+        <CppWinRTCommandConfigFile Condition="'$(CppWinRTConfigFile)' != ''">-config &quot;$(CppWinRTConfigFile)&quot;</CppWinRTCommandConfigFile>
         <CppWinRTPath Condition="'$(CppWinRTPackage)' == 'true' and '$(CppWinRTPath)'==''">"$(CppWinRTPackageDir)bin\"</CppWinRTPath>
         <CppWinRTPath Condition="'$(CppWinRTPackage)' != 'true' and '$(CppWinRTPath)'==''">"$(CppWinRTPackageDir)"</CppWinRTPath>
         <!-- By default enable C++/WinRT to include target platform winmds if we didn't override sdk references and the C++ Project system isn't already adding them -->
@@ -607,6 +611,7 @@ $(XamlMetaDataProviderPch)
         <ItemGroup>
             <CustomAdditionalPlatformWinMDInputs Include="$(IntDir)$(MSBuildProjectFile).cppwinrt_plat.cache" />
             <CppWinRTPlatformProjectionCache Include="@(CppWinRTPlatformWinMDInputs)" />
+            <CppWinRTPlatformProjectionCache Include="$(CppWinRTConfigFile)" Condition="'$(CppWinRTConfigFile)' != ''" />
             <!-- No need to include properties here as those should be caught by having $(MSBuildAllProjects) as input to the target-->
         </ItemGroup>
 
@@ -640,7 +645,7 @@ $(XamlMetaDataProviderPch)
     <Target Name="CppWinRTMakePlatformProjection"
             Condition="'$(CppWinRTEnablePlatformProjection)' == 'true' AND '$(CppWinRTOverrideSDKReferences)' != 'true'"
             DependsOnTargets="CppWinRTResolveReferences;GetCppWinRTPlatformWinMDInputs;_CppWinRTMakePlatformProjectionDependencyCache;$(CppWinRTMakePlatformProjectionDependsOn)"
-            Inputs="$(MSBuildAllProjects);@(CppWinRTPlatformWinMDInputs);@(CustomAdditionalPlatformWinMDInputs)"
+            Inputs="$(MSBuildAllProjects);@(CppWinRTPlatformWinMDInputs);@(CustomAdditionalPlatformWinMDInputs);$(CppWinRTConfigFile)"
             Outputs="$(CppWinRTPlatformProjectionResponseFile)">
         <PropertyGroup>
             <CppWinRTCommand>$(CppWinRTPath)cppwinrt %40"$(CppWinRTPlatformProjectionResponseFile)"</CppWinRTCommand>
@@ -650,7 +655,7 @@ $(XamlMetaDataProviderPch)
             <_CppwinrtInputs Include="@(CppWinRTPlatformWinMDInputs)"/>
         </ItemGroup>
         <PropertyGroup>
-            <_CppwinrtParameters>$(CppWinRTCommandVerbosity) $(CppWinRTParameters)</_CppwinrtParameters>
+            <_CppwinrtParameters>$(CppWinRTCommandVerbosity) $(CppWinRTParameters) $(CppWinRTCommandUseModules) $(CppWinRTCommandConfigFile)</_CppwinrtParameters>
             <_CppwinrtParameters>$(_CppwinrtParameters) @(_CppwinrtInputs->'-in &quot;%(WinMDPath)&quot;', '&#x0d;&#x0a;')</_CppwinrtParameters>
             <_CppwinrtParameters>$(_CppwinrtParameters) -out &quot;$(GeneratedFilesDir).&quot;</_CppwinrtParameters>
         </PropertyGroup>
@@ -683,6 +688,7 @@ $(XamlMetaDataProviderPch)
             <CppWinRTReferenceProjectionCache Include="@(CppWinRTDirectWinMDReferences)" />
             <CppWinRTReferenceProjectionCache Include="@(CppWinRTDynamicProjectWinMDReferences)" />
             <CppWinRTReferenceProjectionCache Include="@(CppWinRTPlatformWinMDReferences)" />
+            <CppWinRTReferenceProjectionCache Include="$(CppWinRTConfigFile)" Condition="'$(CppWinRTConfigFile)' != ''" />
             <!-- No need to include properties here as those should be caught by having $(MSBuildAllProjects) as input to the target-->
         </ItemGroup>
 
@@ -716,7 +722,7 @@ $(XamlMetaDataProviderPch)
     <Target Name="CppWinRTMakeReferenceProjection"
             Condition="'@(CppWinRTDirectWinMDReferences)@(CppWinRTDynamicProjectWinMDReferences)' != '' AND '$(CppWinRTEnableReferenceProjection)' == 'true'"
             DependsOnTargets="CppWinRTResolveReferences;_CppWinRTMakeReferenceProjectionDependencyCache;$(CppWinRTMakeReferenceProjectionDependsOn)"
-            Inputs="$(MSBuildAllProjects);@(CppWinRTDirectWinMDReferences);@(CppWinRTDynamicProjectWinMDReferences);@(CppWinRTPlatformWinMDReferences);@(CustomAdditionalReferenceWinMDInputs)"
+            Inputs="$(MSBuildAllProjects);@(CppWinRTDirectWinMDReferences);@(CppWinRTDynamicProjectWinMDReferences);@(CppWinRTPlatformWinMDReferences);@(CustomAdditionalReferenceWinMDInputs);$(CppWinRTConfigFile)"
             Outputs="$(CppWinRTReferenceProjectionResponseFile)">
         <PropertyGroup>
             <CppWinRTCommand>$(CppWinRTPath)cppwinrt %40"$(CppWinRTReferenceProjectionResponseFile)"</CppWinRTCommand>
@@ -729,7 +735,7 @@ $(XamlMetaDataProviderPch)
             <_CppwinrtRefRefs Include="@(CppWinRTPlatformWinMDReferences)"/>
         </ItemGroup>
         <PropertyGroup>
-            <_CppwinrtParameters>$(CppWinRTCommandVerbosity) $(CppWinRTParameters)</_CppwinrtParameters>
+            <_CppwinrtParameters>$(CppWinRTCommandVerbosity) $(CppWinRTParameters) $(CppWinRTCommandUseModules) $(CppWinRTCommandConfigFile)</_CppwinrtParameters>
             <_CppwinrtParameters>$(_CppwinrtParameters) @(_CppwinrtRefInputs->'-in &quot;%(WinMDPath)&quot;', '&#x0d;&#x0a;')</_CppwinrtParameters>
             <_CppwinrtParameters>$(_CppwinrtParameters) @(_CppwinrtRefRefs->'-ref &quot;%(WinMDPath)&quot;', '&#x0d;&#x0a;')</_CppwinrtParameters>
             <_CppwinrtParameters>$(_CppwinrtParameters) -out &quot;$(GeneratedFilesDir).&quot;</_CppwinrtParameters>
@@ -765,6 +771,7 @@ $(XamlMetaDataProviderPch)
             <CppWinRTComponentProjectionCache Include="@(CppWinRTDirectWinMDReferences)"/>
             <CppWinRTComponentProjectionCache Include="@(CppWinRTDynamicProjectWinMDReferences)"/>
             <CppWinRTComponentProjectionCache Include="@(CppWinRTPlatformWinMDReferences)"/>
+            <CppWinRTComponentProjectionCache Include="$(CppWinRTConfigFile)" Condition="'$(CppWinRTConfigFile)' != ''" />
             <!-- No need to include properties here as those should be caught by having $(MSBuildAllProjects) as input to the target-->
         </ItemGroup>
 
@@ -798,7 +805,7 @@ $(XamlMetaDataProviderPch)
     <Target Name="CppWinRTMakeComponentProjection"
             Condition="'$(CppWinRTEnableComponentProjection)' == 'true'"
             DependsOnTargets="CppWinRTResolveReferences;GetCppWinRTMdMergeInputs;_CppWinRTMakeComponentProjectionDependencyCache;$(CppWinRTMakeComponentProjectionDependsOn)"
-            Inputs="$(MSBuildAllProjects);@(CppWinRTMdMergeInputs);@(CppWinRTStaticProjectWinMDReferences);@(CustomAdditionalComponentWinMDInputs)"
+            Inputs="$(MSBuildAllProjects);@(CppWinRTMdMergeInputs);@(CppWinRTStaticProjectWinMDReferences);@(CustomAdditionalComponentWinMDInputs);$(CppWinRTConfigFile)"
             Outputs="$(CppWinRTComponentProjectionResponseFile)">
         <PropertyGroup>
             <_PCH>@(ClCompile->Metadata('PrecompiledHeaderFile')->Distinct())</_PCH>
@@ -809,6 +816,9 @@ $(XamlMetaDataProviderPch)
             <CppWinRTUsePrefixes Condition="'$(CppWinRTUsePrefixes)' == ''">true</CppWinRTUsePrefixes>
             <CppWinRTPrecompiledHeader Condition="'$(CppWinRTPrecompiledHeader)' == '' and '%(CLCompile.PrecompiledHeader)' != 'NotUsing'">$(_PCH)</CppWinRTPrecompiledHeader>
             <CppWinRTPrecompiledHeader Condition="'$(CppWinRTPrecompiledHeader)' == '' and '%(CLCompile.PrecompiledHeader)' == 'NotUsing'">.</CppWinRTPrecompiledHeader>
+        </PropertyGroup>
+        <PropertyGroup Condition="'$(CppWinRTUseModules)' == 'true'">
+            <CppWinRTPrecompiledHeader>.</CppWinRTPrecompiledHeader>
         </PropertyGroup>
         <PropertyGroup>
             <CppWinRTCommandUsePrefixes Condition="'$(CppWinRTUsePrefixes)' == 'true'">-prefix</CppWinRTCommandUsePrefixes>
@@ -835,7 +845,7 @@ $(XamlMetaDataProviderPch)
             <_CppwinrtCompRefs Include="@(CppWinRTPlatformWinMDReferences)"/>
         </ItemGroup>
         <PropertyGroup>
-            <_CppwinrtParameters>$(CppWinRTCommandVerbosity) $(CppWinRTParameters) -overwrite -name $(RootNamespace) $(CppWinRTCommandPrecompiledHeader) $(CppWinRTCommandUsePrefixes) -comp &quot;$(GeneratedFilesDir)sources&quot;</_CppwinrtParameters>
+            <_CppwinrtParameters>$(CppWinRTCommandVerbosity) $(CppWinRTParameters) $(CppWinRTCommandUseModules) $(CppWinRTCommandConfigFile) -overwrite -name $(RootNamespace) $(CppWinRTCommandPrecompiledHeader) $(CppWinRTCommandUsePrefixes) -comp &quot;$(GeneratedFilesDir)sources&quot;</_CppwinrtParameters>
             <_CppwinrtParameters Condition="'$(CppWinRTOptimized)'=='true'">$(_CppwinrtParameters) -opt</_CppwinrtParameters>
             <_CppwinrtParameters>$(_CppwinrtParameters) @(_CppwinrtCompInputs->'-in &quot;%(WinMDPath)&quot;', '&#x0d;&#x0a;')</_CppwinrtParameters>
             <_CppwinrtParameters>$(_CppwinrtParameters) @(_CppwinrtCompRefs->'-ref &quot;%(WinMDPath)&quot;', '&#x0d;&#x0a;')</_CppwinrtParameters>
@@ -855,6 +865,23 @@ $(XamlMetaDataProviderPch)
     </Target>
 
     <Target Name="CppWinRTMakeProjections" DependsOnTargets="CppWinRTResolveReferences;CppWinRTMakePlatformProjection;CppWinRTMakeReferenceProjection;CppWinRTMakeComponentProjection;$(CppWinRTMakeProjectionsDependsOn)" />
+
+    <Target Name="CppWinRTAddModuleInterfaces"
+            Condition="'$(CppWinRTUseModules)' == 'true'"
+            DependsOnTargets="CppWinRTMakeProjections"
+            BeforeTargets="FixupCLCompileOptions">
+        <ItemGroup>
+            <ClCompile Include="$(GeneratedFilesDir)winrt\*.ixx">
+                <CompileAs>CompileAsCppModule</CompileAs>
+                <ModulesSupported>true</ModulesSupported>
+                <PrecompiledHeader>NotUsing</PrecompiledHeader>
+            </ClCompile>
+
+            <ClCompile Update="$(GeneratedFilesDir)**\*.cpp">
+                <PrecompiledHeader>NotUsing</PrecompiledHeader>
+            </ClCompile>
+        </ItemGroup>
+    </Target>
 
     <!--Add references to all merged project WinMD files for Xaml Compiler-->
     <Target Name="CppWinRTAddXamlReferences"

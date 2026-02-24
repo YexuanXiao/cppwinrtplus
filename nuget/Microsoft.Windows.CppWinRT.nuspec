@@ -10,7 +10,7 @@
     <description>C++/WinRT Plus is a standard C++ language projection for the Windows Runtime implemented solely in header files. It allows you to both author and consume Windows Runtime APIs using any standards-compliant C++ compiler. C++/WinRT Plus is designed to provide C++ developers with first-class access to the modern Windows API.</description>
     <releaseNotes></releaseNotes>
     <tags>native C++ WinRT nativepackage</tags>
-    <copyright>© Microsoft Corporation. © 2026 C++/WinRT Plus Project.</copyright>
+    <copyright>Copyright (c) Microsoft Corporation. All rights reserved. Copyright (c) 2026 C++/WinRT Plus Project. All rights reserved.</copyright>
     <license type="file">LICENSE</license>
     <projectUrl>https://github.com/YexuanXiao/cppwinrtplus</projectUrl>
     <iconUrl>https://aka.ms/cppwinrt.ico</iconUrl>

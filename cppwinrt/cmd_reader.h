@@ -2,8 +2,6 @@
 
 #include <cassert>
 #include <array>
-#include <limits>
-#include <climits>
 #include <cstdint>
 #include <string>
 #include <string_view>
@@ -22,6 +20,17 @@
 
 namespace cppwinrt
 {
+    [[noreturn]] inline void throw_invalid(std::string const& message)
+    {
+        throw std::invalid_argument(message);
+    }
+
+    template <typename...T>
+    [[noreturn]] inline void throw_invalid(std::string message, T const&... args)
+    {
+        throw_invalid((message.append(args), ...));
+    }
+
 #if defined(_WIN32) || defined(_WIN64)
     struct registry_key
     {
@@ -68,11 +77,11 @@ namespace cppwinrt
         }
     };
 
-    static void check_xml(HRESULT result)
+    static void check_xml(HRESULT result, const char* purpose)
     {
         if (result < 0)
         {
-            throw std::invalid_argument("Could not read the Windows SDK's Platform.xml");
+            throw_invalid("Could not read the ", purpose);
         }
     }
 
@@ -82,6 +91,59 @@ namespace cppwinrt
         optional
     };
 
+    inline std::filesystem::path to_unc_path(std::filesystem::path const& path)
+    {
+        if (path.empty()) {
+            return {};
+        }
+
+        std::filesystem::path normalized = std::filesystem::absolute(path).lexically_normal();
+    
+        std::wstring const& sv = normalized.native();
+    
+        if (sv.starts_with(LR"(\\?\)") || sv.starts_with(LR"(\\.\)")) {
+            return normalized;
+        }
+
+        if (sv.starts_with(LR"(\\)")) {
+            return std::filesystem::path(LR"(\\?\UNC)") / normalized.relative_path();
+        }
+
+        return std::filesystem::path(LR"(\\?\)") / normalized;
+    }
+
+    struct xml_input
+    {
+        com_ptr<IStream> stream;
+        com_ptr<IXmlReader> reader;
+    };
+
+    inline bool open_xml_input(
+        std::filesystem::path const& xml_path,
+        xml_requirement xml_path_requirement,
+        const char* purpose,
+        xml_input& input)
+    {
+        auto streamResult = SHCreateStreamOnFileW(to_unc_path(xml_path).c_str(), STGM_READ, &input.stream.ptr);
+
+        if (xml_path_requirement == xml_requirement::optional &&
+            (streamResult == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND) ||
+             streamResult == HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND)))
+        {
+            return false;
+        }
+
+        check_xml(streamResult, purpose);
+
+        check_xml(CreateXmlReader(
+            __uuidof(IXmlReader),
+            reinterpret_cast<void**>(&input.reader.ptr),
+            nullptr), purpose);
+
+        check_xml(input.reader->SetInput(input.stream.ptr), purpose);
+        return true;
+    }
+
     inline void add_files_from_xml(
         std::set<std::string>& files,
         std::string const& sdk_version,
@@ -89,30 +151,18 @@ namespace cppwinrt
         std::filesystem::path const& sdk_path,
         xml_requirement xml_path_requirement)
     {
-        com_ptr<IStream> stream;
+        xml_input input;
 
-        auto streamResult = SHCreateStreamOnFileW(
-            xml_path.c_str(),
-            STGM_READ, &stream.ptr);
-        if (xml_path_requirement == xml_requirement::optional &&
-            (streamResult == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND) ||
-             streamResult == HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND)))
+        const char* purpose = "Windows SDK's Platform.xml";
+
+        if (!open_xml_input(xml_path, xml_path_requirement, purpose, input))
         {
             return;
         }
-        check_xml(streamResult);
 
-        com_ptr<IXmlReader> reader;
-
-        check_xml(CreateXmlReader(
-            __uuidof(IXmlReader),
-            reinterpret_cast<void**>(&reader.ptr),
-            nullptr));
-
-        check_xml(reader->SetInput(stream.ptr));
         XmlNodeType node_type = XmlNodeType_None;
 
-        while (S_OK == reader->Read(&node_type))
+        while (S_OK == input.reader->Read(&node_type))
         {
             if (node_type != XmlNodeType_Element)
             {
@@ -120,7 +170,7 @@ namespace cppwinrt
             }
 
             wchar_t const* value{ nullptr };
-            check_xml(reader->GetLocalName(&value, nullptr));
+            check_xml(input.reader->GetLocalName(&value, nullptr), purpose);
 
             if (0 != wcscmp(value, L"ApiContract"))
             {
@@ -131,16 +181,16 @@ namespace cppwinrt
             path /= L"References";
             path /= sdk_version;
 
-            check_xml(reader->MoveToAttributeByName(L"name", nullptr));
-            check_xml(reader->GetValue(&value, nullptr));
+            check_xml(input.reader->MoveToAttributeByName(L"name", nullptr), purpose);
+            check_xml(input.reader->GetValue(&value, nullptr), purpose);
             path /= value;
 
-            check_xml(reader->MoveToAttributeByName(L"version", nullptr));
-            check_xml(reader->GetValue(&value, nullptr));
+            check_xml(input.reader->MoveToAttributeByName(L"version", nullptr), purpose);
+            check_xml(input.reader->GetValue(&value, nullptr), purpose);
             path /= value;
 
-            check_xml(reader->MoveToAttributeByName(L"name", nullptr));
-            check_xml(reader->GetValue(&value, nullptr));
+            check_xml(input.reader->MoveToAttributeByName(L"name", nullptr), purpose);
+            check_xml(input.reader->GetValue(&value, nullptr), purpose);
             path /= value;
 
             path += L".winmd";
@@ -161,7 +211,7 @@ namespace cppwinrt
             KEY_READ | KEY_WOW64_32KEY, 
             &key))
         {
-            throw std::invalid_argument("Could not find the Windows SDK in the registry");
+            throw_invalid("Could not find the Windows SDK in the registry");
         }
 
         return registry_key{ key };
@@ -181,7 +231,7 @@ namespace cppwinrt
             nullptr,
             &path_size))
         {
-            throw std::invalid_argument("Could not find the Windows SDK path in the registry");
+            throw_invalid("Could not find the Windows SDK path in the registry");
         }
 
         std::wstring root((path_size / sizeof(wchar_t)) - 1, L'?');
@@ -291,29 +341,17 @@ namespace cppwinrt
 
         if (result.empty())
         {
-            throw std::invalid_argument("Could not find the Windows SDK");
+            throw_invalid("Could not find the Windows SDK");
         }
 
         return result;
     }
 #endif /* defined(_WIN32) || defined(_WIN64) */
 
-    [[noreturn]] inline void throw_invalid(std::string const& message)
-    {
-        throw std::invalid_argument(message);
-    }
-
-    template <typename...T>
-    [[noreturn]] inline void throw_invalid(std::string message, T const&... args)
-    {
-        (message.append(args), ...);
-        throw std::invalid_argument(message);
-    }
-
     struct option
     {
         static constexpr std::uint32_t no_min = 0;
-        static constexpr std::uint32_t no_max = UINT_MAX;
+        static constexpr std::uint32_t no_max = (std::numeric_limits<std::uint32_t>::max)();;
         
         std::string_view name;
         std::uint32_t min{ no_min };

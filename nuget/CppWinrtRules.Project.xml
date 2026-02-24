@@ -56,6 +56,11 @@
                 Description="Uses a dotted prefix namespace convention (versus a nested folder convention)"
                 Category="General" />
 
+  <BoolProperty Name="CppWinRTUseModules"
+                DisplayName="Use C++ Modules"
+                Description="Generate and compile C++/WinRT namespace modules (.ixx) instead of winrt.ixx; disables PCH for generated files"
+                Category="General" />
+
   <StringProperty Name="CppWinRTParameters"
                 DisplayName="Additional Parameters"
                 Description="Additional cppwinrt.exe command-line parameters"
