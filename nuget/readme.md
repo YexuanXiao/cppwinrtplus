@@ -63,6 +63,8 @@ C++/WinRT behavior can be customized with these project properties:
 | CppWinRTRootNamespaceAutoMerge | true \| *false | Sets the namespace merge depth to be the length of the root namespace |
 | CppWinRTMergeNoValidate | true \| *false | Disables mdmerge validation |
 | CppWinRTUsePrefixes | *true \| false | Uses a dotted prefix namespace convention (versus a nested folder convention) |
+| CppWinRTUseModules | true \| *false | Generate and compile C++/WinRT namespace modules (.ixx) instead of winrt.ixx; disables PCH for generated files |
+| CppWinRTConfigFile | path | Configuration file for including or excluding namespaces or other declarations/definitions |
 | CppWinRTPath | ...\cppwinrt.exe | NuGet package-relative path to cppwinrt.exe, for custom build rule invocation |
 | CppWinRTParameters | "" | Custom cppwinrt.exe command-line parameters (be sure to append to existing) |
 | CppWinRTFastAbi | true \| *false | Enables Fast ABI feature for both consuming and producing projections |
@@ -76,6 +78,25 @@ To customize common C++/WinRT project properties:
 * right-click the project node
 * expand the Common Properties item
 * select the C++/WinRT property page
+
+The format of the configuration file is:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <include>
+        <prefix>Windows.Foundation</prefix>
+        <prefix>Windows.UI</prefix>
+    </include>
+    <exclude>
+        <prefix>Windows.UI.Composition</prefix>
+    </exclude>
+</configuration>
+```
+
+It is equivalent to passing -config \<path\> to cppwinrt.exe, which combines the -include and -exclude options.
+
+Configuration files are only supported on Windows.
 
 ## InitializeComponent
 
