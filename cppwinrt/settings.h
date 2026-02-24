@@ -9,6 +9,7 @@ namespace cppwinrt
 
         std::string output_folder;
         bool base{};
+        bool modules{};
         bool license{};
         std::string license_template;
         bool brackets{};
