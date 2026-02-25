@@ -23,7 +23,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         <CppWinRTConfigFile Condition="'$(CppWinRTConfigFile)' == '' and '$(SolutionDir)' != '' and Exists('$(SolutionDir)CppWinRT.config')">$([System.IO.Path]::GetFullPath('$(SolutionDir)CppWinRT.config'))</CppWinRTConfigFile>
         <CppWinRTConfigFile Condition="'$(CppWinRTConfigFile)' == '' and Exists('$(MSBuildProjectDirectory)\\CppWinRT.config')">$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\\CppWinRT.config'))</CppWinRTConfigFile>
         <CppWinRTCommandConfigFile Condition="'$(CppWinRTConfigFile)' != ''">-config &quot;$(CppWinRTConfigFile)&quot;</CppWinRTCommandConfigFile>
-        <CppWinRTPath Condition="'$(CppWinRTPackage)' == 'true' and '$(CppWinRTPath)'==''">"$(CppWinRTPackageDir)bin\"</CppWinRTPath>
+        <CppWinRTPath Condition="'$(CppWinRTPackage)' == 'true' and '$(CppWinRTPath)'==''">"$(CppWinRTPackageDir)bin\$(ProcessorArchitecture)\"</CppWinRTPath>
         <CppWinRTPath Condition="'$(CppWinRTPackage)' != 'true' and '$(CppWinRTPath)'==''">"$(CppWinRTPackageDir)"</CppWinRTPath>
         <!-- By default enable C++/WinRT to include target platform winmds if we didn't override sdk references and the C++ Project system isn't already adding them -->
         <!-- _PrepareForReferenceResolution adds the references if TargetPlatformIdentifier is UAP -->
