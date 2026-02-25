@@ -33,7 +33,7 @@ jobs:
           user: YexuanXiao
 
       - name: NuGet push
-        run: nuget push ./*.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./*.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
 
       - name: Upload to Release
         shell: pwsh
