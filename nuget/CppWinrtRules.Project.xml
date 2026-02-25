@@ -23,14 +23,6 @@
     <EnumValue Name="high" DisplayName="high" Description="Enables messages when MSBuild verbosity is set to at least 'minimal'" />
   </EnumProperty>
 
-  <EnumProperty Name="CppWinRTProjectLanguage"
-                DisplayName="Project Language"
-                Description="Sets the C++ dialect for the project.  C++/WinRT provides full projection support, C++/CX permits consuming projection headers."
-                Category="General">
-    <EnumValue Name="C++/WinRT" DisplayName="C++/WinRT" Description="Enables full consuming and producing projection support and Xaml integration" />
-    <EnumValue Name="C++/CX" DisplayName="C++/CX" Description="Enables C++/CX code to generate and use consuming projections" />
-  </EnumProperty>
-
   <BoolProperty Name="CppWinRTLibs"
                 DisplayName="Umbrella Library"
                 Description="Adds the WindowsApp.lib umbrella library for Windows Runtime imports"

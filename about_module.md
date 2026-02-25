@@ -27,6 +27,8 @@ However, C++/WinRT still needed significant improvements to achieve modularizati
 
 Finally, C++/WinRT actually chose the wrong path when attempting to support modules by having all header files share a single module, which leads to terrible results. This would make the BMI (or .ifc) file 260MB in size—9 times larger than the STL's 29MB. It's foreseeable that with such a design, compilation will slow down.
 
+C++/WinRT also attempts to implement modules without using std modules, which also causes issues, as will be explained further later. However, this is not C++/WinRT's fault, as STL's module support was completed in 2024.
+
 ### The Solution
 
 Therefore, I implemented a more complicated approach:
