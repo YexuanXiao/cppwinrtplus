@@ -6,6 +6,8 @@ We're deeply grateful to the original authors of C++/WinRT for their groundbreak
 
 With development on the original project slowing, we believe it's time for the community to take the lead. C++/WinRT Plus builds on that strong foundation—preserving what works while addressing the issues that matter most to daily users. Join us in shaping the future of Windows Runtime development in C++.
 
+C++/WinRT can now be compiled as C++ modules. Compared to PCH, using C++ modules will reduce memory requirements by more than half.
+
 ## How to use
 
 You can install the package directly via NuGet with the ID YexuanXiao.CppWinRTPlus.
@@ -14,8 +16,9 @@ Microsoft's C++/WinRT version number format is 2.0.{yymmdd}.1. Since Microsoft's
 
 ## Changelog
 
+2026/2/25: The NuGet package now includes cppwinrt.exe with x86, x64, and arm64.
+2026/2/24: C++/WinRT can now be compiled as C++ modules. See the [blog post](./about_module.md) for details.
 2026/2/22: Removed support for C++17 and C++/CX. Existing projects need to upgrade their C++ standard to C++20.
-2026/2/24: C++/WinRT Plus now supports C++ standard modules. See the [blog post](./about_module.md) for details.
 
 ## Building C++/WinRT
 

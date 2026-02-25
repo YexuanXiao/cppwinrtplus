@@ -2,6 +2,16 @@
 
 Please read the [repository](https://github.com/YexuanXiao/cppwinrtplus)'s README.md for usage instructions.
 
+## Changelog
+
+C++/WinRT can now be compiled as C++ modules. Compared to PCH, using C++ modules will reduce memory requirements by more than half.
+
+2026/2/25: The NuGet package now includes cppwinrt.exe with x86, x64, and arm64.
+2026/2/24: C++/WinRT can now be compiled as C++ modules. See the [blog post](./about_module.md) for details.
+2026/2/22: Removed support for C++17 and C++/CX. Existing projects need to upgrade their C++ standard to C++20.
+
+The following content is from the original C++/WinRT documentation and remains a valuable resource.
+
 ## Overview
 
 Please visit [Microsoft.Windows.CppWinRT](https://www.nuget.org/packages/Microsoft.Windows.CppWinRT/) for official Microsoft-signed builds of the NuGet package.  See also the [C++/WinRT](https://aka.ms/cppwinrt/vsix/) VSIX, which provides C++/WinRT project templates and debug visualization.
