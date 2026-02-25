@@ -1,0 +1,49 @@
+name: Release NuGet
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    permissions:
+        id-token: write
+    runs-on: windows-2025-vs2026
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build and pack
+        shell: pwsh
+        run: |
+          $tag = "${{ github.event.release.tag_name }}"
+          $version = $tag -replace '^v', ''
+          $VSDevCmd = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere" -latest -find Common7\tools\VSDevCmd.bat
+          echo "Using VSDevCmd: ${VSDevCmd}"
+          cmd /c "${VSDevCmd}" "&" nuget.exe restore cppwinrt.slnx
+          cmd /c "${VSDevCmd}" "&" build_nuget.cmd "${version}"
+          if (!(Test-Path "*.nupkg")) {
+            echo "::error::Output nuget package not found!"
+            exit 1
+          }
+
+      - name: NuGet login
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: YexuanXiao
+
+      - name: NuGet push
+        run: nuget push ./*.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+
+      - name: Upload to Release
+        shell: pwsh
+        run: |
+          $version = "${{ github.event.release.tag_name }}"
+          $headers = @{
+            "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
+            "Content-Type" = "application/octet-stream"
+          }
+          Get-ChildItem "./*.nupkg" | ForEach-Object {
+            $url = "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ github.event.release.id }}/assets?name=$($_.Name)"
+            Invoke-RestMethod -Uri $url -Method POST -Headers $headers -InFile $_.FullName
+          }

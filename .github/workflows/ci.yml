@@ -363,27 +363,3 @@ jobs:
       - name: Run nuget test
         run: |
           cmd /c "$env:VSDevCmd" "&" msbuild /m /clp:ForceConsoleColor "$env:msbuild_config_props" test\nuget\NugetTest.slnx
-
-  build-nuget:
-    name: Build nuget package with MSVC
-    runs-on: windows-2025-vs2026
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Package
-        run: |
-          $VSDevCmd = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere" -latest -find Common7\tools\VSDevCmd.bat
-          if (!$VSDevCmd) { exit 1 }
-          echo "Using VSDevCmd: ${VSDevCmd}"
-          cmd /c "${VSDevCmd}" "&" nuget.exe restore cppwinrt.slnx
-          cmd /c "${VSDevCmd}" "&" build_nuget.cmd
-          if (!(Test-Path "*.nupkg")) {
-            echo "::error::Output nuget package not found!"
-            exit 1
-          }
-
-      - name: Upload nuget package artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: package
-          path: "*.nupkg"
