@@ -28,7 +28,9 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         <!-- By default enable C++/WinRT to include target platform winmds if we didn't override sdk references and the C++ Project system isn't already adding them -->
         <!-- _PrepareForReferenceResolution adds the references if TargetPlatformIdentifier is UAP -->
         <CppWinRTImplicitlyExpandTargetPlatform Condition="'$(CppWinRTImplicitlyExpandTargetPlatform)' == '' and '$(CppWinRTOverrideSDKReferences)' != 'true' and '$(TargetPlatformIdentifier)' != 'UAP'">true</CppWinRTImplicitlyExpandTargetPlatform>
-        <XamlLanguage Condition="'$(CppWinRTProjectLanguage)' == 'C++/CX'">C++</XamlLanguage>
+        <!-- todo: Consider remove this variable -->
+        <!-- <XamlLanguage Condition="'$(CppWinRTProjectLanguage)' == 'C++/CX'">C++</XamlLanguage> -->
+        <XamlLanguage>CppWinRT</XamlLanguage>
         <XamlNamespace Condition="'$(XamlNamespace)' == ''">Windows.UI.Xaml</XamlNamespace>
         <XamlMetaDataProviderIdl Condition="'$(XamlMetaDataProviderIdl)'== ''">$(GeneratedFilesDir)XamlMetaDataProvider.idl</XamlMetaDataProviderIdl>
         <XamlMetaDataProviderCpp Condition="'$(XamlMetaDataProviderCpp)'== ''">$(GeneratedFilesDir)XamlMetaDataProvider.cpp</XamlMetaDataProviderCpp>

@@ -17,6 +17,10 @@ Microsoft's C++/WinRT version number format is 2.0.{yymmdd}.1. Since Microsoft's
 2026/2/22: Removed support for C++17 and C++/CX. Existing projects need to upgrade their C++ standard to C++20.
 2026/2/24: C++/WinRT Plus now supports C++ standard modules. See the [blog post](./about_module.md) for details.
 
+## Building C++/WinRT
+
+Building C++/WinRT Plus requires Visual Studio 2026.
+
 <hr>
 
 The following content is from the original C++/WinRT documentation and remains a valuable resource.

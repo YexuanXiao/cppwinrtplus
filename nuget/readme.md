@@ -9,11 +9,12 @@ Please visit [Microsoft.Windows.CppWinRT](https://www.nuget.org/packages/Microso
 To add build support for C++/WinRT vcxproj projects, add a reference to the Microsoft.Windows.CppWinRT NuGet package.  This customizes your project's build rules to automatically generate C++/WinRT projection headers, enabling you to both consume and produce Windows Runtime classes.
 
 C++/WinRT detects Windows metadata required by the project, from:
+
 * Platform winmd files in the SDK (both MSI and NuGet)
 * NuGet package references containing winmd files
 * Other project references producing winmd files
 * Raw winmd file references
-* Interface definition language (IDL) files in the project 
+* Interface definition language (IDL) files in the project
 
 For any winmd file discovered above, C++/WinRT creates reference (consuming) projection headers.  Client code can simply #include these headers, which are created in the generated files directory (see below).
 
@@ -22,6 +23,7 @@ For any IDL file contained in the project, C++/WinRT creates component (producin
 ## Details
 
 C++/WinRT configures build rules for the following tools:
+
 * C++ compiler
 * C++/WinRT compiler
 * MdMerge utility
@@ -44,13 +46,16 @@ It sets the following project properties and item metadata:
 | Midl.AdditionalOptions | /reference ... | Enables faster compilation with winmd references (versus idl imports) |
 | Midl.EnableWindowsRuntime | true | Enables Windows Runtime semantics |
 | Midl.MetadataFileName | Unmerged\%(Filename).winmd | Generates unmerged metadata in a temporary location |
-| Midl.GenerateClientFiles, GenerateServerFiles, GenerateStublessProxies, GenerateTypeLibrary, HeaderFileName, DllDataFileName, InterfaceIdentifierFileName, ProxyFileName, TypeLibraryName | *nul, *None, *false | Disable unnecessary output |
-\*If not already set 
+| Midl.GenerateClientFiles, GenerateServerFiles, GenerateStublessProxies, GenerateTypeLibrary, HeaderFileName, DllDataFileName, InterfaceIdentifierFileName, ProxyFileName, TypeLibraryName | \*nul, \*None, \*false | Disable unnecessary output |
+
+\*If not already set
 
 ## Generated Files
+
 The generated files directory created by C++/WinRT contains two subfolders:
-* sources: runtime class skeleton implementations 
-* winrt: reference projection headers 
+
+* sources: runtime class skeleton implementations
+* winrt: reference projection headers
 
 ## Customizing
 
@@ -69,13 +74,14 @@ C++/WinRT behavior can be customized with these project properties:
 | CppWinRTPath | ...\cppwinrt.exe | NuGet package-relative path to cppwinrt.exe, for custom build rule invocation |
 | CppWinRTParameters | "" | Custom cppwinrt.exe command-line parameters (be sure to append to existing) |
 | CppWinRTFastAbi | true \| *false | Enables Fast ABI feature for both consuming and producing projections |
-| CppWinRTProjectLanguage | C++/CX \| *C++/WinRT | Selects the C++ dialect for the project.  C++/WinRT provides full projection support, C++/CX permits consuming projection headers. |
 | CppWinRTOptimized | true \| *false | Enables component projection [optimization features](https://kennykerr.ca/2019/06/07/cppwinrt-optimizing-components/) |
 | CppWinRTGenerateWindowsMetadata | true \| *false | Indicates whether this project produces Windows Metadata |
 | CppWinRTEnableDefaultPrivateFalse | true \| *false | Indicates whether this project uses C++/WinRT optimized default for copying binaries to the output directory |
+
 \*Default value
 
 To customize common C++/WinRT project properties:
+
 * right-click the project node
 * expand the Common Properties item
 * select the C++/WinRT property page
@@ -168,7 +174,8 @@ The msbuild verbosity level maps to msbuild message importance as follows:
 | m[inimal] | high |
 | n[ormal] | normal+ |
 | d[etailed], diag[nostic] | low+ |
-For example, if the verbosity is set to minimal, then only messages with high importance are generated.  However, if the verbosity is set to diagnostic, then all messages are generated.  
+
+For example, if the verbosity is set to minimal, then only messages with high importance are generated.  However, if the verbosity is set to diagnostic, then all messages are generated.
 
 The default importance of C++/WinRT build messages is 'normal', but this can be overridden with the CppWinRTVerbosity property to enable throttling of C++/WinRT messages independent of the overall verbosity level.
 
