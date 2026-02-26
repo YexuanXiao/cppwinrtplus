@@ -31,9 +31,9 @@ C++/WinRT also attempts to implement modules without using std modules, which al
 
 ### The Solution
 
-Therefore, I implemented a more complicated approach:
+Therefore, I implemented a more complicated approach.
 
-**Header File Pattern:**
+First, write all header files in the following pattern:
 
 ```cpp
 #pragma once
@@ -53,7 +53,7 @@ Therefore, I implemented a more complicated approach:
 #endif
 ```
 
-**Module Interface Units (.ixx):**
+Then, implement module interface units (.ixx) in the following pattern for these header files:
 
 ```cpp
 module;
@@ -78,11 +78,7 @@ This design allows you to import exactly what you want, not unnecessary junk. Th
 
 ### Build Configuration
 
-**MSBuild Limitations:**
-
 Unfortunately, due to special reasons (which won't change in the future), when using MSBuild with C++/WinRT Plus, once interface units are added, they are compiled. Therefore, by default, even if you don't use `Windows.UI.Xaml`, it still consumes valuable time.
-
-**Namespace Exclusion:**
 
 Thus, C++/WinRT Plus provides the ability to disable certain namespaces via a configuration file. You can create a `CppWinRT.config` file in your solution directory with the following content:
 
