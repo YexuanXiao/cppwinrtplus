@@ -23,7 +23,9 @@ The current plans for C++/WinRT Plus can be viewed in the issue list. C++/WinRT 
 ## Changelog
 
 2026/2/25: The NuGet package now includes cppwinrt.exe with x86, x64, and arm64.
+
 2026/2/24: C++/WinRT can now be compiled as C++ modules. See the [blog post](./about_module.md) for details.
+
 2026/2/22: Removed support for C++17 and C++/CX. Existing projects need to upgrade their C++ standard to C++20.
 
 ## Building C++/WinRT
