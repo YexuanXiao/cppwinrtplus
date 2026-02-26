@@ -1,5 +1,7 @@
 # C++/WinRT Plus
 
+[![CI Tests](https://github.com/YexuanXiao/cppwinrtplus/actions/workflows/ci.yml/badge.svg)](https://github.com/YexuanXiao/cppwinrtplus/actions/workflows/ci.yml)
+
 C++/WinRT Plus is a community-driven evolution of the original C++/WinRT project. This independent initiative is neither affiliated with nor sponsored by Microsoft. Our mission is to address long-standing issues in C++/WinRT and deliver meaningful improvements to the developer experience. While the project introduces some breaking changes, we provide a simple and smooth migration path. You can continue using it just as you would with C++/WinRT.
 
 We're deeply grateful to the original authors of C++/WinRT for their groundbreaking work, which gave the C++ community first-class access to the Windows Runtime.
@@ -13,6 +15,10 @@ C++/WinRT can now be compiled as C++ modules. Compared to PCH, using C++ modules
 You can install the package directly via NuGet with the ID YexuanXiao.CppWinRTPlus.
 
 Microsoft's C++/WinRT version number format is 2.0.{yymmdd}.1. Since Microsoft's C++/WinRT development has almost stalled at present, C++/WinRT Plus will increment the minor version number by 1 to indicate that it is newer.
+
+## Roadmap
+
+The current plans for C++/WinRT Plus can be viewed in the issue list. C++/WinRT Plus currently has many ambitious improvements, so your help is greatly needed!
 
 ## Changelog
 
