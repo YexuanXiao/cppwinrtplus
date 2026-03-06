@@ -22,6 +22,8 @@ The current plans for C++/WinRT Plus can be viewed in the issue list. C++/WinRT 
 
 ## Changelog
 
+2026/3/06: cppwinrtplus reduces header file size by 1/4 and pch file size by 1/10.
+
 2026/2/25: The NuGet package now includes cppwinrt.exe with x86, x64, and arm64.
 
 2026/2/24: C++/WinRT can now be compiled as C++ modules. See the [blog post](./about_module.md) for details.
