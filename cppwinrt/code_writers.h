@@ -1451,15 +1451,6 @@ namespace cppwinrt
         }
 )");
         }
-        else if (type_name == "Windows.Foundation.Collections.IKeyValuePair`2")
-        {
-            w.write(R"(
-        bool operator==(Windows::Foundation::Collections::IKeyValuePair<K, V> const& other) const
-        {
-            return Key() == other.Key() && Value() == other.Value();
-        }
-)");
-        }
         else if (type_name == "Windows.Foundation.Collections.IMapView`2")
         {
             w.write(R"(
