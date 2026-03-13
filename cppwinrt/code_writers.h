@@ -2517,10 +2517,9 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
     {
         if (remove_tick(type.TypeName()) == "IKeyValuePair")
         {
-            w.write(R"(
-        friend bool operator==(IKeyValuePair const& left, IKeyValuePair const& right)
+            w.write(R"(        bool operator==(IKeyValuePair const& other) const
         {
-            return left.Key() == right.Key() && left.Value() == right.Value();
+            return this->Key() == other.Key() && this->Value() == other.Value();
         }
 )");
         }
