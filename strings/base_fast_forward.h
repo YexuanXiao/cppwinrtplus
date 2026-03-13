@@ -40,10 +40,7 @@ WINRT_EXPORT namespace winrt::impl
             std::uint16_t Data2;
             std::uint16_t Data3;
             std::uint8_t  Data4[8];
-            inline bool operator!=(guid const& right) const noexcept
-            {
-                return std::memcmp(this, &right, sizeof(guid));
-            }
+            constexpr bool operator==(guid const&) const noexcept = default;
         };
 
         struct WINRT_IMPL_FF_NOVTABLE WINRT_IMPL_FF_PUBLIC inspectable

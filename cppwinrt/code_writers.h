@@ -1458,11 +1458,6 @@ namespace cppwinrt
         {
             return Key() == other.Key() && Value() == other.Value();
         }
-
-        bool operator!=(Windows::Foundation::Collections::IKeyValuePair<K, V> const& other) const
-        {
-            return !(*this == other);
-        }
 )");
         }
         else if (type_name == "Windows.Foundation.Collections.IMapView`2")
@@ -2913,10 +2908,6 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
     {
         return%;
     }
-    inline bool operator!=(% const& left, % const& right)%
-    {
-        return !(left == right);
-    }
 )";
 
         if (types.empty())
@@ -3001,10 +2992,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
                 name,
                 name,
                 is_noexcept,
-                bind<write_struct_equality>(type.fields),
-                name,
-                name,
-                is_noexcept);
+                bind<write_struct_equality>(type.fields));
 
             for (auto&& field : type.fields)
             {

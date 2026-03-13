@@ -166,6 +166,29 @@ WINRT_EXPORT namespace winrt
         {
         }
 
+        constexpr bool operator==(guid const& other) const noexcept = default;
+        
+        constexpr auto operator<=>(guid const& other) const noexcept
+        {
+        #if __cpp_if_consteval >= 202106L
+            if consteval
+        #else
+            if (std::is_constant_evaluated())
+        #endif
+            {
+                if (auto cmp = Data1 <=> other.Data1; cmp != 0) return cmp;
+                if (auto cmp = Data2 <=> other.Data2; cmp != 0) return cmp;
+                if (auto cmp = Data3 <=> other.Data3; cmp != 0) return cmp;
+                for (std::size_t i = 0u; i != 8u; ++i)
+                    if (auto cmp = Data4[i] <=> other.Data4[i]; cmp != 0) return cmp;
+                return std::strong_ordering::equal;
+            }
+            else
+            {
+                return std::memcmp(this, &other, sizeof(guid)) <=> 0;
+            }
+        }
+
     private:
         template<bool, typename T>
         constexpr static guid convert(T const& value) noexcept
@@ -175,21 +198,6 @@ WINRT_EXPORT namespace winrt
             };
         }
     };
-
-    inline bool operator==(guid const& left, guid const& right) noexcept
-    {
-        return !std::memcmp(&left, &right, sizeof(left));
-    }
-
-    inline bool operator!=(guid const& left, guid const& right) noexcept
-    {
-        return !(left == right);
-    }
-
-    inline bool operator<(guid const& left, guid const& right) noexcept
-    {
-        return std::memcmp(&left, &right, sizeof(left)) < 0;
-    }
 }
 
 WINRT_EXPORT namespace winrt::Windows::Foundation

@@ -68,6 +68,19 @@ WINRT_EXPORT namespace winrt
             release_ref();
         }
 
+        bool operator==(com_ptr const& other) const noexcept = default;
+        auto operator<=>(com_ptr const& other) const noexcept = default;
+
+        bool operator==(std::nullptr_t) const noexcept
+        {
+            return m_ptr == nullptr;
+        }
+
+        friend bool operator==(std::nullptr_t, com_ptr const& right) noexcept
+        {
+            return right == nullptr;
+        }
+
         com_ptr& operator=(com_ptr const& other) noexcept
         {
             copy_ref(other.m_ptr);
@@ -286,66 +299,6 @@ WINRT_EXPORT namespace winrt
     auto detach_abi(com_ptr<T>& object) noexcept
     {
         return object.detach();
-    }
-
-    template <typename T>
-    bool operator==(com_ptr<T> const& left, com_ptr<T> const& right) noexcept
-    {
-        return get_abi(left) == get_abi(right);
-    }
-
-    template <typename T>
-    bool operator==(com_ptr<T> const& left, std::nullptr_t) noexcept
-    {
-        return get_abi(left) == nullptr;
-    }
-
-    template <typename T>
-    bool operator==(std::nullptr_t, com_ptr<T> const& right) noexcept
-    {
-        return nullptr == get_abi(right);
-    }
-
-    template <typename T>
-    bool operator!=(com_ptr<T> const& left, com_ptr<T> const& right) noexcept
-    {
-        return !(left == right);
-    }
-
-    template <typename T>
-    bool operator!=(com_ptr<T> const& left, std::nullptr_t) noexcept
-    {
-        return !(left == nullptr);
-    }
-
-    template <typename T>
-    bool operator!=(std::nullptr_t, com_ptr<T> const& right) noexcept
-    {
-        return !(nullptr == right);
-    }
-
-    template <typename T>
-    bool operator<(com_ptr<T> const& left, com_ptr<T> const& right) noexcept
-    {
-        return get_abi(left) < get_abi(right);
-    }
-
-    template <typename T>
-    bool operator>(com_ptr<T> const& left, com_ptr<T> const& right) noexcept
-    {
-        return right < left;
-    }
-
-    template <typename T>
-    bool operator<=(com_ptr<T> const& left, com_ptr<T> const& right) noexcept
-    {
-        return !(right < left);
-    }
-
-    template <typename T>
-    bool operator>=(com_ptr<T> const& left, com_ptr<T> const& right) noexcept
-    {
-        return !(left < right);
     }
 }
 

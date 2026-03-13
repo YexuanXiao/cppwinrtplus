@@ -87,31 +87,10 @@ WINRT_EXPORT namespace winrt::impl
             return m_index == other.m_index;
         }
 
-        bool operator<(fast_iterator const& other) const noexcept
+        auto operator<=>(fast_iterator const& other) const noexcept
         {
             WINRT_ASSERT(m_collection == other.m_collection);
-            return m_index < other.m_index;
-        }
-
-        bool operator>(fast_iterator const& other) const noexcept
-        {
-            WINRT_ASSERT(m_collection == other.m_collection);
-            return m_index > other.m_index;
-        }
-
-        bool operator!=(fast_iterator const& other) const noexcept
-        {
-            return !(*this == other);
-        }
-
-        bool operator<=(fast_iterator const& other) const noexcept
-        {
-            return !(*this > other);
-        }
-
-        bool operator>=(fast_iterator const& other) const noexcept
-        {
-            return !(*this < other);
+            return m_index <=> other.m_index;
         }
 
         friend fast_iterator operator+(difference_type n, fast_iterator it) noexcept

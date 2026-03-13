@@ -262,6 +262,51 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
             return m_ptr->QueryInterface(id, result);
         }
 
+        bool operator==(IUnknown const& right) const noexcept
+        {
+            if (m_ptr == right.m_ptr)
+            {
+                return true;
+            }
+
+            if (!(*this) || !right)
+            {
+                return false;
+            }
+
+            auto const left_identity = try_as<IUnknown>();
+            auto const right_identity = right.try_as<IUnknown>();
+            return left_identity.m_ptr == right_identity.m_ptr;
+        }
+
+        std::strong_ordering operator<=>(IUnknown const& right) const noexcept
+        {
+            void* const left_abi = m_ptr;
+            void* const right_abi = right.m_ptr;
+
+            if (left_abi == right_abi)
+            {
+                return std::strong_ordering::equal;
+            }
+
+            if (!(*this) || !right)
+            {
+                return left_abi < right_abi ? std::strong_ordering::less : std::strong_ordering::greater;
+            }
+
+            auto const left_object_identity = try_as<IUnknown>();
+            auto const right_object_identity = right.try_as<IUnknown>();
+            void* const left_identity = left_object_identity.m_ptr;
+            void* const right_identity = right_object_identity.m_ptr;
+
+            if (left_identity == right_identity)
+            {
+                return std::strong_ordering::equal;
+            }
+
+            return left_identity < right_identity ? std::strong_ordering::less : std::strong_ordering::greater;
+        }
+
         friend void swap(IUnknown& left, IUnknown& right) noexcept
         {
             std::swap(left.m_ptr, right.m_ptr);
@@ -399,52 +444,6 @@ WINRT_EXPORT namespace winrt
 
 WINRT_EXPORT namespace winrt::Windows::Foundation
 {
-    inline bool operator==(IUnknown const& left, IUnknown const& right) noexcept
-    {
-        if (get_abi(left) == get_abi(right))
-        {
-            return true;
-        }
-        if (!left || !right)
-        {
-            return false;
-        }
-        return get_abi(left.try_as<IUnknown>()) == get_abi(right.try_as<IUnknown>());
-    }
-
-    inline bool operator!=(IUnknown const& left, IUnknown const& right) noexcept
-    {
-        return !(left == right);
-    }
-
-    inline bool operator<(IUnknown const& left, IUnknown const& right) noexcept
-    {
-        if (get_abi(left) == get_abi(right))
-        {
-            return false;
-        }
-        if (!left || !right)
-        {
-            return get_abi(left) < get_abi(right);
-        }
-        return get_abi(left.try_as<IUnknown>()) < get_abi(right.try_as<IUnknown>());
-    }
-
-    inline bool operator>(IUnknown const& left, IUnknown const& right) noexcept
-    {
-        return right < left;
-    }
-
-    inline bool operator<=(IUnknown const& left, IUnknown const& right) noexcept
-    {
-        return !(right < left);
-    }
-
-    inline bool operator>=(IUnknown const& left, IUnknown const& right) noexcept
-    {
-        return !(left < right);
-    }
-
     struct IInspectable : IUnknown
     {
         IInspectable(std::nullptr_t = nullptr) noexcept {}

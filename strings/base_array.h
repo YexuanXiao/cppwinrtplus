@@ -76,6 +76,18 @@ WINRT_EXPORT namespace winrt
             array_view(other.data(), other.size())
         {}
 
+        template <typename U, std::enable_if_t<std::is_same_v<std::remove_cv_t<T>, std::remove_cv_t<U>>, int> = 0>
+        bool operator==(array_view<U> const& right) const noexcept
+        {
+            return std::equal(begin(), end(), right.begin(), right.end());
+        }
+
+        template <typename U, std::enable_if_t<std::is_same_v<std::remove_cv_t<T>, std::remove_cv_t<U>>, int> = 0>
+        std::weak_ordering operator<=>(array_view<U> const& right) const noexcept
+        {
+            return std::lexicographical_compare_three_way(begin(), end(), right.begin(), right.end());
+        }
+
         reference operator[](size_type const pos) noexcept
         {
             WINRT_ASSERT(pos < size());
@@ -399,35 +411,6 @@ WINRT_EXPORT namespace winrt
 
     template <typename C, std::size_t extent> com_array(std::span<C, extent> const& value) -> com_array<std::decay_t<C>>;
 
-
-    namespace impl
-    {
-        template <typename T, typename U>
-        inline constexpr bool array_comparable = std::is_same_v<std::remove_cv_t<T>, std::remove_cv_t<U>>;
-    }
-
-    template <typename T, typename U, 
-        std::enable_if_t<impl::array_comparable<T, U>, int> = 0>
-    bool operator==(array_view<T> const& left, array_view<U> const& right) noexcept
-    {
-        return std::equal(left.begin(), left.end(), right.begin(), right.end());
-    }
-
-    template <typename T, typename U,
-        std::enable_if_t<impl::array_comparable<T, U>, int> = 0>
-    bool operator<(array_view<T> const& left, array_view<U> const& right) noexcept
-    {
-        return std::lexicographical_compare(left.begin(), left.end(), right.begin(), right.end());
-    }
-
-    template <typename T, typename U, std::enable_if_t<impl::array_comparable<T, U>, int> = 0>
-    bool operator!=(array_view<T> const& left, array_view<U> const& right) noexcept { return !(left == right); }
-    template <typename T, typename U,std::enable_if_t<impl::array_comparable<T, U>, int> = 0>
-    bool operator>(array_view<T> const& left, array_view<U> const& right) noexcept { return right < left; }
-    template <typename T, typename U,std::enable_if_t<impl::array_comparable<T, U>, int> = 0>
-    bool operator<=(array_view<T> const& left, array_view<U> const& right) noexcept { return !(right < left); }
-    template <typename T, typename U, std::enable_if_t<impl::array_comparable<T, U>, int> = 0>
-    bool operator>=(array_view<T> const& left, array_view<U> const& right) noexcept { return !(left < right); }
 
     template <typename T>
     auto get_abi(array_view<T> object) noexcept
