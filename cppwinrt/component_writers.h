@@ -106,7 +106,7 @@ namespace cppwinrt
         if (settings.component_opt)
         {
             auto format = R"(
-    if (requal(name, L"%.%"))
+    if (name == L"%.%"sv)
     {
         return winrt_make_%();
     }
@@ -120,7 +120,7 @@ namespace cppwinrt
         else
         {
             auto format = R"(
-    if (requal(name, L"%.%"))
+    if (name == L"%.%"sv)
     {
         return winrt::detach_abi(winrt::make<winrt::@::factory_implementation::%>());
     }
@@ -151,11 +151,7 @@ bool __stdcall %_can_unload_now() noexcept
 
 void* __stdcall %_get_activation_factory([[maybe_unused]] std::wstring_view const& name)
 {
-    auto requal = [](std::wstring_view const& left, std::wstring_view const& right) noexcept
-    {
-        return std::equal(left.rbegin(), left.rend(), right.rbegin(), right.rend());
-    };
-%
+    using namespace std::string_view_literals;%
     return nullptr;
 }
 )";
