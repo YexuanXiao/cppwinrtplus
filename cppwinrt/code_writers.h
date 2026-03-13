@@ -1416,20 +1416,6 @@ namespace cppwinrt
         }
 )");
         }
-        else if (type_name == "Windows.Foundation.Collections.IKeyValuePair`2")
-        {
-            w.write(R"(
-        bool operator==(Windows::Foundation::Collections::IKeyValuePair<K, V> const& other) const
-        {
-            return Key() == other.Key() && Value() == other.Value();
-        }
-
-        bool operator!=(Windows::Foundation::Collections::IKeyValuePair<K, V> const& other) const
-        {
-            return !(*this == other);
-        }
-)");
-        }
         else if (type_name == "Windows.Foundation.Collections.IMapView`2")
         {
             w.write(R"(
@@ -2492,6 +2478,18 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
         }
     }
 
+    static void write_interface_equal_operator(writer& w, TypeDef const& type)
+    {
+        if (remove_tick(type.TypeName()) == "IKeyValuePair")
+        {
+            w.write(R"(        bool operator==(IKeyValuePair const& other) const
+        {
+            return this->Key() == other.Key() && this->Value() == other.Value();
+        }
+)");
+        }
+    }
+
     static void write_class_usings(writer& w, TypeDef const& type)
     {
         auto type_name = type.TypeName();
@@ -2560,6 +2558,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
     {
         %(std::nullptr_t = nullptr) noexcept {}
         %(void* ptr, take_ownership_from_abi_t) noexcept : winrt::Windows::Foundation::IInspectable(ptr, take_ownership_from_abi) {}
+%
 %%    };
 )";
 
@@ -2570,6 +2569,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
                 type_name,
                 type_name,
                 bind<write_interface_usings>(type),
+                bind<write_interface_equal_operator>(type),
                 bind<write_interface_extensions>(type));
         }
         else
@@ -2583,6 +2583,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
     {%
         %(std::nullptr_t = nullptr) noexcept {}
         %(void* ptr, take_ownership_from_abi_t) noexcept : winrt::Windows::Foundation::IInspectable(ptr, take_ownership_from_abi) {}
+%
 %%    };
 )";
 
@@ -2595,6 +2596,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
                 type_name,
                 type_name,
                 bind<write_interface_usings>(type),
+                bind<write_interface_equal_operator>(type),
                 bind<write_interface_extensions>(type));
         }
     }
@@ -2878,10 +2880,6 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
     {
         return%;
     }
-    inline bool operator!=(% const& left, % const& right)%
-    {
-        return !(left == right);
-    }
 )";
 
         if (types.empty())
@@ -2966,10 +2964,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
                 name,
                 name,
                 is_noexcept,
-                bind<write_struct_equality>(type.fields),
-                name,
-                name,
-                is_noexcept);
+                bind<write_struct_equality>(type.fields));
 
             for (auto&& field : type.fields)
             {

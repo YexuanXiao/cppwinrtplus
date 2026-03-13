@@ -412,12 +412,6 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
 
         return left.Value() == right.Value();
     }
-
-    template <typename T>
-    bool operator!=(IReference<T> const& left, IReference<T> const& right)
-    {
-        return !(left == right);
-    }
 }
 
 WINRT_EXPORT namespace winrt::impl

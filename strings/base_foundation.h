@@ -24,17 +24,9 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
         }
 
 #endif
+
+        constexpr bool operator==(Point const&) const noexcept = default;
     };
-
-    constexpr bool operator==(Point const& left, Point const& right) noexcept
-    {
-        return left.X == right.X && left.Y == right.Y;
-    }
-
-    constexpr bool operator!=(Point const& left, Point const& right) noexcept
-    {
-        return !(left == right);
-    }
 
     struct Size
     {
@@ -59,17 +51,9 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
         }
 
 #endif
+
+        constexpr bool operator==(Size const&) const noexcept = default;
     };
-
-    constexpr bool operator==(Size const& left, Size const& right) noexcept
-    {
-        return left.Width == right.Width && left.Height == right.Height;
-    }
-
-    constexpr bool operator!=(Size const& left, Size const& right) noexcept
-    {
-        return !(left == right);
-    }
 
     struct Rect
     {
@@ -87,17 +71,9 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
         constexpr Rect(Point const& point, Size const& size)  noexcept :
             X(point.X), Y(point.Y), Width(size.Width), Height(size.Height)
         {}
+
+        constexpr bool operator==(Rect const&) const noexcept = default;
     };
-
-    constexpr bool operator==(Rect const& left, Rect const& right) noexcept
-    {
-        return left.X == right.X && left.Y == right.Y && left.Width == right.Width && left.Height == right.Height;
-    }
-
-    constexpr bool operator!=(Rect const& left, Rect const& right) noexcept
-    {
-        return !(left == right);
-    }
 }
 
 WINRT_EXPORT namespace winrt::impl

@@ -48,6 +48,18 @@ WINRT_EXPORT namespace winrt
             return static_cast<bool>(m_ref);
         }
 
+        bool operator==(weak_ref const& other) const noexcept = default;
+
+        bool operator==(std::nullptr_t) const noexcept
+        {
+            return m_ref == nullptr;
+        }
+
+        friend bool operator==(std::nullptr_t, weak_ref const& right) noexcept
+        {
+            return right == nullptr;
+        }
+
     private:
 
         template<typename U>
@@ -77,42 +89,6 @@ WINRT_EXPORT namespace winrt
     struct impl::abi<weak_ref<T>> : impl::abi<com_ptr<impl::IWeakReference>>
     {
     };
-
-    template <typename T>
-    inline bool operator==(weak_ref<T> const& left, weak_ref<T> const& right) noexcept
-    {
-        return get_abi(left) == get_abi(right);
-    }
-
-    template <typename T>
-    inline bool operator==(weak_ref<T> const& left, std::nullptr_t) noexcept
-    {
-        return get_abi(left) == nullptr;
-    }
-
-    template <typename T>
-    inline bool operator==(std::nullptr_t, weak_ref<T> const& right) noexcept
-    {
-        return nullptr == get_abi(right);
-    }
-
-    template <typename T>
-    inline bool operator!=(weak_ref<T> const& left, weak_ref<T> const& right) noexcept
-    {
-        return !(left == right);
-    }
-
-    template <typename T>
-    inline bool operator!=(weak_ref<T> const& left, std::nullptr_t) noexcept
-    {
-        return !(left == nullptr);
-    }
-
-    template <typename T>
-    inline bool operator!=(std::nullptr_t, weak_ref<T> const& right) noexcept
-    {
-        return !(nullptr == right);
-    }
 
     template <typename T>
     weak_ref<impl::wrapped_type_t<T>> make_weak(T const& object)

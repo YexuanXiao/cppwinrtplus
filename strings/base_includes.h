@@ -42,6 +42,7 @@
 // C++ 20 headers
 
 #include <version>
+#include <compare>
 #include <span>
 #include <format>
 #include <source_location>
