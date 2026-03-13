@@ -48,12 +48,6 @@ WINRT_EXPORT namespace winrt::impl
     template <typename K, typename V>
     struct is_key_value_pair<wfc::IKeyValuePair<K, V>> : std::true_type {};
 
-    template <typename K, typename V>
-    bool operator==(wfc::IKeyValuePair<K, V> const& left, wfc::IKeyValuePair<K, V> const& right)
-    {
-        return left.Key() == right.Key() && left.Value() == right.Value();
-    }
-
     struct input_scope
     {
         void invalidate_scope() noexcept

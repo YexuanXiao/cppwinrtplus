@@ -2513,6 +2513,19 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
         }
     }
 
+    static void write_interface_equal_operator(writer& w, TypeDef const& type)
+    {
+        if (remove_tick(type.TypeName()) == "IKeyValuePair")
+        {
+            w.write(R"(
+        friend bool operator==(IKeyValuePair const& left, IKeyValuePair const& right)
+        {
+            return left.Key() == right.Key() && left.Value() == right.Value();
+        }
+)");
+        }
+    }
+
     static void write_class_usings(writer& w, TypeDef const& type)
     {
         auto type_name = type.TypeName();
@@ -2581,6 +2594,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
     {
         %(std::nullptr_t = nullptr) noexcept {}
         %(void* ptr, take_ownership_from_abi_t) noexcept : winrt::Windows::Foundation::IInspectable(ptr, take_ownership_from_abi) {}
+%
 %%    };
 )";
 
@@ -2591,6 +2605,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
                 type_name,
                 type_name,
                 bind<write_interface_usings>(type),
+                bind<write_interface_equal_operator>(type),
                 bind<write_interface_extensions>(type));
         }
         else
@@ -2604,6 +2619,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
     {%
         %(std::nullptr_t = nullptr) noexcept {}
         %(void* ptr, take_ownership_from_abi_t) noexcept : winrt::Windows::Foundation::IInspectable(ptr, take_ownership_from_abi) {}
+%
 %%    };
 )";
 
@@ -2616,6 +2632,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
                 type_name,
                 type_name,
                 bind<write_interface_usings>(type),
+                bind<write_interface_equal_operator>(type),
                 bind<write_interface_extensions>(type));
         }
     }
