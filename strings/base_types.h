@@ -170,7 +170,7 @@ WINRT_EXPORT namespace winrt
         
         constexpr auto operator<=>(guid const& other) const noexcept
         {
-        #if __cpp_if_consteval >= 202106L
+        #if defined(__cpp_if_consteval) && __cpp_if_consteval >= 202106L
             if consteval
         #else
             if (std::is_constant_evaluated())

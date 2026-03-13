@@ -289,7 +289,8 @@ WINRT_EXPORT namespace winrt
             }
             else
             {
-                return {};
+                // NB: https://github.com/microsoft/cppwinrt/issues/1527
+                return { L"", 0 };
             }
         }
 
