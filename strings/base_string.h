@@ -233,7 +233,7 @@ WINRT_EXPORT namespace winrt
 
         friend bool operator==(hstring const& left, std::wstring const& right) noexcept
         {
-            return std::wstring_view(left) == right;
+            return std::wstring_view(left) == std::wstring_view(right);
         }
 
         friend std::strong_ordering operator<=>(hstring const& left, std::wstring const& right) noexcept
@@ -241,19 +241,9 @@ WINRT_EXPORT namespace winrt
             return std::wstring_view(left) <=> std::wstring_view(right);
         }
 
-        friend bool operator==(std::wstring const& left, hstring const& right) noexcept
-        {
-            return left == std::wstring_view(right);
-        }
-
-        friend std::strong_ordering operator<=>(std::wstring const& left, hstring const& right) noexcept
-        {
-            return std::wstring_view(left) <=> std::wstring_view(right);
-        }
-
         friend bool operator==(hstring const& left, wchar_t const* right) noexcept
         {
-            return std::wstring_view(left) == right;
+            return std::wstring_view(left) == std::wstring_view(right);
         }
 
         friend std::strong_ordering operator<=>(hstring const& left, wchar_t const* right) noexcept
@@ -261,20 +251,8 @@ WINRT_EXPORT namespace winrt
             return std::wstring_view(left) <=> std::wstring_view(right);
         }
 
-        friend bool operator==(wchar_t const* left, hstring const& right) noexcept
-        {
-            return left == std::wstring_view(right);
-        }
-
-        friend std::strong_ordering operator<=>(wchar_t const* left, hstring const& right) noexcept
-        {
-            return std::wstring_view(left) <=> std::wstring_view(right);
-        }
-
         friend bool operator==(hstring const&, std::nullptr_t) = delete;
-        friend bool operator==(std::nullptr_t, hstring const&) = delete;
         friend std::strong_ordering operator<=>(hstring const&, std::nullptr_t) = delete;
-        friend std::strong_ordering operator<=>(std::nullptr_t, hstring const&) = delete;
 
         void clear() noexcept
         {

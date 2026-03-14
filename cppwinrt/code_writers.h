@@ -2858,28 +2858,12 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
             field.first);
     }
 
-    static void write_struct_equality(writer& w, std::vector<std::pair<std::string_view, std::string>> const& fields)
-    {
-        for (std::size_t i = 0; i != fields.size(); ++i)
-        {
-            w.write(" left.% == right.%", fields[i].first, fields[i].first);
-
-            if (i + 1 != fields.size())
-            {
-                w.write(" &&");
-            }
-        }
-    }
-
     static bool write_structs(writer& w, std::vector<TypeDef> const& types)
     {
         auto format = R"(    struct %
     {
-%    };
-    inline bool operator==(% const& left, % const& right)%
-    {
-        return%;
-    }
+%        bool operator==(% const& other) const% = default;
+    };
 )";
 
         if (types.empty())
@@ -2962,9 +2946,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
                 name,
                 bind_each<write_struct_field>(type.fields),
                 name,
-                name,
-                is_noexcept,
-                bind<write_struct_equality>(type.fields));
+                is_noexcept);
 
             for (auto&& field : type.fields)
             {

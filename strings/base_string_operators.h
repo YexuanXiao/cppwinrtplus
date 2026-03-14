@@ -1,8 +1,3 @@
-
-WINRT_EXPORT namespace winrt
-{
-}
-
 WINRT_EXPORT namespace winrt::impl
 {
     inline hstring concat_hstring(std::wstring_view const& left, std::wstring_view const& right)

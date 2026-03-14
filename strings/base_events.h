@@ -9,12 +9,9 @@ WINRT_EXPORT namespace winrt
         {
             return value != 0;
         }
-    };
 
-    inline bool operator==(event_token const& left, event_token const& right) noexcept
-    {
-        return left.value == right.value;
-    }
+        bool operator==(event_token const& other) const noexcept = default;
+    };
 
     struct auto_revoke_t {};
     inline constexpr auto_revoke_t auto_revoke{};
