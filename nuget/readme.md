@@ -6,13 +6,13 @@ Please read the [repository](https://github.com/YexuanXiao/cppwinrtplus)'s READM
 
 C++/WinRT Plus can now be compiled as C++ modules. Compared to PCH, using C++ modules will reduce memory requirements by more than half.
 
-2026/03/14: Use hidden friends, defaulted comparison and three-way comparison, helps speed up compilation and avoid ambiguity in overload resolution.
+2026/03/14: As part of the modernization to C++20, C++/WinRT Plus now use concepts instead of `enable_if` and `void_t`, and leverage hidden friends and defaulted comparisons (including three-way comparison) to avoid ambiguity in overload resolution, all of which also help speed up compilation.
 
 2026/03/06: Reduces header file size by 1/4, pch file size by 1/10 and compilation time by 1/10.
 
 2026/02/25: The NuGet package now includes cppwinrt.exe with x86, x64, and arm64.
 
-2026/02/24: C++/WinRT can now be compiled as C++ modules. See the [blog post](./about_module.md) for details.
+2026/02/24: C++/WinRT Plus can now be compiled as C++ modules. See the [blog post](./about_module.md) for details.
 
 2026/02/22: Removed support for C++17 and C++/CX. Existing projects need to upgrade their C++ standard to C++20.
 
