@@ -71,18 +71,20 @@ WINRT_EXPORT namespace winrt
         {}
 
         template <typename OtherType>
-        array_view(array_view<OtherType> const& other,
-            std::enable_if_t<std::is_convertible_v<OtherType(*)[], T(*)[]>, int> = 0) noexcept :
+            requires std::convertible_to<OtherType(*)[], T(*)[]>
+        array_view(array_view<OtherType> const& other) noexcept :
             array_view(other.data(), other.size())
         {}
 
-        template <typename U, std::enable_if_t<std::is_same_v<std::remove_cv_t<T>, std::remove_cv_t<U>>, int> = 0>
+        template <typename U>
+            requires std::same_as<std::remove_cv_t<T>, std::remove_cv_t<U>>
         bool operator==(array_view<U> const& right) const noexcept
         {
             return std::equal(begin(), end(), right.begin(), right.end());
         }
 
-        template <typename U, std::enable_if_t<std::is_same_v<std::remove_cv_t<T>, std::remove_cv_t<U>>, int> = 0>
+        template <typename U>
+            requires std::same_as<std::remove_cv_t<T>, std::remove_cv_t<U>>
         std::weak_ordering operator<=>(array_view<U> const& right) const noexcept
         {
             return std::lexicographical_compare_three_way(begin(), end(), right.begin(), right.end());
@@ -284,7 +286,8 @@ WINRT_EXPORT namespace winrt
             std::uninitialized_fill_n(this->m_data, count, value);
         }
 
-        template <typename InIt, typename = std::void_t<typename std::iterator_traits<InIt>::difference_type>>
+        template <typename InIt>
+            requires std::input_iterator<InIt>
         com_array(InIt first, InIt last)
         {
             alloc(static_cast<size_type>(std::distance(first, last)));
@@ -317,7 +320,8 @@ WINRT_EXPORT namespace winrt
             com_array(value.begin(), value.end())
         {}
 
-        template <typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
+        template <typename U>
+            requires std::convertible_to<U, T>
         com_array(std::initializer_list<U> value) :
             com_array(value.begin(), value.end())
         {}
@@ -402,7 +406,8 @@ WINRT_EXPORT namespace winrt
     };
 
     template <typename C> com_array(std::uint32_t, C const&) -> com_array<std::decay_t<C>>;
-    template <typename InIt, typename = std::void_t<typename std::iterator_traits<InIt>::difference_type>>
+    template <typename InIt>
+        requires std::input_iterator<InIt>
     com_array(InIt, InIt) -> com_array<std::decay_t<typename std::iterator_traits<InIt>::value_type>>;
     template <typename C> com_array(std::vector<C> const&) -> com_array<std::decay_t<C>>;
     template <std::size_t N, typename C> com_array(std::array<C, N> const&) -> com_array<std::decay_t<C>>;

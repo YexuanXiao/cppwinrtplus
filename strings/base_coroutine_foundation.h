@@ -259,7 +259,8 @@ WINRT_EXPORT namespace winrt::impl
 
 WINRT_EXPORT namespace winrt
 {
-    template<typename Async, typename = std::enable_if_t<std::is_convertible_v<Async, winrt::Windows::Foundation::IAsyncInfo>>>
+    template<typename Async>
+        requires std::convertible_to<Async, winrt::Windows::Foundation::IAsyncInfo>
     inline impl::await_adapter<std::decay_t<Async>, false> resume_agile(Async&& async)
     {
         return { std::forward<Async>(async) };

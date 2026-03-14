@@ -480,7 +480,8 @@ WINRT_EXPORT namespace winrt::impl
         return default_value;
     }
 
-    template <typename To, typename From, std::enable_if_t<!is_com_interface_v<To>, int>>
+    template <typename To, typename From>
+        requires (!is_com_interface_v<To>)
     auto as(From* ptr)
     {
         if constexpr (impl::is_com_interface_v<From>)
@@ -493,7 +494,8 @@ WINRT_EXPORT namespace winrt::impl
         }
     }
 
-    template <typename To, typename From, std::enable_if_t<!is_com_interface_v<To>, int>>
+    template <typename To, typename From>
+        requires (!is_com_interface_v<To>)
     auto try_as(From* ptr) noexcept
     {
         using type = std::conditional_t<impl::is_com_interface_v<From>, Windows::Foundation::IUnknown, com_ptr<From>>;
@@ -508,7 +510,8 @@ WINRT_EXPORT namespace winrt
         return Windows::Foundation::IReference<hstring>(*(hstring*)(&value));
     }
 
-    template <typename T, std::enable_if_t<!std::is_convertible_v<T, param::hstring>, int> = 0>
+    template <typename T>
+        requires (!std::is_convertible_v<T, param::hstring>)
     Windows::Foundation::IInspectable box_value(T const& value)
     {
         if constexpr (std::is_base_of_v<Windows::Foundation::IInspectable, T>)
@@ -534,7 +537,8 @@ WINRT_EXPORT namespace winrt
         }
     }
 
-    template <typename T = hstring, std::enable_if_t<std::is_same_v<T, hstring>, int> = 0>
+    template <typename T = hstring>
+        requires std::same_as<T, hstring>
     hstring unbox_value_or(Windows::Foundation::IInspectable const& value, param::hstring const& default_value)
     {
         if (value)
@@ -548,7 +552,8 @@ WINRT_EXPORT namespace winrt
         return *(hstring*)(&default_value);
     }
 
-    template <typename T, std::enable_if_t<!std::is_same_v<T, hstring>, int> = 0>
+    template <typename T>
+        requires (!std::is_same_v<T, hstring>)
     T unbox_value_or(Windows::Foundation::IInspectable const& value, T const& default_value)
     {
         if (value)
