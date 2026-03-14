@@ -221,6 +221,39 @@ WINRT_EXPORT namespace winrt
             return *this = hstring{ value };
         }
 
+        friend bool operator==(hstring const& left, hstring const& right) noexcept
+        {
+            return std::wstring_view(left) == std::wstring_view(right);
+        }
+
+        friend std::strong_ordering operator<=>(hstring const& left, hstring const& right) noexcept
+        {
+            return std::wstring_view(left) <=> std::wstring_view(right);
+        }
+
+        friend bool operator==(hstring const& left, std::wstring const& right) noexcept
+        {
+            return std::wstring_view(left) == std::wstring_view(right);
+        }
+
+        friend std::strong_ordering operator<=>(hstring const& left, std::wstring const& right) noexcept
+        {
+            return std::wstring_view(left) <=> std::wstring_view(right);
+        }
+
+        friend bool operator==(hstring const& left, wchar_t const* right) noexcept
+        {
+            return std::wstring_view(left) == std::wstring_view(right);
+        }
+
+        friend std::strong_ordering operator<=>(hstring const& left, wchar_t const* right) noexcept
+        {
+            return std::wstring_view(left) <=> std::wstring_view(right);
+        }
+
+        friend bool operator==(hstring const&, std::nullptr_t) = delete;
+        friend std::strong_ordering operator<=>(hstring const&, std::nullptr_t) = delete;
+
         void clear() noexcept
         {
             m_handle.close();
@@ -234,6 +267,7 @@ WINRT_EXPORT namespace winrt
             }
             else
             {
+                // NB: https://github.com/microsoft/cppwinrt/issues/1527
                 return { L"", 0 };
             }
         }

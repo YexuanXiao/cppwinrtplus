@@ -42,32 +42,29 @@ namespace cppwinrt
             name_space = type_namespace;
             name = type_name;
         }
+
+        bool operator==(type_name const& other) const noexcept = default;
+
+        bool operator==(std::string_view const& right) const noexcept
+        {
+            if (name.size() + 1 + name_space.size() != right.size())
+            {
+                return false;
+            }
+
+            if (right[name_space.size()] != '.')
+            {
+                return false;
+            }
+
+            if (0 != right.compare(name_space.size() + 1, name.size(), name))
+            {
+                return false;
+            }
+
+            return 0 == right.compare(0, name_space.size(), name_space);
+        }
     };
-
-    bool operator==(type_name const& left, type_name const& right)
-    {
-        return left.name == right.name && left.name_space == right.name_space;
-    }
-
-    bool operator==(type_name const& left, std::string_view const& right)
-    {
-        if (left.name.size() + 1 + left.name_space.size() != right.size())
-        {
-            return false;
-        }
-
-        if (right[left.name_space.size()] != '.')
-        {
-            return false;
-        }
-
-        if (0 != right.compare(left.name_space.size() + 1, left.name.size(), left.name))
-        {
-            return false;
-        }
-
-        return 0 == right.compare(0, left.name_space.size(), left.name_space);
-    }
 
     static auto remove_tick(std::string_view const& name)
     {
