@@ -24,7 +24,8 @@ WINRT_EXPORT namespace winrt::impl
         return function(args..., guid_of<T>(), capture_decay{ result });
     }
 
-    template <typename T, typename O, typename M, typename...Args, std::enable_if_t<std::is_class_v<O> || std::is_union_v<O>, int> = 0>
+    template <typename T, typename O, typename M, typename...Args>
+        requires (std::is_class_v<O> || std::is_union_v<O>)
     std::int32_t capture_to(void** result, O* object, M method, Args&& ...args)
     {
         return (object->*method)(args..., guid_of<T>(), capture_decay{ result });

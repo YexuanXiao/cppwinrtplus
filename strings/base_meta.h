@@ -68,7 +68,8 @@ WINRT_EXPORT namespace winrt::impl
     };
 
     template <typename T>
-    struct abi<T, std::enable_if_t<std::is_enum_v<T>>>
+        requires std::is_enum_v<T>
+    struct abi<T>
     {
         using type = std::underlying_type_t<T>;
     };
@@ -85,7 +86,7 @@ WINRT_EXPORT namespace winrt::impl
     template <typename T, typename H>
     struct delegate;
 
-    template <typename T, typename = std::void_t<>>
+    template <typename T>
     struct default_interface
     {
         using type = T;
@@ -149,11 +150,12 @@ WINRT_EXPORT namespace winrt::impl
         return static_cast<std::underlying_type_t<T>>(value);
     }
 
-    template <typename, typename = std::void_t<>>
+    template <typename T>
     struct is_implements : std::false_type {};
 
     template <typename T>
-    struct is_implements<T, std::void_t<typename T::implements_type>> : std::true_type {};
+        requires requires { typename T::implements_type; }
+    struct is_implements<T> : std::true_type {};
 
     template <typename T>
     inline constexpr bool is_implements_v = is_implements<T>::value;
@@ -223,7 +225,8 @@ WINRT_EXPORT namespace winrt::impl
     };
 
     template <typename T>
-    struct arg<T, std::enable_if_t<std::is_base_of_v<Windows::Foundation::IUnknown, T>>>
+        requires std::is_base_of_v<Windows::Foundation::IUnknown, T>
+    struct arg<T>
     {
         using in = void*;
     };

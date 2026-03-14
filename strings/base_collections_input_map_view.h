@@ -91,7 +91,8 @@ WINRT_EXPORT namespace winrt::param
             attach_abi(m_pair.first, winrt::get_abi(values));
         }
 
-        template <typename Collection, std::enable_if_t<std::is_convertible_v<Collection, interface_type>, int> = 0>
+        template <typename Collection>
+            requires std::convertible_to<Collection, interface_type>
         map_view(Collection const& values) noexcept
         {
             m_pair.first = values;
@@ -169,7 +170,8 @@ WINRT_EXPORT namespace winrt::param
             attach_abi(m_interface, winrt::get_abi(values));
         }
 
-        template <typename Collection, std::enable_if_t<std::is_convertible_v<Collection, interface_type>, int> = 0>
+        template <typename Collection>
+            requires std::convertible_to<Collection, interface_type>
         async_map_view(Collection const& values) noexcept
         {
             m_interface = values;

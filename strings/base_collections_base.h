@@ -46,7 +46,8 @@ WINRT_EXPORT namespace winrt::impl
     };
 
     template <typename D>
-    struct removed_values<D, std::enable_if_t<!std::is_trivially_destructible_v<typename container_type_t<D>::value_type>>>
+    requires (!std::is_trivially_destructible_v<typename container_type_t<D>::value_type>)
+    struct removed_values<D, void>
     {
         container_type_t<D> m_value;
 
@@ -65,7 +66,8 @@ WINRT_EXPORT namespace winrt::impl
     };
 
     template <typename T>
-    struct removed_value<T, std::enable_if_t<std::is_move_constructible_v<T> && !std::is_trivially_destructible_v<T>>>
+    requires (std::is_move_constructible_v<T> && !std::is_trivially_destructible_v<T>)
+    struct removed_value<T, void>
     {
         std::optional<T> m_value;
 

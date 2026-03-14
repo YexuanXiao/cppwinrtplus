@@ -145,14 +145,15 @@ WINRT_EXPORT namespace winrt::impl
     template <typename D, typename... I>
     struct root_implements;
 
-    template <typename T, typename = std::void_t<>>
+    template <typename T>
     struct unwrap_implements
     {
         using type = T;
     };
 
     template <typename T>
-    struct unwrap_implements<T, std::void_t<typename T::implements_type>>
+        requires requires { typename T::implements_type; }
+    struct unwrap_implements<T>
     {
         using type = typename T::implements_type;
     };
@@ -173,28 +174,31 @@ WINRT_EXPORT namespace winrt::impl
             "Duplicate nested implements found");
     };
 
-    template <typename D, typename Dummy = std::void_t<>, typename... I>
+    template <typename D, typename Dummy = void, typename... I>
     struct base_implements_impl
         : impl::identity<root_implements<D, I...>> {};
 
     template <typename D, typename... I>
-    struct base_implements_impl<D, std::void_t<typename nested_implements<I...>::type>, I...>
+        requires requires { typename nested_implements<I...>::type; }
+    struct base_implements_impl<D, void, I...>
         : nested_implements<I...> {};
 
     template <typename D, typename... I>
     using base_implements = base_implements_impl<D, void, I...>;
 
-    template <typename T, typename = std::void_t<>>
+    template <typename T>
     struct has_composable : std::false_type {};
 
     template <typename T>
-    struct has_composable<T, std::void_t<typename T::composable>> : std::true_type {};
+        requires requires { typename T::composable; }
+    struct has_composable<T> : std::true_type {};
 
-    template <typename T, typename = std::void_t<>>
+    template <typename T>
     struct has_class_type : std::false_type {};
 
     template <typename T>
-    struct has_class_type<T, std::void_t<typename T::class_type>> : std::true_type {};
+        requires requires { typename T::class_type; }
+    struct has_class_type<T> : std::true_type {};
 
     template <typename>
     struct has_static_lifetime : std::false_type {};
@@ -367,20 +371,22 @@ WINRT_EXPORT namespace winrt::impl
         static constexpr std::array<guid, sizeof...(T)> value{ winrt::guid_of<T>() ... };
     };
 
-    template <typename T, typename = void>
+    template <typename T>
     struct implements_default_interface
     {
         using type = typename default_interface<typename implemented_interfaces<T>::first_interface>::type;
     };
 
     template <typename T>
-    struct implements_default_interface<T, std::void_t<typename T::class_type>>
+        requires requires { typename T::class_type; }
+    struct implements_default_interface<T>
     {
         using type = winrt::default_interface<typename T::class_type>;
     };
 
     template <typename T>
-    struct default_interface<T, std::void_t<typename T::implements_type>>
+        requires requires { typename T::implements_type; }
+    struct default_interface<T>
     {
         using type = typename implements_default_interface<T>::type;
     };
@@ -480,7 +486,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     }
 
-    template <typename I, typename = std::void_t<>>
+    template <typename I>
     struct runtime_class_name
     {
         static hstring get()
@@ -490,7 +496,8 @@ WINRT_EXPORT namespace winrt::impl
     };
 
     template <typename I>
-    struct runtime_class_name<I, std::void_t<decltype(name_v<I>)>>
+        requires requires { name_v<I>; }
+    struct runtime_class_name<I>
     {
         static hstring get()
         {
@@ -554,7 +561,8 @@ WINRT_EXPORT namespace winrt::impl
     };
 
     template <typename D, typename I>
-    struct producer<D, I, std::enable_if_t<is_classic_com_interface<I>::value>> : I
+        requires is_classic_com_interface<I>::value
+    struct producer<D, I> : I
     {
 #ifndef WINRT_IMPL_IUNKNOWN_DEFINED
         static_assert(std::is_void_v<I> /* dependent_false */, "To implement classic COM interfaces, you must #include <unknwn.h> before including C++/WinRT headers.");
@@ -562,7 +570,8 @@ WINRT_EXPORT namespace winrt::impl
     };
 
     template <typename D, typename I>
-    struct producer_convert<D, I, std::enable_if_t<is_classic_com_interface<I>::value>> : producer<D, I>
+        requires is_classic_com_interface<I>::value
+    struct producer_convert<D, I> : producer<D, I>
     {
     };
 

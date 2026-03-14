@@ -6,7 +6,8 @@ WINRT_EXPORT namespace winrt
     {
         weak_ref(std::nullptr_t = nullptr) noexcept {}
 
-        template<typename U = impl::com_ref<T> const&, typename = std::enable_if_t<std::is_convertible_v<U&&, impl::com_ref<T> const&>>>
+        template<typename U = impl::com_ref<T> const&>
+            requires std::convertible_to<U&&, impl::com_ref<T> const&>
         weak_ref(U&& object)
         {
             from_com_ref(static_cast<impl::com_ref<T> const&>(object));
