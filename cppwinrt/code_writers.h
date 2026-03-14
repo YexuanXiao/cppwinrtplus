@@ -2946,9 +2946,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
                 name,
                 bind_each<write_struct_field>(type.fields),
                 name,
-                name,
-                is_noexcept,
-                bind<write_struct_equality>(type.fields));
+                is_noexcept);
 
             for (auto&& field : type.fields)
             {
