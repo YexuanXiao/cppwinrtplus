@@ -64,17 +64,17 @@ namespace concurrent_collections
 
     struct collection_hook
     {
-        collection_action race_action = collection_action::none;
-        int step = 0;
+        std::atomic<collection_action> race_action{ collection_action::none };
+        std::atomic<int> step{ 0 };
         DWORD mainThreadId = GetCurrentThreadId();
 
         collection_hook() = default;
 
         void on_action(collection_action action)
         {
-            if ((action == race_action) && (GetCurrentThreadId() != mainThreadId))
+            if ((GetCurrentThreadId() != mainThreadId) && (action == race_action.load(std::memory_order_acquire)))
             {
-                race_action = collection_action::none;
+                race_action.store(collection_action::none, std::memory_order_release);
                 GoToStep(2);
                 WaitForStep(3);
             }
@@ -83,8 +83,8 @@ namespace concurrent_collections
         template<typename Background, typename Foreground>
         void race(collection_action action, Background&& background, Foreground&& foreground)
         {
-            race_action = action;
-            step = 1;
+            race_action.store(action, std::memory_order_release);
+            step.store(1, std::memory_order_release);
 
             auto task = [](auto&& background) -> winrt::Windows::Foundation::IAsyncAction
             {
@@ -98,7 +98,7 @@ namespace concurrent_collections
 
             // Wait for background task to complete.
             task.get();
-            race_action = collection_action::none;
+            race_action.store(collection_action::none, std::memory_order_release);
         }
 
     private:
@@ -108,19 +108,19 @@ namespace concurrent_collections
 
         void GoToStep(int value)
         {
-            if (step < value)
+            if (step.load(std::memory_order_relaxed) < value)
             {
-                step = value;
-                WakeByAddressAll(&step);
+                step.store(value, std::memory_order_release);
+                WakeByAddressAll(reinterpret_cast<void*>(&step));
             }
         }
 
         bool WaitForStep(int value, DWORD timeout = DEADLOCK_TIMEOUT)
         {
             int current;
-            while ((current = step) < value)
+            while ((current = step.load(std::memory_order_acquire)) < value)
             {
-                if (!WaitOnAddress(&step, &current, sizeof(current), timeout))
+                if (!WaitOnAddress(reinterpret_cast<volatile void*>(&step), &current, sizeof(current), timeout))
                 {
                     return false; // timed out
                 }
