@@ -5,7 +5,8 @@
 #define CATCH_CONFIG_WINDOWS_SEH
 
 #include "catch.hpp"
-#include "winrt/base.h"
+import std;
+import winrt.base;
 
 using namespace winrt;
 

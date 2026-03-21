@@ -1,7 +1,9 @@
-#include "pch.h"
+#include "catch.hpp"
 
-#ifdef __cpp_lib_format
-#include <format>
+import std;
+import winrt.base;
+import Windows.Foundation;
+import Windows.Data.Json;
 
 struct stringable : winrt::implements<stringable, winrt::Windows::Foundation::IStringable>
 {
@@ -37,7 +39,6 @@ TEST_CASE("format_json")
 
 TEST_CASE("format_wstring")
 {
-#if __cpp_lib_format >= 202207L
     {
         std::wstring str = L"World";
         REQUIRE(winrt::format(L"Hello {}", str) == L"Hello World");
@@ -46,6 +47,4 @@ TEST_CASE("format_wstring")
     {
         REQUIRE(winrt::format(L"C++/WinRT #{:d}", 1) == L"C++/WinRT #1");
     }
-#endif
 }
-#endif

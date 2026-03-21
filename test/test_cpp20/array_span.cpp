@@ -1,6 +1,10 @@
-#include "pch.h"
+#include <Windows.h>
 #include "catch.hpp"
-#include <array>
+
+import std;
+import Windows.Foundation;
+import Windows.Storage.Streams;
+import Windows.Data.Json;
 
 using namespace winrt;
 using namespace Windows::Foundation;
@@ -10,7 +14,7 @@ using namespace Windows::Data::Json;
 //
 // This is a helper to create a data reader for use in testing arrays.
 //
-static IAsyncOperation<IDataReader> CreateDataReader(std::initializer_list<byte> /*values*/)
+static IAsyncOperation<IDataReader> CreateDataReader(std::initializer_list<std::uint8_t> /*values*/)
 {
     InMemoryRandomAccessStream stream;
     DataWriter writer(stream);
@@ -32,8 +36,8 @@ TEST_CASE("array,DataReader,std::span")
 {
     auto reader = CreateDataReader({ 1, 2, 3 }).get();
 
-    std::array<byte, 3> a{};
-    std::span<byte> sp(a);
+    std::array<std::uint8_t, 3> a{};
+    std::span<std::uint8_t> sp(a);
     reader.ReadBytes(sp); // FillArray pattern
 
     REQUIRE(a.size() == 3);
@@ -49,7 +53,7 @@ TEST_CASE("array,DataReader,std::span,direct")
 {
     auto reader = CreateDataReader({ 1, 2, 3 }).get();
 
-    std::array<byte, 3> a{};
+    std::array<std::uint8_t, 3> a{};
     reader.ReadBytes(a); // FillArray pattern
 
     REQUIRE(a.size() == 3);
@@ -154,7 +158,7 @@ TEST_CASE("array_view,span,ctad")
 #define REQUIRE_DEDUCED_AS(T, ...) \
     static_assert(std::is_same_v<array_view<T>, decltype(array_view(__VA_ARGS__))>)
 
-    std::uint8_t a[] = {1, 2, 3};
+    std::uint8_t a[] = { 1, 2, 3 };
     std::span<std::uint8_t, 3> sp{ a };
 
     REQUIRE_DEDUCED_AS(std::uint8_t, sp);
