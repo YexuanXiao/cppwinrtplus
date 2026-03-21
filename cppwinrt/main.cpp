@@ -680,10 +680,6 @@ R"(  local               Local ^%WinDir^%\System32\WinMetadata folder
                     write_module_h();
                 }
                 write_base_h();
-                if (!settings.modules)
-                {
-                    ixx.flush_to_file(settings.output_folder + "winrt/winrt.ixx");
-                }
             }
 
             if (settings.component)
