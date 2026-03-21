@@ -23,13 +23,10 @@
 #pragma warning(disable : 4268)
 #endif
 
-// Transition: compatibility
-#ifndef WINRT_MODULE
-
-#ifndef WINRT_EXPORT
+#ifdef WINRT_MODULE
+#define WINRT_EXPORT export
+#else
 #define WINRT_EXPORT
-#endif
-
 #endif
 
 // <windowsnumerics.impl.h> pulls in large, hard-to-control legacy headers. In header builds we keep the
