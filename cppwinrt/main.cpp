@@ -32,7 +32,7 @@ namespace cppwinrt
         { "include", 0, option::no_max, "<prefix>", "One or more prefixes to include in input" },
         { "exclude", 0, option::no_max, "<prefix>", "One or more prefixes to exclude from input" },
         { "base", 0, 0, {}, "Generate base.h unconditionally" },
-        { "modules", 0, 0, {}, "Generate namespace modules; disables winrt.ixx and PCH" },
+        { "modules", 0, 0, {}, "Generate C++ modules (ixx) for each namespaces" },
         { "optimize", 0, 0, {}, "Generate component projection with unified construction support" },
         { "help", 0, option::no_max, {}, "Show detailed help with examples" },
         { "?", 0, option::no_max, {}, {} },
@@ -619,15 +619,8 @@ R"(  local               Local ^%WinDir^%\System32\WinMetadata folder
             task_group group;
             group.synchronous(args.exists("synchronous"));
             std::map<std::string, std::vector<std::string>> module_imports;
-            writer ixx;
-            if (!settings.modules)
-            {
-                write_preamble(ixx);
-                ixx.write("module;\n");
-                ixx.write(strings::base_includes);
-                ixx.write("\nexport module winrt;\n#define WINRT_EXPORT export\n\n");
-            }
-            else
+
+            if (settings.modules)
             {
                 write_numerics_ixx();
                 write_base_ixx();
@@ -638,11 +631,6 @@ R"(  local               Local ^%WinDir^%\System32\WinMetadata folder
                 if (!has_projected_types(members) || !settings.projection_filter.includes(members))
                 {
                     continue;
-                }
-
-                if (!settings.modules)
-                {
-                    ixx.write("#include \"winrt/%.h\"\n", ns);
                 }
 
                 group.add([&, &ns = ns, &members = members]
@@ -680,10 +668,6 @@ R"(  local               Local ^%WinDir^%\System32\WinMetadata folder
                     write_module_h();
                 }
                 write_base_h();
-                if (!settings.modules)
-                {
-                    ixx.flush_to_file(settings.output_folder + "winrt/winrt.ixx");
-                }
             }
 
             if (settings.component)
