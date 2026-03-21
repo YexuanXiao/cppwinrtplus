@@ -43,7 +43,6 @@ namespace cppwinrt
         w.write(strings::base_version_odr, CPPWINRT_VERSION_STRING);
         {
             auto wrap_file_guard = wrap_open_file_guard(w, "BASE");
-            auto wrap_export_macro_guard = wrap_module_aware_export_macro_guard(w, settings.modules);
 
             {
                 // In module builds, generated projection headers must be "module-aware":
@@ -183,7 +182,6 @@ namespace cppwinrt
         if (settings.modules)
         {
             get_namespace_module_imports(c, ns, w, module_imports);
-            write_module_aware_export_macro_pop(w);
         }
         else
         {
@@ -196,7 +194,6 @@ namespace cppwinrt
 
         if (settings.modules)
         {
-            write_module_aware_export_macro_push(w);
             write_module_aware_export_includes_start(w);
         }
 
@@ -230,7 +227,6 @@ namespace cppwinrt
         if (settings.modules)
         {
             get_namespace_module_imports(c, ns, w, module_imports);
-            write_module_aware_export_macro_pop(w);
         }
         else
         {
@@ -244,7 +240,6 @@ namespace cppwinrt
 
         if (settings.modules)
         {
-            write_module_aware_export_macro_push(w);
             write_module_aware_export_includes_start(w);
         }
 
@@ -282,7 +277,6 @@ namespace cppwinrt
         if (settings.modules)
         {
             get_namespace_module_imports(c, ns, w, module_imports);
-            write_module_aware_export_macro_pop(w);
         }
         else
         {
@@ -298,7 +292,6 @@ namespace cppwinrt
 
         if (settings.modules)
         {
-            write_module_aware_export_macro_push(w);
             write_module_aware_export_includes_start(w);
         }
 
@@ -658,7 +651,6 @@ export import winrt.base;
         if (settings.modules)
         {
             get_namespace_module_imports(c, ns, w, module_imports);
-            write_module_aware_export_macro_pop(w);
         }
         else
         {
@@ -671,7 +663,6 @@ export import winrt.base;
 
         if (settings.modules)
         {
-            write_module_aware_export_macro_push(w);
             write_module_aware_export_includes_start(w);
         }
 

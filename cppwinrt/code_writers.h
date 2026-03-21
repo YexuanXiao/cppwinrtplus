@@ -126,47 +126,18 @@ namespace cppwinrt
     }
 #endif
 
-    static void write_module_aware_export_macro_push(writer& w)
-    {
-        w.write(R"(
-#pragma push_macro("WINRT_EXPORT")
-#undef WINRT_EXPORT
-)");
-    }
-
-    static void write_module_aware_export_macro_pop(writer& w)
-    {
-        w.write(R"(
-#pragma pop_macro("WINRT_EXPORT")
-)");
-    }
-
     static void write_module_aware_export_includes_start(writer& w)
     {
         w.write(R"(
 #if !defined(WINRT_MODULE)
-#define WINRT_EXPORT
 )");
     }
 
     static void write_module_aware_export_includes_end(writer& w)
     {
         w.write(R"(
-#else
-#define WINRT_EXPORT export
 #endif
 )");
-    }
-
-    [[nodiscard]] static finish_with wrap_module_aware_export_macro_guard(writer& w, bool enable_module)
-    {
-        if (enable_module)
-        {
-            write_module_aware_export_macro_push(w);
-            return { w, write_module_aware_export_macro_pop };
-        }
-
-        return { w, write_nothing };
     }
 
     [[nodiscard]] static finish_with wrap_module_aware_includes_guard(writer& w, bool enable_module)
