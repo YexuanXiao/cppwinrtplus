@@ -32,6 +32,7 @@
     <RootNamespace>unittests</RootNamespace>
     <ProjectName>test_cpp20</ProjectName>
     <CppWinRTLanguageStandard>20</CppWinRTLanguageStandard>
+    <BuildStlModules>true</BuildStlModules>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -174,7 +175,6 @@
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalOptions Condition="'$(Clang)'=='1'">%(AdditionalOptions) -flto -fwhole-program-vtables</AdditionalOptions>
-      <BuildStlModules>true</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
