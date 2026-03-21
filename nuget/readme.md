@@ -6,6 +6,8 @@ Please read the [repository](https://github.com/YexuanXiao/cppwinrtplus)'s READM
 
 C++/WinRT Plus can now be compiled as C++ modules. Compared to PCH, using C++ modules will reduce memory requirements by more than half.
 
+2026/03/22: No longer generate `#pragma pop/push("WINRT_EXPORT")`, and no longer generate winrt.ixx, because this prevented mixing modules and header files in some cases.
+
 2026/03/14: As part of the modernization to C++20, C++/WinRT Plus now use concepts instead of `enable_if` and `void_t`, and leverage hidden friends and defaulted comparisons (including three-way comparison) to avoid ambiguity in overload resolution, all of which also help speed up compilation.
 
 2026/03/06: Reduces header file size by 1/4, pch file size by 1/10 and compilation time by 1/10.
@@ -84,7 +86,7 @@ C++/WinRT behavior can be customized with these project properties:
 | CppWinRTRootNamespaceAutoMerge | true \| *false | Sets the namespace merge depth to be the length of the root namespace |
 | CppWinRTMergeNoValidate | true \| *false | Disables mdmerge validation |
 | CppWinRTUsePrefixes | *true \| false | Uses a dotted prefix namespace convention (versus a nested folder convention) |
-| CppWinRTUseModules | true \| *false | Generate and compile C++/WinRT namespace modules (.ixx) instead of winrt.ixx; disables PCH for generated files |
+| CppWinRTUseModules | true \| *false | Generate C++ modules (ixx) for each namespaces |
 | CppWinRTPath | ...\cppwinrt.exe | NuGet package-relative path to cppwinrt.exe, for custom build rule invocation |
 | CppWinRTParameters | "" | Custom cppwinrt.exe command-line parameters (be sure to append to existing) |
 | CppWinRTFastAbi | true \| *false | Enables Fast ABI feature for both consuming and producing projections |

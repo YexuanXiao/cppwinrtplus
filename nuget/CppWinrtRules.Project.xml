@@ -50,7 +50,7 @@
 
   <BoolProperty Name="CppWinRTUseModules"
                 DisplayName="Use C++ Modules"
-                Description="Generate and compile C++/WinRT namespace modules (.ixx) instead of winrt.ixx; disables PCH for generated files"
+                Description="Generate C++ modules (ixx) for each namespaces"
                 Category="General" />
 
   <StringProperty Name="CppWinRTParameters"

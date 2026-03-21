@@ -22,6 +22,8 @@ The current plans for C++/WinRT Plus can be viewed in the issue list. C++/WinRT 
 
 ## Changelog
 
+2026/03/22: No longer generate `#pragma pop/push("WINRT_EXPORT")`, and no longer generate winrt.ixx, because this prevented mixing modules and header files in some cases.
+
 2026/03/14: As part of the modernization to C++20, C++/WinRT Plus now use concepts instead of `enable_if` and `void_t`, and leverage hidden friends and defaulted comparisons (including three-way comparison) to avoid ambiguity in overload resolution, all of which also help speed up compilation.
 
 2026/03/06: Reduces header file size by 1/4, pch file size by 1/10 and compilation time by 1/10.
