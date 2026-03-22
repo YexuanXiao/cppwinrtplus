@@ -2626,12 +2626,10 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
     {
         delegate(H&& handler) : implements_delegate<%, H>(std::forward<H>(handler)) {}
 
-        std::int32_t __stdcall Invoke(%) noexcept final try
+        std::int32_t __stdcall Invoke(%) noexcept final
         {
-%            %
-            return 0;
+            return impl::delegate_invoke(static_cast<H&>(*this)%%);
         }
-        catch (...) { return to_hresult(); }
     };
 )";
 
@@ -2645,8 +2643,8 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
             type,
             type,
             bind<write_abi_params>(signature),
-            bind<write_produce_cleanup>(signature),
-            bind<write_produce_upcall>("(*this)", signature));
+            signature.params().empty() ? "" : ", ",
+            bind<write_produce_args>(signature));
     }
 
     static void write_delegate_definition(writer& w, TypeDef const& type)

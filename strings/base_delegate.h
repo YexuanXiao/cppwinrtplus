@@ -234,3 +234,22 @@ WINRT_EXPORT namespace winrt
         using impl::delegate_base<R, Args...>::delegate_base;
     };
 }
+
+WINRT_EXPORT namespace winrt::impl
+{
+    template <typename F, typename... Args>
+    std::int32_t delegate_invoke(F&& f, Args&&... args) noexcept
+    try
+    {
+        if constexpr (std::is_invocable_v<F&, F&, Args...>) {
+            std::invoke(f, f, std::forward<Args>(args)...);
+        } else {
+            std::invoke(f, std::forward<Args>(args)...);
+        }
+        return 0;
+    }
+    catch (...)
+    {
+        return to_hresult();
+    }
+}
