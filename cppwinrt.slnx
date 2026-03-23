@@ -47,6 +47,10 @@
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component/test_component.vcxproj" />
     </Project>
+    <Project Path="test/test_cpp23/test_cpp23.vcxproj">
+      <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
+      <BuildDependency Project="test/test_component/test_component.vcxproj" />
+    </Project>
     <Project Path="test/test_cpp20_no_sourcelocation/test_cpp20_no_sourcelocation.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component/test_component.vcxproj" />
