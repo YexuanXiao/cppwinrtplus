@@ -6,6 +6,8 @@ Please read the [repository](https://github.com/YexuanXiao/cppwinrtplus)'s READM
 
 C++/WinRT Plus can now be compiled as C++ modules. Compared to PCH, using C++ modules will reduce memory requirements by more than half.
 
+2026/03/24: Support using lambdas with explicit object parameter as delegates to resolve the issue where the captured lifetime may be shorter than the lifetime of the coroutine frame.
+
 2026/03/22: No longer generate `#pragma pop/push("WINRT_EXPORT")`, and no longer generate winrt.ixx, because this prevented mixing modules and header files in some cases.
 
 2026/03/14: As part of the modernization to C++20, C++/WinRT Plus now use concepts instead of `enable_if` and `void_t`, and leverage hidden friends and defaulted comparisons (including three-way comparison) to avoid ambiguity in overload resolution, all of which also help speed up compilation.
@@ -17,6 +19,10 @@ C++/WinRT Plus can now be compiled as C++ modules. Compared to PCH, using C++ mo
 2026/02/24: C++/WinRT Plus can now be compiled as C++ modules. See the [blog post](./about_module.md) for details.
 
 2026/02/22: Removed support for C++17 and C++/CX. Existing projects need to upgrade their C++ standard to C++20.
+
+<hr>
+
+The following content is from the original C++/WinRT documentation and remains a valuable resource.
 
 ## Overview
 

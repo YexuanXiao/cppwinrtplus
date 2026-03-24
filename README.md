@@ -22,6 +22,8 @@ The current plans for C++/WinRT Plus can be viewed in the issue list. C++/WinRT 
 
 ## Changelog
 
+2026/03/24: Support using lambdas with explicit object parameter as delegates to resolve the issue where the captured lifetime may be shorter than the lifetime of the coroutine frame.
+
 2026/03/22: No longer generate `#pragma pop/push("WINRT_EXPORT")`, and no longer generate winrt.ixx, because this prevented mixing modules and header files in some cases.
 
 2026/03/14: As part of the modernization to C++20, C++/WinRT Plus now use concepts instead of `enable_if` and `void_t`, and leverage hidden friends and defaulted comparisons (including three-way comparison) to avoid ambiguity in overload resolution, all of which also help speed up compilation.
