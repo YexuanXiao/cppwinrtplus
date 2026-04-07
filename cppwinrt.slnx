@@ -16,83 +16,83 @@
     <File Path="run_tests.cmd" />
   </Folder>
   <Folder Name="/test/">
-    <Project Path="test/test/test.vcxproj" Id="d2961ea1-a8ca-4a62-b760-948403dc8494">
+    <Project Path="test/test/test.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component/test_component.vcxproj" />
       <BuildDependency Project="test/test_component_no_pch/test_component_no_pch.vcxproj" />
     </Project>
-    <Project Path="test/test_component/test_component.vcxproj" Id="a91b8bf3-28e4-4d9e-8dba-64b70e4f0270">
+    <Project Path="test/test_component/test_component.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
     </Project>
-    <Project Path="test/test_component_base/test_component_base.vcxproj" Id="13333a6f-6a4a-48cd-865c-0f65135eb018">
+    <Project Path="test/test_component_base/test_component_base.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component/test_component.vcxproj" />
     </Project>
-    <Project Path="test/test_component_derived/test_component_derived.vcxproj" Id="0080f6d1-aec3-4f89-ade1-3d22a7ebf99e">
+    <Project Path="test/test_component_derived/test_component_derived.vcxproj">
       <BuildDependency Project="test/test_component_base/test_component_base.vcxproj" />
     </Project>
-    <Project Path="test/test_component_fast/test_component_fast.vcxproj" Id="0e0aca62-a92f-44cf-bd41-aeb541946df8">
+    <Project Path="test/test_component_fast/test_component_fast.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component/test_component.vcxproj" />
     </Project>
-    <Project Path="test/test_component_folders/test_component_folders.vcxproj" Id="85695954-3800-4558-9857-966e69e9f9ec">
+    <Project Path="test/test_component_folders/test_component_folders.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component/test_component.vcxproj" />
     </Project>
-    <Project Path="test/test_component_no_pch/test_component_no_pch.vcxproj" Id="f1c915b3-2c64-4992-afb7-7f035b1a7607">
+    <Project Path="test/test_component_no_pch/test_component_no_pch.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component/test_component.vcxproj" />
     </Project>
-    <Project Path="test/test_cpp20/test_cpp20.vcxproj" Id="5ff6cd6c-515a-4d55-97b6-62ad9bcb77ea">
+    <Project Path="test/test_cpp20/test_cpp20.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component/test_component.vcxproj" />
     </Project>
-    <Project Path="test/test_cpp23/test_cpp23.vcxproj" Id="04e0d58c-4f4f-4a50-a1d0-edce1cb8e0ef">
+    <Project Path="test/test_cpp23/test_cpp23.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component/test_component.vcxproj" />
     </Project>
-    <Project Path="test/test_cpp20_no_sourcelocation/test_cpp20_no_sourcelocation.vcxproj" Id="d4c8f881-84d5-4a7b-8bde-ab4e34a05374">
+    <Project Path="test/test_cpp20_no_sourcelocation/test_cpp20_no_sourcelocation.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component/test_component.vcxproj" />
     </Project>
-    <Project Path="test/test_fast/test_fast.vcxproj" Id="f8a1fe5a-dc8a-49df-b882-def76e38e484">
+    <Project Path="test/test_fast/test_fast.vcxproj">
       <BuildDependency Project="test/test_component_fast/test_component_fast.vcxproj" />
     </Project>
-    <Project Path="test/test_fast_fwd/test_fast_fwd.vcxproj" Id="303cc0fe-7d66-4f9f-b7a1-0af7f9359074">
+    <Project Path="test/test_fast_fwd/test_fast_fwd.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component_fast/test_component_fast.vcxproj" />
     </Project>
-    <Project Path="test/test_module_lock_custom/test_module_lock_custom.vcxproj" Id="08c40663-b6a3-481e-8755-ae32bad99501">
+    <Project Path="test/test_module_lock_custom/test_module_lock_custom.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component/test_component.vcxproj" />
     </Project>
-    <Project Path="test/test_module_lock_none/test_module_lock_none.vcxproj" Id="d48a96c2-8512-4cc3-b6e4-7cff07ed8ed3">
+    <Project Path="test/test_module_lock_none/test_module_lock_none.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component_base/test_component_base.vcxproj" />
       <BuildDependency Project="test/test_component_derived/test_component_derived.vcxproj" />
     </Project>
-    <Project Path="test/test_slow/test_slow.vcxproj" Id="b68c61c6-4699-41e6-a158-ea1be029e7a0">
+    <Project Path="test/test_slow/test_slow.vcxproj">
       <BuildDependency Project="test/test_component_fast/test_component_fast.vcxproj" />
     </Project>
   </Folder>
   <Folder Name="/test/old_tests/">
-    <Project Path="test/old_tests/Component/Component.vcxproj" Id="559a7cf4-dc5f-4d62-ba6b-0c2b025593f8">
+    <Project Path="test/old_tests/Component/Component.vcxproj">
       <BuildDependency Project="test/old_tests/Composable/Composable.vcxproj" />
     </Project>
-    <Project Path="test/old_tests/Composable/Composable.vcxproj" Id="152e4c6e-9a9d-4d5a-b38d-4905d173649a">
+    <Project Path="test/old_tests/Composable/Composable.vcxproj">
       <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
       <BuildDependency Project="test/test_component/test_component.vcxproj" />
     </Project>
-    <Project Path="test/old_tests/UnitTests/test_old.vcxproj" Id="c8b95fcb-9b0b-4e9f-b7d5-643883c192c9">
+    <Project Path="test/old_tests/UnitTests/test_old.vcxproj">
       <BuildDependency Project="test/old_tests/Component/Component.vcxproj" />
     </Project>
   </Folder>
-  <Project Path="cppwinrt/cppwinrt.vcxproj" Id="d613fb39-5035-4043-91e2-bab323908af4">
+  <Project Path="cppwinrt/cppwinrt.vcxproj">
     <BuildDependency Project="prebuild/prebuild.vcxproj" />
   </Project>
-  <Project Path="fast_fwd/fast_fwd.vcxproj" Id="a63b3ad1-ab7b-461e-9fff-2447f5bcd459" />
-  <Project Path="prebuild/prebuild.vcxproj" Id="fb239623-7d19-4025-bcea-b43298d4a315" />
-  <Project Path="scratch/scratch.vcxproj" Id="e893622c-47de-4f83-b422-0a26711590a4">
+  <Project Path="fast_fwd/fast_fwd.vcxproj" />
+  <Project Path="prebuild/prebuild.vcxproj" />
+  <Project Path="scratch/scratch.vcxproj">
     <BuildDependency Project="cppwinrt/cppwinrt.vcxproj" />
   </Project>
 </Solution>
