@@ -58,7 +58,7 @@ namespace
     static_assert(list_size<impl::filter<impl::is_interface, IFoo, Bar>>::value == 3);
 
     static_assert(impl::is_implements<Foo>());
-    
+
     static_assert(std::is_same<impl::nested_implements<IFoo, Bar, IFoo2>::type, Bar>::value);
     static_assert(std::is_same<impl::base_implements<Foo, IFoo>::type, impl::root_implements<Foo, IFoo>>::value);
     static_assert(std::is_same<impl::base_implements<Foo, IFoo, Bar, IFoo2>::type, Bar>::value);

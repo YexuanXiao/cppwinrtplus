@@ -129,20 +129,20 @@ namespace cppwinrt
     static void write_module_aware_export_includes_start(writer& w)
     {
         w.write(R"(
-#if !defined(WINRT_MODULE)
+#ifndef WINRT_MODULE
 )");
     }
 
     static void write_module_aware_export_includes_end(writer& w)
     {
-        w.write(R"(
-#endif
+        w.write(R"(#endif
+
 )");
     }
 
-    [[nodiscard]] static finish_with wrap_module_aware_includes_guard(writer& w, bool enable_module)
+    [[nodiscard]] static finish_with wrap_module_aware_includes_guard(writer& w, bool enable)
     {
-        if (enable_module)
+        if (enable)
         {
             write_module_aware_export_includes_start(w);
             return { w, write_module_aware_export_includes_end };

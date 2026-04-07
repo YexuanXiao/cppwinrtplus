@@ -2,7 +2,7 @@ parameters:
   - name: OfficialBuild
     type: boolean
     default: false
-    
+
 variables:
   MajorVersion: "2"
   MinorVersion: "0"

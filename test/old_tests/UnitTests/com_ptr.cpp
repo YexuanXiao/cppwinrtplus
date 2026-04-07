@@ -300,7 +300,7 @@ TEST_CASE("com_ptr, convertible copy ctor assign")
 {
     com_ptr<::IInspectable> a = test_make_inspectable();
     REQUIRE(a);
-    
+
     com_ptr<::IUnknown> b = a; // convertible copy ctor
     REQUIRE(b);
 

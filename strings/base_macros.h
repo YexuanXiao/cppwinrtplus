@@ -21,12 +21,18 @@
 
 // Note: this is a workaround for a false-positive warning produced by the Visual C++ 16.3 compiler.
 #pragma warning(disable : 4268)
+
+// C++ module warnings by /W4
+#pragma warning(disable : 4499)
+#pragma warning(disable : 4630)
 #endif
 
+#ifndef WINRT_EXPORT
 #ifdef WINRT_MODULE
-#define WINRT_EXPORT export
+#define WINRT_EXPORT export extern "C++"
 #else
 #define WINRT_EXPORT
+#endif
 #endif
 
 // <windowsnumerics.impl.h> pulls in large, hard-to-control legacy headers. In header builds we keep the

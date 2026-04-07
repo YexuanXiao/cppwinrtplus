@@ -39,9 +39,8 @@ First, write all header files in the following pattern:
 #pragma once
 #ifndef WINRT_XXX_H
 #define WINRT_XXX_H
-#pragma push_macro("WINRT_EXPORT")
 #undef WINRT_EXPORT
-#if !defined(WINRT_MODULE) // legacy header path
+#ifndef WINRT_MODULE // legacy header path
 #define WINRT_EXPORT
 #include <winrt/base.h>
 #include <dep headers>
@@ -49,7 +48,6 @@ First, write all header files in the following pattern:
 #define WINRT_EXPORT export
 #endif
 // declarations/definitions
-#pragma pop_macro("WINRT_EXPORT")
 #endif
 ```
 

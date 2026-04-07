@@ -110,7 +110,7 @@ TEST_CASE("as_implements_inheritance")
         com_ptr<Bar> bar2 = stringable.as<Bar>();
         REQUIRE(bar.get() == bar2.get());
     }
-    
+
     com_ptr<Foo> foo = bar.as<Foo>();
     REQUIRE(bar.get() == foo.get());
     {

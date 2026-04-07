@@ -17,7 +17,7 @@ struct nested_derived : implements<nested_derived, Windows::Foundation::IClosabl
     {
 
     }
-    
+
     hstring ToString() override
     {
         return L"nested_derived";

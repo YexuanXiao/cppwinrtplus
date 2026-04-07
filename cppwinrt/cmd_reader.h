@@ -98,9 +98,9 @@ namespace cppwinrt
         }
 
         std::filesystem::path normalized = std::filesystem::absolute(path).lexically_normal();
-    
+
         std::wstring const& sv = normalized.native();
-    
+
         if (sv.starts_with(LR"(\\?\)") || sv.starts_with(LR"(\\.\)")) {
             return normalized;
         }

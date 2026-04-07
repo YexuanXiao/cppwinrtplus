@@ -45,7 +45,7 @@ namespace std
     template<> struct hash<winrt::Windows::Foundation::IUnknown> : winrt::impl::hash_base {};
     template<> struct hash<winrt::Windows::Foundation::IInspectable> : winrt::impl::hash_base {};
     template<> struct hash<winrt::Windows::Foundation::IActivationFactory> : winrt::impl::hash_base {};
-    
+
     template<> struct hash<winrt::guid>
     {
         std::size_t operator()(winrt::guid const& value) const noexcept

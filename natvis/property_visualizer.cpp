@@ -20,7 +20,7 @@ HRESULT property_visualizer::GetChildren(
 
     // Need to create a DkmArray of DkmChildVisualizedExpression that contain the evaluation results and return that.
     DkmAllocArray(initialChildren.Length, pVisualizedInitialChildren);
-    
+
     for (DWORD i = 0; i < initialChildren.Length; i++)
     {
         auto pCurrEvaluationResult = make_com_ptr(initialChildren.Members[i]);
@@ -67,7 +67,7 @@ HRESULT property_visualizer::GetItems(
     IF_FAIL_RET(m_pVisualizedExpression->GetItemsCallback(pEnumContext, StartIndex, Count, &evaluationResults));
 
     DkmAllocArray(evaluationResults.Length, pItems);
-    
+
     for (DWORD i = 0; i < evaluationResults.Length; i++)
     {
         auto pCurrEvaluationResult = make_com_ptr(evaluationResults.Members[i]);

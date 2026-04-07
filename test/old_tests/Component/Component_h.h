@@ -3076,7 +3076,7 @@ HRESULT ( STDMETHODCALLTYPE *SetInt32 )(
         /* [size_is(count), out] */IInspectable * * value
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CIParametersVtbl;
 
 interface __x_ABI_CComponent_CIParameters
@@ -3329,7 +3329,7 @@ HRESULT ( STDMETHODCALLTYPE *Set )(
         /* [size_is(count), out] */__x_ABI_CComponent_CWrapStructure * value
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CIStructuresVtbl;
 
 interface __x_ABI_CComponent_CIStructures
@@ -3433,7 +3433,7 @@ HRESULT ( STDMETHODCALLTYPE *Invoke )(
         /* [in] */int value
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CICustomDelegateVtbl;
 
 interface __x_ABI_CComponent_CICustomDelegate
@@ -3489,7 +3489,7 @@ HRESULT ( STDMETHODCALLTYPE *Invoke )(
         /* [retval, out] */HSTRING * value
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CIReturnDelegateVtbl;
 
 interface __x_ABI_CComponent_CIReturnDelegate
@@ -3546,7 +3546,7 @@ HRESULT ( STDMETHODCALLTYPE *Invoke )(
         /* [in] */int args
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CITwoArgDelegateVtbl;
 
 interface __x_ABI_CComponent_CITwoArgDelegate
@@ -3604,7 +3604,7 @@ HRESULT ( STDMETHODCALLTYPE *Invoke )(
         /* [retval, out] */BOOL * result
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CITwoArgDelegateReturnVtbl;
 
 interface __x_ABI_CComponent_CITwoArgDelegateReturn
@@ -3692,7 +3692,7 @@ HRESULT ( STDMETHODCALLTYPE *GetTrustLevel )(
         /* [in] */int value
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CIEventsStaticsVtbl;
 
 interface __x_ABI_CComponent_CIEventsStatics
@@ -3821,7 +3821,7 @@ HRESULT ( STDMETHODCALLTYPE *GetTrustLevel )(
         /* [in] */int value
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CIEventsVtbl;
 
 interface __x_ABI_CComponent_CIEvents
@@ -3958,7 +3958,7 @@ HRESULT ( STDMETHODCALLTYPE *GetTrustLevel )(
         /* [in] */int value
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CIStaticVtbl;
 
 interface __x_ABI_CComponent_CIStatic
@@ -4096,7 +4096,7 @@ HRESULT ( STDMETHODCALLTYPE *Fail )(
         __x_ABI_CComponent_CIErrors * This
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CIErrorsVtbl;
 
 interface __x_ABI_CComponent_CIErrors
@@ -4280,7 +4280,7 @@ HRESULT ( STDMETHODCALLTYPE *String )(
         __x_ABI_CComponent_CIFastInput * This
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CIFastInputVtbl;
 
 interface __x_ABI_CComponent_CIFastInput
@@ -4432,7 +4432,7 @@ HRESULT ( STDMETHODCALLTYPE *Create )(
         /* [retval, out] */__x_ABI_CWindows_CFoundation_CIClosable * * _out
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CIFastInputVectorFactoryVtbl;
 
 interface __x_ABI_CComponent_CIFastInputVectorFactory
@@ -4541,7 +4541,7 @@ HRESULT ( STDMETHODCALLTYPE *Create )(
         /* [retval, out] */__x_ABI_CWindows_CFoundation_CIClosable * * _out
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CIFastInputMapFactoryVtbl;
 
 interface __x_ABI_CComponent_CIFastInputMapFactory
@@ -4678,7 +4678,7 @@ HRESULT ( STDMETHODCALLTYPE *CustomVirtualMethod )(
         /* [retval, out] */HSTRING * value
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComponent_CICustomBaseVtbl;
 
 interface __x_ABI_CComponent_CICustomBase

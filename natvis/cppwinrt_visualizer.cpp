@@ -227,7 +227,7 @@ TypeSig ResolveGenericTypePart(DkmProcess* process, iter& it, sent const& end)
     {
         return TypeSig{ FindGuidType() };
     }
-    
+
     TypeDef type = FindSimpleType(process, partName);
     auto tickPos = partName.rfind('`');
     if (tickPos == partName.npos)
