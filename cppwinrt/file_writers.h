@@ -194,6 +194,7 @@ namespace cppwinrt
 
         {
             auto wrap_includes_guard = wrap_module_aware_includes_guard(w, !w.depends.empty() && settings.modules);
+
             for (auto&& depends : w.depends)
             {
                 auto wrap_type = wrap_type_namespace(w, depends.first);
@@ -238,7 +239,7 @@ namespace cppwinrt
             {
                 w.write_depends(depends.first, '0');
             }
-    
+
             w.write_depends(w.type_namespace, '0');
         }
 
@@ -284,7 +285,7 @@ namespace cppwinrt
             {
                 w.write_depends(depends.first, impl);
             }
-    
+
             w.write_depends(w.type_namespace, '1');
         }
 
@@ -634,12 +635,12 @@ export import winrt.base;
 
             write_version_assert(w);
             write_parent_depends(w, c, ns);
-    
+
             for (auto&& depends : w.depends)
             {
                 w.write_depends(depends.first, '2');
             }
-    
+
             w.write_depends(w.type_namespace, '2');
         }
 

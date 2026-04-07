@@ -122,7 +122,7 @@ TEST_CASE("TryLookup TryRemove error")
         void Remove(int) { throw_hresult(code); }
         void Clear() { throw_hresult(E_UNEXPECTED); } // shouldn't be called by the test
     };
-    
+
     auto self = make_self<error_map>();
     IMap<int, int> map = *self;
 
@@ -178,7 +178,7 @@ TEST_CASE("trylookup_from_abi specialization")
     REQUIRE(!map.TryLookup(123));
     // make sure regular lookup stll throws bounds
     REQUIRE_THROWS_AS(map.Lookup(123), hresult_out_of_bounds);
-    
+
     // Simulate a non-agile map that is being accessed from the wrong thread.
     // "Try" operations should throw rather than erroneously report "not found".
     // Because they didn't even try. The operation never got off the ground.
@@ -252,7 +252,7 @@ TEST_CASE("trylookup_from_abi specialization with IInspectable")
     self->returnNullptr = true;
     REQUIRE(map.TryLookup(123) == IInspectable{nullptr});
     REQUIRE(map.Lookup(123) == IInspectable{nullptr});
-    
+
     // Make sure that we use the TryLookup specialization, and don't throw an unexpected exception.
     self->shouldThrowOnTryLookup = false;
     self->returnNullptr = false;

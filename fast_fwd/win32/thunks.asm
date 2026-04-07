@@ -13,7 +13,7 @@ InvokeForwarder PROC
     mov     ecx, dword ptr[esp + 4]
     mov     edx, dword ptr[ecx + 4]
     mov     [esp + 4], edx
-    
+
     ; Add offset and index
     add     eax, dword ptr [ecx + 8]  
 

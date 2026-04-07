@@ -26,7 +26,7 @@
     ; Get method address from owner abi vtable 
     ldr     x0, [x1]  
     ldr     x15, [x0, x12, lsl #3]
-    
+
     ; Verify indirect call target
     adrp    x12, __guard_check_icall_fptr
     ldr     x12, [x12, __guard_check_icall_fptr]

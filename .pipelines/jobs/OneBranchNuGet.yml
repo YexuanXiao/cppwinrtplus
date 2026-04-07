@@ -12,7 +12,7 @@ jobs:
   - job:
     pool:
       type: windows
-    
+
     variables:
       ob_outputDirectory: '$(Build.SourcesDirectory)\out'
       PackageVersion: ${{ parameters.NugetPackageVersion }}

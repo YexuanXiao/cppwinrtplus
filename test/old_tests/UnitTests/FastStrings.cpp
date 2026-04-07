@@ -33,7 +33,7 @@ TEST_CASE("FastStrings")
         v.TryLookup(L"hello"sv);
         v.HasKey(L"hello"sv);
     }
-    
+
     {
         std::uint32_t index = 0;
         single_threaded_vector<int>().GetView().IndexOf(0, index);

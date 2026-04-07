@@ -816,7 +816,7 @@ HRESULT object_visualizer::CreateEvaluationResult(_Deref_out_ DkmEvaluationResul
     auto valueHome = make_com_ptr(m_pVisualizedExpression->ValueHome());
     com_ptr<DkmPointerValueHome> pPointerValueHome = valueHome.as<DkmPointerValueHome>();
     auto address = pPointerValueHome->Address();
-    
+
     com_ptr<DkmString> pValue;
     DkmEvaluationResultFlags_t evalResultFlags = DkmEvaluationResultFlags::ReadOnly | DkmEvaluationResultFlags::Expandable;
     if (requires_refresh(address, m_pVisualizedExpression->InspectionContext()->EvaluationFlags()))

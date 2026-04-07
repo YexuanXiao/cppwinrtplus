@@ -91,7 +91,7 @@ WINRT_EXPORT namespace winrt::impl
     {
         using type = struct_category<float, float>;
     };
-    
+
     template <> struct category<Windows::Foundation::Rect>
     {
         using type = struct_category<float, float, float, float>;

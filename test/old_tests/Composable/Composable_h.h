@@ -573,7 +573,7 @@ HRESULT ( STDMETHODCALLTYPE *VirtualMethod )(
         /* [retval, out] */HSTRING * value
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComposable_CIBaseVtbl;
 
 interface __x_ABI_CComposable_CIBase
@@ -679,7 +679,7 @@ HRESULT ( STDMETHODCALLTYPE *CreateInstance )(
         /* [retval, out] */__x_ABI_CComposable_CIBase * * instance
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComposable_CIBaseFactoryVtbl;
 
 interface __x_ABI_CComposable_CIBaseFactory
@@ -774,7 +774,7 @@ HRESULT ( STDMETHODCALLTYPE *OverridableMethod )(
         /* [retval, out] */HSTRING * value
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComposable_CIBaseOverridesVtbl;
 
 interface __x_ABI_CComposable_CIBaseOverrides
@@ -861,7 +861,7 @@ HRESULT ( STDMETHODCALLTYPE *GetTrustLevel )(
     /* [OUT ] */ __RPC__out TrustLevel *trustLevel
     );
 END_INTERFACE
-    
+
 } __x_ABI_CComposable_CIDerivedVtbl;
 
 interface __x_ABI_CComposable_CIDerived
@@ -955,7 +955,7 @@ HRESULT ( STDMETHODCALLTYPE *CreateInstance )(
         /* [retval, out] */__x_ABI_CComposable_CIDerived * * instance
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComposable_CIDerivedFactoryVtbl;
 
 interface __x_ABI_CComposable_CIDerivedFactory
@@ -1125,7 +1125,7 @@ HRESULT ( STDMETHODCALLTYPE *Test1 )(
         /* [retval, out] */DOUBLE * result
         );
     END_INTERFACE
-    
+
 } __x_ABI_CComposable_CITestStructCodeGenVtbl;
 
 interface __x_ABI_CComposable_CITestStructCodeGen

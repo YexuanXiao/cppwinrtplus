@@ -23,7 +23,7 @@ void* __stdcall winrt_get_activation_factory(
     {
         return factory;
     }
-    
+
     /* call other activation factories */
 
     return nullptr;
