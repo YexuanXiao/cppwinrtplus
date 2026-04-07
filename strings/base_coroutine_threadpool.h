@@ -136,6 +136,7 @@ WINRT_EXPORT namespace winrt::impl
     struct unique_cancellation_lock
     {
         std::atomic<canceller_t>& m_pcanceller;
+
         ~unique_cancellation_lock()
         {
             m_pcanceller.store(nullptr, std::memory_order_release);
@@ -164,7 +165,7 @@ WINRT_EXPORT namespace winrt
         void cancel()
         {
             auto canceller = m_canceller.exchange(cancelling_ptr, std::memory_order_acquire);
-            impl::unique_cancellation_lock lock{m_canceller};
+            impl::unique_cancellation_lock lock{ m_canceller };
 
             if ((canceller != nullptr) && (canceller != cancelling_ptr))
             {

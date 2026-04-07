@@ -192,20 +192,13 @@ namespace cppwinrt
         write_preamble(w);
         write_open_file_guard(w, ns, '0');
 
-        if (settings.modules)
         {
-            write_module_aware_export_includes_start(w);
-        }
-
-        for (auto&& depends : w.depends)
-        {
-            auto wrap_type = wrap_type_namespace(w, depends.first);
-            w.write_each<write_forward>(depends.second);
-        }
-
-        if (settings.modules)
-        {
-            write_module_aware_export_includes_end(w);
+            auto wrap_includes_guard = wrap_module_aware_includes_guard(w, !w.depends.empty() && settings.modules);
+            for (auto&& depends : w.depends)
+            {
+                auto wrap_type = wrap_type_namespace(w, depends.first);
+                w.write_each<write_forward>(depends.second);
+            }
         }
 
         w.save_header('0');
@@ -238,21 +231,15 @@ namespace cppwinrt
         write_preamble(w);
         write_open_file_guard(w, ns, '1');
 
-        if (settings.modules)
         {
-            write_module_aware_export_includes_start(w);
-        }
+            auto wrap_includes_guard = wrap_module_aware_includes_guard(w, settings.modules);
 
-        for (auto&& depends : w.depends)
-        {
-            w.write_depends(depends.first, '0');
-        }
-
-        w.write_depends(w.type_namespace, '0');
-
-        if (settings.modules)
-        {
-            write_module_aware_export_includes_end(w);
+            for (auto&& depends : w.depends)
+            {
+                w.write_depends(depends.first, '0');
+            }
+    
+            w.write_depends(w.type_namespace, '0');
         }
 
         w.save_header('1');
@@ -290,21 +277,15 @@ namespace cppwinrt
 
         char const impl = promote ? '2' : '1';
 
-        if (settings.modules)
         {
-            write_module_aware_export_includes_start(w);
-        }
+            auto wrap_includes_guard = wrap_module_aware_includes_guard(w, settings.modules);
 
-        for (auto&& depends : w.depends)
-        {
-            w.write_depends(depends.first, impl);
-        }
-
-        w.write_depends(w.type_namespace, '1');
-
-        if (settings.modules)
-        {
-            write_module_aware_export_includes_end(w);
+            for (auto&& depends : w.depends)
+            {
+                w.write_depends(depends.first, impl);
+            }
+    
+            w.write_depends(w.type_namespace, '1');
         }
 
         w.save_header('2');
@@ -318,9 +299,7 @@ namespace cppwinrt
         // Provide minimal textual includes required for macros / intrinsics / feature-test macros.
         // In Debug builds, include <crtdbg.h> to provide _ASSERTE for WINRT_ASSERT.
         // Provide winrt/module.h to define the WINRT_IMPL_* macros (macros are not shared via import).
-        w.write(R"(
-module;
-
+        w.write(R"(module;
 #define WINRT_MODULE
 #include <intrin.h>
 #include <cstddef>
@@ -329,7 +308,6 @@ module;
 #include <crtdbg.h>
 #endif
 #include "winrt/module.h"
-
 )");
     }
 
@@ -391,7 +369,7 @@ export module winrt.numerics;
 #include <directxmath.h>
 
 #define _WINDOWS_NUMERICS_NAMESPACE_ winrt::Windows::Foundation::Numerics
-#define _WINDOWS_NUMERICS_BEGIN_NAMESPACE_ export namespace winrt::Windows::Foundation::Numerics
+#define _WINDOWS_NUMERICS_BEGIN_NAMESPACE_ export extern "C++" namespace winrt::Windows::Foundation::Numerics
 #define _WINDOWS_NUMERICS_END_NAMESPACE_
 #include <windowsnumerics.impl.h>
 #undef _WINDOWS_NUMERICS_NAMESPACE_
@@ -551,12 +529,6 @@ export import winrt.base;
 
         w.write('\n');
 
-        w.write(R"(#pragma push_macro("WINRT_EXPORT")
-#undef WINRT_EXPORT
-#define WINRT_EXPORT export
-
-)");
-
         // Export forward declarations for all projected types in this SCC. This provides names early enough for any
         // SCC-internal cycles that show up in the impl headers.
         for (auto&& ns : namespaces)
@@ -577,10 +549,6 @@ export import winrt.base;
             w.write_each<write_forward>(members.delegates);
             w.write_each<write_forward>(members.contracts);
         }
-
-        w.write(R"(#pragma pop_macro("WINRT_EXPORT")
-
-)");
 
         // Pull in the per-namespace impl headers in a stable phase order so that all forward declarations are present
         // before definitions, regardless of SCC member ordering.
@@ -661,24 +629,18 @@ export import winrt.base;
         write_preamble(w);
         write_open_file_guard(w, ns);
 
-        if (settings.modules)
         {
-            write_module_aware_export_includes_start(w);
-        }
+            auto wrap_includes_guard = wrap_module_aware_includes_guard(w, settings.modules);
 
-        write_version_assert(w);
-        write_parent_depends(w, c, ns);
-
-        for (auto&& depends : w.depends)
-        {
-            w.write_depends(depends.first, '2');
-        }
-
-        w.write_depends(w.type_namespace, '2');
-
-        if (settings.modules)
-        {
-            write_module_aware_export_includes_end(w);
+            write_version_assert(w);
+            write_parent_depends(w, c, ns);
+    
+            for (auto&& depends : w.depends)
+            {
+                w.write_depends(depends.first, '2');
+            }
+    
+            w.write_depends(w.type_namespace, '2');
         }
 
         w.save_header();
