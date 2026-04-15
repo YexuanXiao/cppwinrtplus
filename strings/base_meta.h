@@ -61,7 +61,7 @@ WINRT_EXPORT namespace winrt::impl
         using type = T;
     };
 
-    template <typename T, typename Enable = void>
+    template <typename T>
     struct abi
     {
         using type = T;
@@ -218,7 +218,7 @@ WINRT_EXPORT namespace winrt::impl
         T detach() { return std::exchange(value, empty_value); }
     };
 
-    template <typename T, typename Enable = void>
+    template <typename T>
     struct arg
     {
         using in = abi_t<T>;
@@ -237,7 +237,7 @@ WINRT_EXPORT namespace winrt::impl
     template <typename T>
     using arg_out = arg_in<T>*;
 
-    template <typename D, typename I, typename Enable = void>
+    template <typename D, typename I>
     struct produce_base;
 
     template <typename D, typename I>

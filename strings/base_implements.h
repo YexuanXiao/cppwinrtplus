@@ -74,13 +74,13 @@ WINRT_EXPORT namespace winrt::impl
     template <typename I>
     struct is_cloaked<cloaked<I>> : std::true_type {};
 
-    template <typename D, typename I, typename Enable = void>
+    template <typename D, typename I>
     struct producer;
 
     template <typename D, typename T>
     struct producers_base;
 
-    template <typename D, typename I, typename Enable = void>
+    template <typename D, typename I>
     struct producer_convert;
 
     template <typename T>
@@ -107,7 +107,7 @@ WINRT_EXPORT namespace winrt::impl
         void* value;
     };
 
-    template <typename D, typename I, typename Enable>
+    template <typename D, typename I>
     struct producer_convert : producer<D, typename default_interface<I>::type>
     {
 #ifdef __clang__
@@ -514,14 +514,14 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename D, typename I, typename Enable>
+    template <typename D, typename I>
     struct producer
     {
     private:
         produce<D, I> vtable;
     };
 
-    template <typename D, typename I, typename Enable>
+    template <typename D, typename I>
     struct produce_base : abi_t<I>
     {
         D& shim() noexcept
@@ -1295,7 +1295,7 @@ WINRT_EXPORT namespace winrt::impl
         virtual void* find_interface(guid const&) const noexcept = 0;
         virtual inspectable_abi* find_inspectable() const noexcept = 0;
 
-        template <typename, typename, typename>
+        template <typename, typename>
         friend struct impl::produce_base;
 
         template <typename, typename>

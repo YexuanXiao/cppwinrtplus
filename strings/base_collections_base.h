@@ -35,7 +35,7 @@ WINRT_EXPORT namespace winrt::impl
     template <typename D>
     using container_type_t = std::decay_t<decltype(std::declval<D>().get_container())>;
 
-    template <typename D, typename = void>
+    template <typename D>
     struct removed_values
     {
         void assign(container_type_t<D>& value)
@@ -47,7 +47,7 @@ WINRT_EXPORT namespace winrt::impl
 
     template <typename D>
     requires (!std::is_trivially_destructible_v<typename container_type_t<D>::value_type>)
-    struct removed_values<D, void>
+    struct removed_values<D>
     {
         container_type_t<D> m_value;
 
@@ -57,7 +57,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename T, typename = void>
+    template <typename T>
     struct removed_value
     {
         // Trivially destructible; okay to run destructor under lock
@@ -67,7 +67,7 @@ WINRT_EXPORT namespace winrt::impl
 
     template <typename T>
     requires (std::is_move_constructible_v<T> && !std::is_trivially_destructible_v<T>)
-    struct removed_value<T, void>
+    struct removed_value<T>
     {
         std::optional<T> m_value;
 
