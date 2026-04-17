@@ -2694,7 +2694,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
     }
     template <%> auto %<%>::operator()(%) const
     {%
-        check_hresult((*impl::abi_t_abi_cast<%<%>>(*this))->Invoke(%));%
+        check_hresult((*impl::abi_t_abi_cast(*this))->Invoke(%));%
     }
 )";
 
@@ -2743,8 +2743,6 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
                 bind_list(", ", generics),
                 bind<write_consume_params>(signature),
                 bind<write_consume_return_type>(signature, true),
-                type_name,
-                bind_list(", ", generics),
                 bind<write_abi_args>(signature, false),
                 bind<write_consume_return_statement>(signature));
         }
@@ -2786,7 +2784,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
     }
     inline auto %::operator()(%) const
     {%
-        check_hresult((*impl::abi_t_abi_cast<%>(*this))->Invoke(%));%
+        check_hresult((*impl::abi_t_abi_cast(*this))->Invoke(%));%
     }
 )";
 
@@ -2816,7 +2814,6 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
                 type_name,
                 bind<write_consume_params>(signature),
                 bind<write_consume_return_type>(signature, true),
-                type_name,
                 bind<write_abi_args>(signature, false),
                 bind<write_consume_return_statement>(signature));
         }
@@ -3037,7 +3034,7 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
         {
             auto format = R"(    inline %::operator impl::producer_ref<%> const() const noexcept
     {
-        return { (*impl::abi_t_abi_cast<%>(*this))->base_%() };
+        return { (*impl::abi_t_abi_cast(*static_cast<% const*>(this)))->base_%() };
     }
 )";
 

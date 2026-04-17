@@ -487,7 +487,7 @@ WINRT_EXPORT namespace winrt::impl
         }
         else
         {
-            auto const winrt_abi_type = *abi_t_abi_cast<Base>(*d);
+            auto const winrt_abi_type = *abi_t_abi_cast(*static_cast<Base const*>(d));
             (winrt_abi_type->*mptr)(std::forward<Args>(args)...);
         }
     }
@@ -505,7 +505,7 @@ WINRT_EXPORT namespace winrt::impl
         }
         else
         {
-            auto const winrt_abi_type = *abi_t_abi_cast<Base>(*d);
+            auto const winrt_abi_type = *abi_t_abi_cast(*static_cast<Base const*>(d));
             WINRT_VERIFY_(0, (winrt_abi_type->*mptr)(std::forward<Args>(args)...));
         }
     }
@@ -523,7 +523,7 @@ WINRT_EXPORT namespace winrt::impl
         }
         else
         {
-            auto const winrt_abi_type = *abi_t_abi_cast<Base>(*d);
+            auto const winrt_abi_type = *abi_t_abi_cast(*static_cast<Base const*>(d));
             check_hresult((winrt_abi_type->*mptr)(std::forward<Args>(args)...));
         }
     }
