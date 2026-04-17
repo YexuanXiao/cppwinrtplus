@@ -55,7 +55,7 @@ WINRT_EXPORT namespace winrt
         {
             if (I object = std::exchange(m_object, {}).get())
             {
-                ((*reinterpret_cast<impl::abi_t<I>**>(&object))->*(m_method))(m_token);
+                ((*impl::abi_t_abi_cast<I>(object))->*(m_method))(m_token);
             }
         }
 
@@ -110,7 +110,7 @@ WINRT_EXPORT namespace winrt
         {
             if (auto object = std::exchange(m_object, {}))
             {
-                ((*reinterpret_cast<impl::abi_t<I>**>(&object))->*(m_method))(m_token);
+                ((*impl::abi_t_abi_cast<I>(object))->*(m_method))(m_token);
             }
         }
 
@@ -182,7 +182,7 @@ WINRT_EXPORT namespace winrt::impl
         {
             if (object)
             {
-                ((*reinterpret_cast<impl::abi_t<I>**>(&object))->*(Method))(m_token);
+                ((*impl::abi_t_abi_cast<I>(object))->*(Method))(m_token);
             }
         }
 
@@ -242,7 +242,7 @@ WINRT_EXPORT namespace winrt::impl
         {
             if (object)
             {
-                ((*reinterpret_cast<impl::abi_t<I>**>(&object))->*(Method))(m_token);
+                ((*impl::abi_t_abi_cast<I>(object))->*(Method))(m_token);
             }
         }
     private:

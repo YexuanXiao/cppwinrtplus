@@ -507,7 +507,7 @@ WINRT_EXPORT namespace winrt
 {
     inline Windows::Foundation::IInspectable box_value(param::hstring const& value)
     {
-        return Windows::Foundation::IReference<hstring>(*(hstring*)(&value));
+        return Windows::Foundation::IReference<hstring>(*reinterpret_cast<hstring const*>(&value));
     }
 
     template <typename T>
@@ -549,7 +549,7 @@ WINRT_EXPORT namespace winrt
             }
         }
 
-        return *(hstring*)(&default_value);
+        return *reinterpret_cast<hstring const*>(&default_value);
     }
 
     template <typename T>

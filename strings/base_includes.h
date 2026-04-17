@@ -25,6 +25,7 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <bit>
 
 // <windowsnumerics.impl.h> pulls in large, hard-to-control legacy headers. In header builds we keep the
 // existing behavior, but in module builds it's provided by the winrt.numerics module.
