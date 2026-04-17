@@ -509,7 +509,7 @@ WINRT_EXPORT namespace winrt
             T ActivateInstance() const
             {
                 IInspectable instance;
-                check_hresult((*reinterpret_cast<impl::abi_t<IActivationFactory>**>(const_cast<IActivationFactory*>(this)))->ActivateInstance(put_abi(instance)));
+                check_hresult((*impl::abi_t_abi_cast(*this))->ActivateInstance(put_abi(instance)));
                 return instance.try_as<T>();
             }
         };
@@ -522,7 +522,7 @@ WINRT_EXPORT namespace winrt::impl
     T fast_activate(Windows::Foundation::IActivationFactory const& factory)
     {
         void* result{};
-        check_hresult((*reinterpret_cast<impl::abi_t<Windows::Foundation::IActivationFactory>**>(const_cast<Windows::Foundation::IActivationFactory*>(&factory)))->ActivateInstance(&result));
+        check_hresult((*impl::abi_t_abi_cast(factory))->ActivateInstance(&result));
         return{ result, take_ownership_from_abi };
     }
 }
