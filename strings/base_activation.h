@@ -284,7 +284,7 @@ WINRT_EXPORT namespace winrt::impl
 
 #if defined _WIN64
 #if defined(__GNUC__)
-            bool exchanged = __sync_bool_compare_and_swap((__int128*)this, __builtin_bit_cast(__int128, current_value), (__int128)0);
+            bool exchanged = __sync_bool_compare_and_swap((__int128*)this, *(__int128*)&current_value, (__int128)0);
 #else
             bool exchanged = 1 == _InterlockedCompareExchange128((std::int64_t*)this, 0, 0, (std::int64_t*)&current_value);
 #endif
@@ -293,9 +293,9 @@ WINRT_EXPORT namespace winrt::impl
                 pointer_value->Release();
             }
 #else
-            std::int64_t const result = _InterlockedCompareExchange64((std::int64_t*)this, 0, __builtin_bit_cast(std::int64_t, current_value));
+            std::int64_t const result = _InterlockedCompareExchange64((std::int64_t*)this, 0, *(std::int64_t*)&current_value);
 
-            if (result == __builtin_bit_cast(std::int64_t, current_value))
+            if (result == *(std::int64_t*)&current_value)
             {
                 pointer_value->Release();
             }
