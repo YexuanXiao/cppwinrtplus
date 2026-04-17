@@ -78,6 +78,12 @@ WINRT_EXPORT namespace winrt::impl
     using abi_t = typename abi<T>::type;
 
     template <typename T>
+    auto abi_t_abi_cast(T const& value) noexcept
+    {
+        return reinterpret_cast<abi_t<T>**>(const_cast<T*>(&value));
+    }
+
+    template <typename T>
     struct consume;
 
     template <typename D, typename I = D>
