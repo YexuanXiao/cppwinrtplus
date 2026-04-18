@@ -27,16 +27,6 @@
 #include <vector>
 #include <bit>
 
-// <windowsnumerics.impl.h> pulls in large, hard-to-control legacy headers. In header builds we keep the
-// existing behavior, but in module builds it's provided by the winrt.numerics module.
-#ifndef WINRT_MODULE
-#if __has_include(<windowsnumerics.impl.h>)
-#define WINRT_IMPL_NUMERICS
-#include <directxmath.h>
-#endif
-
-#endif
-
 #ifndef WINRT_LEAN_AND_MEAN
 #include <ostream>
 #endif
@@ -49,3 +39,18 @@
 #include <format>
 #include <source_location>
 #include <coroutine>
+
+// <windowsnumerics.impl.h> pulls in large, hard-to-control legacy headers. In header builds we keep the
+// existing behavior, but in module builds it's provided by the winrt.numerics module.
+#ifndef WINRT_MODULE
+#if __has_include(<windowsnumerics.impl.h>)
+#define WINRT_IMPL_NUMERICS
+#include <directxmath.h>
+#endif
+#endif
+
+#ifdef WINRT_ENABLE_LEGACY_COM
+#include <unknwn.h>
+#include <inspectable.h>
+#undef GetCurrentTime
+#endif

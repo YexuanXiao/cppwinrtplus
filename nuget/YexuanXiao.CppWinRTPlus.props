@@ -17,6 +17,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         <!--Set a value to prevent SDK's uap.props from setting it and pointing to the wrong headers-->
         <CppWinRT_IncludePath>PreventSdkUapPropsAssignment</CppWinRT_IncludePath>
         <CppWinRTEnableDefaultCopyLocalFalse Condition="'$(CppWinRTEnableDefaultCopyLocalFalse)' == ''">true</CppWinRTEnableDefaultCopyLocalFalse>
+        <CppWinRTEnableLegacyCOM Condition="'$(CppWinRTEnableLegacyCOM)' == ''">false</CppWinRTEnableLegacyCOM>
     </PropertyGroup>
 
     <ItemDefinitionGroup>
@@ -24,6 +25,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
             <!-- CompileAsWinRT means C++/CX and /ZW, which is incompatible with C++20. -->
             <CompileAsWinRT>false</CompileAsWinRT>
             <LanguageStandard Condition="'%(ClCompile.LanguageStandard)' == ''">stdcpp20</LanguageStandard>
+            <PreprocessorDefinitions Condition="'$(CppWinRTEnableLegacyCOM)' == 'true'">WINRT_ENABLE_LEGACY_COM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
         </ClCompile>
         <Midl Condition="'$(CppWinRTModernIDL)' != 'false'">
             <EnableWindowsRuntime>true</EnableWindowsRuntime>

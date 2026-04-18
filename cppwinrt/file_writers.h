@@ -323,6 +323,12 @@ namespace cppwinrt
         write_module_global_fragment(w);
 
         w.write(R"(
+#ifdef WINRT_ENABLE_LEGACY_COM
+#include <unknwn.h>
+#include <inspectable.h>
+#undef GetCurrentTime
+#endif
+
 export module winrt.base;
 
 // Module dependencies:

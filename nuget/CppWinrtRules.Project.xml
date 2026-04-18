@@ -33,6 +33,11 @@
                 Description="Enables midlrt.exe modern IDL support (disable for custom behavior such as proxy/stub generation)"
                 Category="General" />
 
+  <BoolProperty Name="CppWinRTEnableLegacyCOM"
+                DisplayName="Enable Legacy COM"
+                Description="Enables legacy COM support by defining WINRT_ENABLE_LEGACY_COM for all C++ source compilations"
+                Category="General" />
+
   <IntProperty Name="CppWinRTNamespaceMergeDepth"
                DisplayName="Namespace Merge Depth"
                Description="Overrides the depth of mdmerge.exe namespace merging (Xaml apps require 1)"
