@@ -393,13 +393,7 @@ catch (...) { return winrt::to_hresult(); }
             return;
         }
 
-        w.write(R"(
-#ifndef WINRT_EXPORT
-#define WINRT_EXPORT
-#endif
-)");
-
-        auto wrap_type = wrap_type_namespace(w, type_namespace);
+        auto wrap_type = wrap_type_namespace_without_export(w, type_namespace);
 
         for (auto&&[factory_name, factory] : get_factories(w, type))
         {
