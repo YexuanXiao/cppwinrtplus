@@ -111,16 +111,6 @@ namespace cppwinrt
         {
             auto wrap_file_guard = wrap_open_file_guard(w, "FAST_FORWARD");
 
-            w.write(R"(// Transition: compatibility
-#ifndef WINRT_MODULE
-
-#ifndef WINRT_EXPORT
-#define WINRT_EXPORT
-#endif
-
-#endif
-)");
-
             auto const fast_abi_size = get_fastabi_size(w, classes);
 
             w.write(strings::base_fast_forward,
