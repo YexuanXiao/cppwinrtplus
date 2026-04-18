@@ -37,7 +37,7 @@
 
 // <windowsnumerics.impl.h> pulls in large, hard-to-control legacy headers. In header builds we keep the
 // existing behavior, but in module builds it's provided by the winrt.numerics module.
-#ifndef WINRT_MODULE
+#if !(defined(WINRT_MODULE) || defined(WINRT_CONSUME_MODULE))
 
 #ifdef WINRT_IMPL_NUMERICS
 #define _WINDOWS_NUMERICS_NAMESPACE_ winrt::Windows::Foundation::Numerics
@@ -49,7 +49,7 @@
 #undef _WINDOWS_NUMERICS_END_NAMESPACE_
 #endif
 
-#endif // WINRT_MODULE
+#endif
 
 #if defined(_MSC_VER)
 #define WINRT_IMPL_NOINLINE __declspec(noinline)

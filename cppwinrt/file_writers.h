@@ -621,10 +621,21 @@ export import winrt.base;
         {
             module_imports.clear();
         }
+
+        if (settings.modules)
+        {
+            w.write("#endif\n");
+        }
+
         write_close_file_guard(w);
         w.swap();
         write_preamble(w);
         write_open_file_guard(w, ns);
+
+        if (settings.modules)
+        {
+            w.write("#ifndef WINRT_CONSUME_MODULE\n");
+        }
 
         {
             auto wrap_includes_guard = wrap_module_aware_includes_guard(w, settings.modules);
@@ -662,9 +673,30 @@ export import winrt.base;
         write_preamble(w);
         write_include_guard(w);
 
+        if (settings.modules)
+        {
+            w.write("#ifdef WINRT_CONSUME_MODULE\n");
+            w.write("#include \"winrt/module.h\"\n");
+
+            for (auto&& depends : w.depends)
+            {
+                std::string import_decl{ "import " };
+                import_decl.append(depends.first);
+                import_decl.append(";\n");
+                w.write(import_decl);
+            }
+
+            w.write("#else\n");
+        }
+
         for (auto&& depends : w.depends)
         {
             w.write_depends(depends.first);
+        }
+
+        if (settings.modules)
+        {
+            w.write("#endif\n");
         }
 
         auto filename = settings.output_folder + get_generated_component_filename(type) + ".g.h";
