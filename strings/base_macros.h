@@ -91,7 +91,7 @@
 #define WINRT_IMPL_HAS_DECLSPEC_UUID 0
 #endif
 
-#ifdef __IUnknown_INTERFACE_DEFINED__
+#if defined(__IUnknown_INTERFACE_DEFINED__) || defined(WINRT_ENABLE_LEGACY_COM)
 #define WINRT_IMPL_IUNKNOWN_DEFINED
 #else
 // Forward declare so we can talk about it.

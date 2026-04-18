@@ -565,7 +565,7 @@ WINRT_EXPORT namespace winrt::impl
     struct producer<D, I> : I
     {
 #ifndef WINRT_IMPL_IUNKNOWN_DEFINED
-        static_assert(std::is_void_v<I> /* dependent_false */, "To implement classic COM interfaces, you must #include <unknwn.h> before including C++/WinRT headers.");
+        static_assert(std::is_void_v<I> /* dependent_false */, "To implement classic COM interfaces, you must #include <unknwn.h> before including C++/WinRT headers or define the macro WINRT_ENABLE_LEGACY_COM globally.");
 #endif
     };
 
