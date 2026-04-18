@@ -6,6 +6,8 @@ Please read the [repository](https://github.com/YexuanXiao/cppwinrtplus)'s READM
 
 C++/WinRT Plus can now be compiled as C++ modules. Compared to PCH, using C++ modules will reduce memory requirements by more than half.
 
+2026/04/18: Now all the files you write that use C++/WinRT can be modularized, including those for XAML. See the tutorial for how.
+
 2026/03/24: Support using lambdas with explicit object parameter as delegates to resolve the issue where the captured lifetime may be shorter than the lifetime of the coroutine frame.
 
 2026/03/22: No longer generate `#pragma pop/push("WINRT_EXPORT")`, and no longer generate winrt.ixx, because this prevented mixing modules and header files in some cases.
@@ -108,6 +110,8 @@ To customize common C++/WinRT project properties:
 * expand the Common Properties item
 * select the C++/WinRT property page
 
+## Exclude what you don't want
+
 You can prevent unnecessary namespaces from being generated, such as, by adding a CppWinRT.config file to the solution directory. Since some modules are very large, this can effectively reduce compilation time.
 
 The format of the configuration file is:
@@ -130,6 +134,74 @@ It is equivalent to passing `-config <path\` to cppwinrt.exe, which combines the
 Note that namespace exclusion occurs at a very early stage of the build process, so a clean build needs to be performed for it to take effect.
 
 It's suggest excluding Windows.UI.Xaml and Windows.ApplicationModel.Store, as the latter depends on the former. By excluding Windows.UI.Xaml, the BMI size can be reduced by one-third.
+
+## Using C++ modules
+
+When writing a module, you should ensure that any third-party library includes are placed before `export module`. All module tutorials will teach this.
+
+When consuming a module, you need to ensure that all third-party includes are placed before `import`. For details on how to consume XAML modules, refer to the explanation below.
+
+## Make XAML modular
+
+XAML components written with C++/WinRT typically have two files: `Class.xaml.h` and `Class.xaml.cpp`. To make them modular, rewrite `Class.xaml.h` as follows:  
+
+```cpp
+#pragma once
+
+#include "Class.g.h"
+
+namespace winrt::Project::implementation
+{
+    // Implementation code
+}
+
+namespace winrt::Project::factory_implementation
+{
+    // Implementation code
+}
+```
+
+Then, rewrite `ClassName.xaml.cpp` as follows:  
+
+```cpp
+#define WINRT_CONSUME_MODULE
+
+// Due to current limitations in the XAML Compiler implementation, you need to import all XAML dependencies before including ClassName.xaml.h
+import Microsoft.UI.Xaml.Markup;
+
+// Here, you need to import all dependencies of the Class's interface
+
+#include "Class.xaml.h"
+#if __has_include("Detail.g.cpp")
+#include "Detail.g.cpp"
+#endif
+
+namespace winrt::Project::implementation
+{
+    // Implementation code
+}
+```
+
+Additionally, you can disbale pch for `Class.xaml.cpp`.  
+
+Note that `App.xaml.h` has a special form. You also need to add the following right before `#include "App.xaml.h"`:  
+
+```cpp
+#define COM_NO_WINDOWS_H
+#define __unknwn_h__
+#define __RPC_H__
+#define __RPCNDR_H__
+#define _INC_WINAPIFAMILY
+#define _INC_WINDOWS
+#define _INC_SDKDDKVER
+
+#define _FUNCTIONAL_
+#define _VECTOR_
+#define _MAP_
+#define _MUTEX_
+```
+
+You can refer to [this example](https://github.com/YexuanXiao/Authenticator/tree/module) to modularize your project.
 
 ## InitializeComponent
 

@@ -22,6 +22,8 @@ The current plans for C++/WinRT Plus can be viewed in the issue list. C++/WinRT 
 
 ## Changelog
 
+2026/04/18: Now all the files you write that use C++/WinRT can be modularized, including those for XAML. See the tutorial for how.
+
 2026/03/24: Support using lambdas with explicit object parameter as delegates to resolve the issue where the captured lifetime may be shorter than the lifetime of the coroutine frame.
 
 2026/03/22: No longer generate `#pragma pop/push("WINRT_EXPORT")`, and no longer generate winrt.ixx, because this prevented mixing modules and header files in some cases.
