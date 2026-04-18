@@ -1,4 +1,4 @@
-#include "pch.h"
+#include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Storage.Pickers.h>
 
 #ifdef __clang__

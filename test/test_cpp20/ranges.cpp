@@ -1,8 +1,7 @@
-#include "pch.h"
+#include "catch.hpp"
 
-#ifdef __cpp_lib_ranges
-#include <algorithm>
-#include <ranges>
+import std;
+import Windows.Foundation.Collections;
 
 TEST_CASE("ranges")
 {
@@ -48,4 +47,3 @@ TEST_CASE("ranges")
         REQUIRE((result == std::vector{ 2, 4, 6 }));
     }
 }
-#endif

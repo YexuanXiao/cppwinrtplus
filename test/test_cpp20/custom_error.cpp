@@ -1,4 +1,9 @@
-#include "pch.h"
+#include "catch.hpp"
+#include <Windows.h>
+
+import std;
+import winrt.base;
+import Windows.Foundation;
 
 using namespace winrt;
 using namespace Windows::Foundation;
@@ -35,12 +40,7 @@ namespace
     }
 }
 
-#if defined(_LIBCPP_VERSION) && _LIBCPP_VERSION < 170000
-// <source_location> not available in libc++ before LLVM 16
-TEST_CASE("custom_error_logger_on_throw", "[!shouldfail]")
-#else
 TEST_CASE("custom_error_logger_on_throw")
-#endif
 {
     // Set up global handler
     REQUIRE(!s_loggerCalled);
@@ -80,12 +80,7 @@ void HresultOnLine80(Args... args)
     winrt::hresult_canceled(std::forward<Args>(args)...);
 }
 
-#if defined(_LIBCPP_VERSION) && _LIBCPP_VERSION < 170000
-// <source_location> not available in libc++ before LLVM 16
-TEST_CASE("custom_error_logger_on_originate", "[!shouldfail]")
-#else
 TEST_CASE("custom_error_logger_on_originate")
-#endif
 {
     // Set up global handler
     REQUIRE(!s_loggerCalled);
