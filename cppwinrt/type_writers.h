@@ -334,13 +334,7 @@ namespace cppwinrt
             {
                 if (ns == "Windows.Foundation.Numerics")
                 {
-                    if (name == "Matrix3x2") { name = "float3x2"; }
-                    else if (name == "Matrix4x4") { name = "float4x4"; }
-                    else if (name == "Plane") { name = "plane"; }
-                    else if (name == "Quaternion") { name = "quaternion"; }
-                    else if (name == "Vector2") { name = "float2"; }
-                    else if (name == "Vector3") { name = "float3"; }
-                    else if (name == "Vector4") { name = "float4"; }
+                    transform_special_numeric_type(name);
 
                     write("winrt::@::%", ns, name);
                 }

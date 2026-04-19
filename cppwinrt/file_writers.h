@@ -44,6 +44,11 @@ namespace cppwinrt
         {
             auto wrap_file_guard = wrap_open_file_guard(w, "BASE");
 
+            if (settings.modules)
+            {
+                w.write("#ifndef WINRT_CONSUME_MODULE\n");
+            }
+
             {
                 // In module builds, generated projection headers must be "module-aware":
                 // When `WINRT_MODULE` is defined (inside a module interface unit), suppress textual includes so the
@@ -85,6 +90,11 @@ namespace cppwinrt
             w.write(strings::base_coroutine_threadpool);
             w.write(strings::base_natvis);
             w.write(strings::base_version);
+
+            if (settings.modules)
+            {
+                w.write("#endif\n");
+            }
         }
         w.flush_to_file(settings.output_folder + "winrt/base.h");
     }
@@ -142,7 +152,7 @@ namespace cppwinrt
             w.write_each<write_forward>(members.contracts);
         }
         {
-            auto wrap_impl = wrap_impl_namespace(w);
+            auto wrap_impl = wrap_impl_namespace_without_export(w);
             w.write_each<write_category>(members.interfaces, "interface_category");
             w.write_each<write_category>(members.classes, "class_category");
             w.write_each<write_category>(members.enums, "enum_category");
@@ -165,8 +175,11 @@ namespace cppwinrt
             w.write_each<write_default_interface>(members.classes);
             w.write_each<write_interface_abi>(members.interfaces);
             w.write_each<write_delegate_abi>(members.delegates);
-            w.write_each<write_consume>(members.interfaces);
             w.write_each<write_struct_abi>(members.structs);
+        }
+        {
+            auto wrap_impl = wrap_impl_namespace(w);
+            w.write_each<write_consume>(members.interfaces);
         }
 
         if (settings.modules)
@@ -319,66 +332,38 @@ namespace cppwinrt
 #undef GetCurrentTime
 #endif
 
+// Include in advance so that all of numerics's dependencies can be in the global module fragment
+#include <stdexcept>
+#include <limits>
+#if __has_include(<directxmath.h>) && __has_include(<windowsnumerics.impl.h>)
+#include <directxmath.h>
+#endif
+
 export module winrt.base;
 
 // Module dependencies:
 //   - std
-//   - winrt.numerics (re-exported when available)
 
 import std;
-export import winrt.numerics;
+
+// An MSVC warning whose cause cannot be analyzed
+// warning C5244: '#include <windowsnumerics.impl.h>' in the purview of module 'winrt.base' appears erroneous.  Consider moving that directive before the module declaration, or replace the textual inclusion with 'import <windowsnumerics.impl.h>;'.
+#pragma warning(disable : 5244)
 
 #if __has_include(<windowsnumerics.impl.h>)
-#define WINRT_IMPL_NUMERICS
+#define _WINDOWS_NUMERICS_NAMESPACE_ winrt::Windows::Foundation::Numerics
+#define _WINDOWS_NUMERICS_BEGIN_NAMESPACE_ export extern "C++" namespace _WINDOWS_NUMERICS_NAMESPACE_
+#define _WINDOWS_NUMERICS_END_NAMESPACE_
+#include <windowsnumerics.impl.h>
+#undef _WINDOWS_NUMERICS_NAMESPACE_
+#undef _WINDOWS_NUMERICS_BEGIN_NAMESPACE_
+#undef _WINDOWS_NUMERICS_END_NAMESPACE_
 #endif
 
 #include "winrt/base.h"
 )");
 
         w.flush_to_file(settings.output_folder + "winrt/winrt.base.ixx");
-    }
-
-    static void write_numerics_ixx()
-    {
-        // Emits $(out)\winrt\winrt.numerics.ixx  (export module winrt.numerics;)
-        // <windowsnumerics.impl.h> pulls in large, legacy headers that are hard to control and can trigger module
-        // diagnostics when textually included in a module purview.
-        // If the header does not exist, then the module exports nothing. To speed up module scanning, modules
-        // can't be controlled by preprocessor directives. Therefore, winrt.base cannot conditionally import it.
-        // In header builds we preserve the historical behavior (base headers include it), but in module builds we
-        // centralize it in this single module and have `winrt.base` re-export it.
-        // MSVC warns (C5244) when encountering textual includes inside a module purview; suppress for this file.
-        writer w;
-        write_preamble(w);
-        write_module_global_fragment(w);
-
-        w.write(R"(
-export module winrt.numerics;
-
-// Module dependencies:
-//   - (none)
-
-#if __has_include(<windowsnumerics.impl.h>)
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable : 5244)
-#endif
-#include <directxmath.h>
-
-#define _WINDOWS_NUMERICS_NAMESPACE_ winrt::Windows::Foundation::Numerics
-#define _WINDOWS_NUMERICS_BEGIN_NAMESPACE_ export extern "C++" namespace winrt::Windows::Foundation::Numerics
-#define _WINDOWS_NUMERICS_END_NAMESPACE_
-#include <windowsnumerics.impl.h>
-#undef _WINDOWS_NUMERICS_NAMESPACE_
-#undef _WINDOWS_NUMERICS_BEGIN_NAMESPACE_
-#undef _WINDOWS_NUMERICS_END_NAMESPACE_
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
-#endif
-)");
-
-        w.flush_to_file(settings.output_folder + "winrt/winrt.numerics.ixx");
     }
 
     static void write_namespace_ixx(std::string_view const& ns, std::vector<std::string> const& imports)
@@ -581,7 +566,7 @@ export import winrt.base;
         w.type_namespace = ns;
 
         {
-            auto wrap_impl = wrap_impl_namespace(w);
+            auto wrap_impl = wrap_impl_namespace_without_export(w);
             w.write_each<write_consume_definitions>(members.interfaces);
             w.param_names = true;
             w.write_each<write_delegate_implementation>(members.delegates);

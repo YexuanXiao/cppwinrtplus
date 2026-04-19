@@ -203,9 +203,20 @@ namespace cppwinrt
         return { w, write_close_namespace };
     }
 
+    [[nodiscard]] static finish_with wrap_impl_namespace_without_export(writer& w)
+    {
+        auto format = R"(extern "C++" namespace winrt::impl
+{
+)";
+
+        w.write(format);
+
+        return { w, write_close_namespace };
+    }
+
     [[nodiscard]] static finish_with wrap_std_namespace(writer& w)
     {
-        w.write(R"(WINRT_EXPORT namespace std
+        w.write(R"(extern "C++" namespace std
 {
 )");
 

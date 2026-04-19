@@ -1,12 +1,12 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
 #if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(push)
 #pragma warning(disable:4458) // declaration hides class member (okay because we do not use named members of base class)
 #endif
 
-    struct implements_delegate_base
+    WINRT_EXPORT struct implements_delegate_base
     {
         WINRT_IMPL_NOINLINE std::uint32_t increment_reference() noexcept
         {
@@ -40,7 +40,7 @@ WINRT_EXPORT namespace winrt::impl
         atomic_ref_count m_references{ 1 };
     };
 
-    template <typename T, typename H>
+    WINRT_EXPORT template <typename T, typename H>
     struct implements_delegate : abi_t<T>, implements_delegate_base, H, update_module_lock
     {
         implements_delegate(H&& handler) : H(std::forward<H>(handler))
@@ -70,13 +70,13 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename T, typename H>
+    WINRT_EXPORT template <typename T, typename H>
     T make_delegate(H&& handler)
     {
         return { static_cast<void*>(static_cast<abi_t<T>*>(new delegate<T, H>(std::forward<H>(handler)))), take_ownership_from_abi };
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     T make_agile_delegate(T const& delegate) noexcept
     {
         if constexpr (!has_category_v<T>)
@@ -108,13 +108,13 @@ WINRT_EXPORT namespace winrt::impl
         }
     }
 
-    template <typename R, typename... Args>
+    WINRT_EXPORT template <typename R, typename... Args>
     struct WINRT_IMPL_ABI_DECL variadic_delegate_abi : unknown_abi
     {
         virtual R invoke(Args const& ...) = 0;
     };
 
-    template <typename H, typename R, typename... Args>
+    WINRT_EXPORT template <typename H, typename R, typename... Args>
     struct variadic_delegate final : variadic_delegate_abi<R, Args...>, implements_delegate_base, H, update_module_lock
     {
         variadic_delegate(H&& handler) : H(std::forward<H>(handler))
@@ -156,7 +156,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename R, typename... Args>
+    WINRT_EXPORT template <typename R, typename... Args>
     struct WINRT_IMPL_EMPTY_BASES delegate_base : Windows::Foundation::IUnknown
     {
         delegate_base(std::nullptr_t = nullptr) noexcept {}
@@ -220,9 +220,9 @@ WINRT_EXPORT namespace winrt::impl
 #endif
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename... Args>
+    WINRT_EXPORT template <typename... Args>
     struct WINRT_IMPL_EMPTY_BASES delegate : impl::delegate_base<void, Args...>
     {
         using impl::delegate_base<void, Args...>::delegate_base;

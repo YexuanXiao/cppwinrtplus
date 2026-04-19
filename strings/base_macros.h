@@ -22,33 +22,18 @@
 // Note: this is a workaround for a false-positive warning produced by the Visual C++ 16.3 compiler.
 #pragma warning(disable : 4268)
 
-// C++ module warnings by /W4
+// https://developercommunity.visualstudio.com/t/11077314
 #pragma warning(disable : 4499)
+// https://developercommunity.visualstudio.com/t/11077315
 #pragma warning(disable : 4630)
 #endif
 
 #ifndef WINRT_EXPORT
 #ifdef WINRT_MODULE
-#define WINRT_EXPORT export extern "C++"
+#define WINRT_EXPORT export
 #else
 #define WINRT_EXPORT
 #endif
-#endif
-
-// <windowsnumerics.impl.h> pulls in large, hard-to-control legacy headers. In header builds we keep the
-// existing behavior, but in module builds it's provided by the winrt.numerics module.
-#if !(defined(WINRT_MODULE) || defined(WINRT_CONSUME_MODULE))
-
-#ifdef WINRT_IMPL_NUMERICS
-#define _WINDOWS_NUMERICS_NAMESPACE_ winrt::Windows::Foundation::Numerics
-#define _WINDOWS_NUMERICS_BEGIN_NAMESPACE_ WINRT_EXPORT namespace winrt::Windows::Foundation::Numerics
-#define _WINDOWS_NUMERICS_END_NAMESPACE_
-#include <windowsnumerics.impl.h>
-#undef _WINDOWS_NUMERICS_NAMESPACE_
-#undef _WINDOWS_NUMERICS_BEGIN_NAMESPACE_
-#undef _WINDOWS_NUMERICS_END_NAMESPACE_
-#endif
-
 #endif
 
 #if defined(_MSC_VER)

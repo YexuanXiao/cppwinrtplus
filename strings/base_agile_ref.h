@@ -1,12 +1,12 @@
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
 #if defined(WINRT_NO_MODULE_LOCK)
 
     // Defining WINRT_NO_MODULE_LOCK is appropriate for apps (executables) or pinned DLLs (that don't support unloading)
     // and can thus avoid the synchronization overhead imposed by the default module lock.
 
-    constexpr auto get_module_lock() noexcept
+    WINRT_EXPORT constexpr auto get_module_lock() noexcept
     {
         struct lock
         {
@@ -38,7 +38,7 @@ WINRT_EXPORT namespace winrt
 
     // This is the default implementation for use with DllCanUnloadNow.
 
-    inline impl::atomic_ref_count& get_module_lock() noexcept
+    WINRT_EXPORT inline impl::atomic_ref_count& get_module_lock() noexcept
     {
         static impl::atomic_ref_count s_lock;
         return s_lock;
@@ -47,9 +47,9 @@ WINRT_EXPORT namespace winrt
 #endif
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template<bool UseModuleLock>
+    WINRT_EXPORT template<bool UseModuleLock>
     struct module_lock_updater;
 
     template<>
@@ -69,22 +69,22 @@ WINRT_EXPORT namespace winrt::impl
     template<>
     struct module_lock_updater<false> {};
 
-    using update_module_lock = module_lock_updater<true>;
+    WINRT_EXPORT using update_module_lock = module_lock_updater<true>;
 
-    inline void* load_library(wchar_t const* library) noexcept
+    WINRT_EXPORT inline void* load_library(wchar_t const* library) noexcept
     {
         return WINRT_IMPL_LoadLibraryExW(library, nullptr, 0x00001000 /* LOAD_LIBRARY_SEARCH_DEFAULT_DIRS */);
     }
 
-    inline hresult get_agile_reference(winrt::guid const& iid, void* object, void** reference) noexcept
+    WINRT_EXPORT inline hresult get_agile_reference(winrt::guid const& iid, void* object, void** reference) noexcept
     {
         return WINRT_IMPL_RoGetAgileReference(0, iid, object, reference);
     }
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct agile_ref
     {
         agile_ref(std::nullptr_t = nullptr) noexcept {}
@@ -121,7 +121,7 @@ WINRT_EXPORT namespace winrt
 
     template<typename T> agile_ref(T const&)->agile_ref<impl::wrapped_type_t<T>>;
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     agile_ref<impl::wrapped_type_t<T>> make_agile(T const& object)
     {
         return object;

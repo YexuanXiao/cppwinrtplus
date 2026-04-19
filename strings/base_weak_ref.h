@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct weak_ref
     {
         weak_ref(std::nullptr_t = nullptr) noexcept {}
@@ -91,7 +91,7 @@ WINRT_EXPORT namespace winrt
     {
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     weak_ref<impl::wrapped_type_t<T>> make_weak(T const& object)
     {
         return object;

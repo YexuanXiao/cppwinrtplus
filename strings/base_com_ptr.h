@@ -1,13 +1,13 @@
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct com_ptr;
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    struct capture_decay
+    WINRT_EXPORT struct capture_decay
     {
         void** result;
 
@@ -18,26 +18,26 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename T, typename F, typename...Args>
+    WINRT_EXPORT template <typename T, typename F, typename...Args>
     std::int32_t capture_to(void**result, F function, Args&& ...args)
     {
         return function(args..., guid_of<T>(), capture_decay{ result });
     }
 
-    template <typename T, typename O, typename M, typename...Args>
+    WINRT_EXPORT template <typename T, typename O, typename M, typename...Args>
         requires (std::is_class_v<O> || std::is_union_v<O>)
     std::int32_t capture_to(void** result, O* object, M method, Args&& ...args)
     {
         return (object->*method)(args..., guid_of<T>(), capture_decay{ result });
     }
 
-    template <typename T, typename O, typename M, typename...Args>
+    WINRT_EXPORT template <typename T, typename O, typename M, typename...Args>
     std::int32_t capture_to(void** result, com_ptr<O> const& object, M method, Args&& ...args);
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct com_ptr
     {
         using type = impl::abi_t<T>;
@@ -262,7 +262,7 @@ WINRT_EXPORT namespace winrt
         type* m_ptr{};
     };
 
-    template <typename T, typename...Args>
+    WINRT_EXPORT template <typename T, typename...Args>
     impl::com_ref<T> try_capture(Args&& ...args)
     {
         void* result{};
@@ -270,7 +270,7 @@ WINRT_EXPORT namespace winrt
         return { result, take_ownership_from_abi };
     }
 
-    template <typename T, typename...Args>
+    WINRT_EXPORT template <typename T, typename...Args>
     impl::com_ref<T> capture(Args&& ...args)
     {
         void* result{};
@@ -278,42 +278,45 @@ WINRT_EXPORT namespace winrt
         return { result, take_ownership_from_abi };
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     auto get_abi(com_ptr<T> const& object) noexcept
     {
         return object.get();
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     auto put_abi(com_ptr<T>& object) noexcept
     {
         return object.put_void();
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     void attach_abi(com_ptr<T>& object, impl::abi_t<T>* value) noexcept
     {
         object.attach(value);
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     auto detach_abi(com_ptr<T>& object) noexcept
     {
         return object.detach();
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename T, typename O, typename M, typename...Args>
+    WINRT_EXPORT template <typename T, typename O, typename M, typename...Args>
     std::int32_t capture_to(void** result, com_ptr<O> const& object, M method, Args&& ...args)
     {
         return (object.get()->*(method))(args..., guid_of<T>(), capture_decay{ result });
     }
 }
 
-template <typename T>
-void** IID_PPV_ARGS_Helper(winrt::com_ptr<T>* ptr) noexcept
+extern "C++"
 {
-    return winrt::put_abi(*ptr);
+    template <typename T>
+    void** IID_PPV_ARGS_Helper(winrt::com_ptr<T>* ptr) noexcept
+    {
+        return winrt::put_abi(*ptr);
+    }
 }

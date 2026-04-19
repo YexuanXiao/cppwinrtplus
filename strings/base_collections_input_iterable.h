@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename T, typename Container>
+    WINRT_EXPORT template <typename T, typename Container>
     struct input_iterable :
         implements<input_iterable<T, Container>, non_agile, no_weak_ref, wfc::IIterable<T>>,
         iterable_base<input_iterable<T, Container>, T>
@@ -22,7 +22,7 @@ WINRT_EXPORT namespace winrt::impl
         Container const m_values;
     };
 
-    template <typename T, typename InputIt>
+    WINRT_EXPORT template <typename T, typename InputIt>
     struct scoped_input_iterable :
         input_scope,
         implements<scoped_input_iterable<T, InputIt>, non_agile, no_weak_ref, wfc::IIterable<T>>,
@@ -54,13 +54,13 @@ WINRT_EXPORT namespace winrt::impl
         InputIt const m_end;
     };
 
-    template <typename T, typename Container>
+    WINRT_EXPORT template <typename T, typename Container>
     auto make_input_iterable(Container&& values)
     {
         return make<input_iterable<T, Container>>(std::forward<Container>(values));
     }
 
-    template <typename T, typename InputIt>
+    WINRT_EXPORT template <typename T, typename InputIt>
     auto make_scoped_input_iterable(InputIt first, InputIt last)
     {
         using interface_type = wfc::IIterable<T>;
@@ -72,9 +72,9 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt::param
+extern "C++" namespace winrt::param
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct iterable
     {
         using value_type = T;
@@ -226,13 +226,13 @@ WINRT_EXPORT namespace winrt::param
         bool m_owned{ true };
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     auto get_abi(iterable<T> const& object) noexcept
     {
         return *impl::abi_cast(object);
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct async_iterable
     {
         using value_type = T;
@@ -348,7 +348,7 @@ WINRT_EXPORT namespace winrt::param
         bool m_owned{ true };
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     auto get_abi(async_iterable<T> const& object) noexcept
     {
         return *impl::abi_cast(object);

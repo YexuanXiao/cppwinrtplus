@@ -1,6 +1,9 @@
 
-template <typename FormatContext>
-auto std::formatter<winrt::Windows::Foundation::IStringable, wchar_t>::format(winrt::Windows::Foundation::IStringable const& obj, FormatContext& fc) const
+extern "C++"
 {
-    return std::formatter<winrt::hstring, wchar_t>::format(obj.ToString(), fc);
+    template <typename FormatContext>
+    auto std::formatter<winrt::Windows::Foundation::IStringable, wchar_t>::format(winrt::Windows::Foundation::IStringable const& obj, FormatContext& fc) const
+    {
+        return std::formatter<winrt::hstring, wchar_t>::format(obj.ToString(), fc);
+    }
 }

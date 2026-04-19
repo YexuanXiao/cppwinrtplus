@@ -1,8 +1,9 @@
-WINRT_EXPORT namespace winrt::impl
-{
-    struct nop_lock_guard {};
 
-    struct single_threaded_collection_base
+extern "C++" namespace winrt::impl
+{
+    WINRT_EXPORT struct nop_lock_guard {};
+
+    WINRT_EXPORT struct single_threaded_collection_base
     {
         [[nodiscard]] auto acquire_exclusive() const
         {
@@ -15,7 +16,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    struct multi_threaded_collection_base
+    WINRT_EXPORT struct multi_threaded_collection_base
     {
         [[nodiscard]] auto acquire_exclusive() const
         {
@@ -32,10 +33,10 @@ WINRT_EXPORT namespace winrt::impl
         mutable slim_mutex m_mutex;
     };
 
-    template <typename D>
+    WINRT_EXPORT template <typename D>
     using container_type_t = std::decay_t<decltype(std::declval<D>().get_container())>;
 
-    template <typename D>
+    WINRT_EXPORT template <typename D>
     struct removed_values
     {
         void assign(container_type_t<D>& value)
@@ -57,7 +58,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct removed_value
     {
         // Trivially destructible; okay to run destructor under lock
@@ -79,9 +80,9 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename D, typename T, typename Version = impl::no_collection_version>
+    WINRT_EXPORT template <typename D, typename T, typename Version = impl::no_collection_version>
     struct iterable_base : Version
     {
         template <typename U>
@@ -245,7 +246,7 @@ WINRT_EXPORT namespace winrt
         };
     };
 
-    template <typename D, typename T, typename Version = impl::no_collection_version>
+    WINRT_EXPORT template <typename D, typename T, typename Version = impl::no_collection_version>
     struct vector_view_base : iterable_base<D, T, Version>
     {
         T GetAt(std::uint32_t const index) const
@@ -298,7 +299,7 @@ WINRT_EXPORT namespace winrt
         }
     };
 
-    template <typename D, typename T>
+    WINRT_EXPORT template <typename D, typename T>
     struct vector_base : vector_view_base<D, T, impl::collection_version>
     {
         Windows::Foundation::Collections::IVectorView<T> GetView() const noexcept
@@ -414,7 +415,7 @@ WINRT_EXPORT namespace winrt
         }
     };
 
-    template <typename D, typename T>
+    WINRT_EXPORT template <typename D, typename T>
     struct observable_vector_base : vector_base<D, T>
     {
         event_token VectorChanged(Windows::Foundation::Collections::VectorChangedEventHandler<T> const& handler)
@@ -505,7 +506,7 @@ WINRT_EXPORT namespace winrt
         };
     };
 
-    template <typename D, typename K, typename V, typename Version = impl::no_collection_version>
+    WINRT_EXPORT template <typename D, typename K, typename V, typename Version = impl::no_collection_version>
     struct map_view_base : iterable_base<D, Windows::Foundation::Collections::IKeyValuePair<K, V>, Version>
     {
         // specialization of Lookup that avoids throwing the hresult
@@ -555,7 +556,7 @@ WINRT_EXPORT namespace winrt
 
     };
 
-    template <typename D, typename K, typename V>
+    WINRT_EXPORT template <typename D, typename K, typename V>
     struct map_base : map_view_base<D, K, V, impl::collection_version>
     {
         Windows::Foundation::Collections::IMapView<K, V> GetView() const
@@ -604,7 +605,7 @@ WINRT_EXPORT namespace winrt
         }
     };
 
-    template <typename D, typename K, typename V>
+    WINRT_EXPORT template <typename D, typename K, typename V>
     struct observable_map_base : map_base<D, K, V>
     {
         event_token MapChanged(Windows::Foundation::Collections::MapChangedEventHandler<K, V> const& handler)

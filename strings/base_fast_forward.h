@@ -1,3 +1,4 @@
+
 #include <cstddef>
 #include <atomic>
 
@@ -28,7 +29,7 @@ static_assert(WINRT_FAST_ABI_SIZE >= %);
 
 #pragma detect_mismatch("WINRT_FAST_ABI_SIZE", WINRT_IMPL_STRING(WINRT_FAST_ABI_SIZE))
 
-namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
     // Thunk definitions are in arch-specific assembly sources
 %
@@ -138,7 +139,7 @@ namespace winrt::impl
     static_assert(offsetof(fast_abi_forwarder, m_offset) == sizeof(fast_abi_forwarder::m_vfptr) + sizeof(fast_abi_forwarder::m_owner));
 }
 
-namespace winrt
+extern "C++" namespace winrt
 {
     template<typename TGuid>
     auto make_fast_abi_forwarder(void* owner, TGuid const& guid, std::size_t offset)

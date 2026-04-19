@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::param
+extern "C++" namespace winrt::param
 {
-    struct hstring
+    WINRT_EXPORT struct hstring
     {
 #ifdef _MSC_VER // T
 #pragma warning(suppress: 26495)
@@ -59,14 +59,14 @@ WINRT_EXPORT namespace winrt::param
         impl::hstring_header m_header;
     };
 
-    inline void* get_abi(hstring const& object) noexcept
+    WINRT_EXPORT inline void* get_abi(hstring const& object) noexcept
     {
         return *impl::abi_cast(object);
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     using param_type = std::conditional_t<std::is_same_v<T, hstring>, param::hstring, T>;
 }

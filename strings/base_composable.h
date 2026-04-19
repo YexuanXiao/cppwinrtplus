@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename D>
+    WINRT_EXPORT template <typename D>
     struct composable_factory
     {
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -33,7 +33,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename T, typename D, typename I>
+    WINRT_EXPORT template <typename T, typename D, typename I>
     class WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable_base
     {
     protected:
@@ -55,10 +55,10 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename T, typename D, typename I>
+    WINRT_EXPORT template <typename T, typename D, typename I>
     struct produce_dispatch_to_overridable;
 
-    template <typename D, typename... I>
+    WINRT_EXPORT template <typename D, typename... I>
     class dispatch_to_overridable
     {
         class wrapper : public produce_dispatch_to_overridable<wrapper, D, I>...

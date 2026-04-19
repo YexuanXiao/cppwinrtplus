@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename T, typename Container, typename ThreadingBase>
+    WINRT_EXPORT template <typename T, typename Container, typename ThreadingBase>
     struct vector_impl :
         implements<vector_impl<T, Container, ThreadingBase>, wfc::IVector<T>, wfc::IVectorView<T>, wfc::IIterable<T>>,
         vector_base<vector_impl<T, Container, ThreadingBase>, T>,
@@ -31,13 +31,13 @@ WINRT_EXPORT namespace winrt::impl
         Container m_values;
     };
 
-    template <typename T, typename Container>
+    WINRT_EXPORT template <typename T, typename Container>
     using input_vector = vector_impl<T, Container, single_threaded_collection_base>;
 }
 
-WINRT_EXPORT namespace winrt::param
+extern "C++" namespace winrt::param
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct vector
     {
         using value_type = T;
@@ -92,7 +92,7 @@ WINRT_EXPORT namespace winrt::param
         bool m_owned = true;
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     auto get_abi(vector<T> const& object) noexcept
     {
         return *impl::abi_cast(object);

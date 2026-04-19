@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct array_view
     {
         using value_type = T;
@@ -252,7 +252,7 @@ WINRT_EXPORT namespace winrt
     template <typename C, std::size_t extent> array_view(std::span<C, extent>& value) -> array_view<C>;
     template <typename C, std::size_t extent> array_view(std::span<C, extent> const& value) -> array_view<C const>;
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct com_array : array_view<T>
     {
         using value_type = typename array_view<T>::value_type;
@@ -417,7 +417,7 @@ WINRT_EXPORT namespace winrt
     template <typename C, std::size_t extent> com_array(std::span<C, extent> const& value) -> com_array<std::decay_t<C>>;
 
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     auto get_abi(array_view<T> object) noexcept
     {
         using U = std::remove_const_t<T>;
@@ -434,7 +434,7 @@ WINRT_EXPORT namespace winrt
         }
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     auto put_abi(array_view<T> object) noexcept
     {
         if constexpr (!std::is_trivially_destructible_v<T>)
@@ -445,29 +445,29 @@ WINRT_EXPORT namespace winrt
         return get_abi(object);
     }
 
-    template<typename T>
+    WINRT_EXPORT template<typename T>
     auto put_abi(com_array<T>& object) noexcept
     {
         object.clear();
         return reinterpret_cast<impl::arg_out<T>*>(&object);
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     std::pair<std::uint32_t, impl::arg_out<T>> detach_abi(com_array<T>& object) noexcept
     {
         return object.detach_abi();
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     auto detach_abi(com_array<T>&& object) noexcept
     {
         return detach_abi(object);
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct array_size_proxy
     {
         array_size_proxy& operator=(array_size_proxy const&) = delete;
@@ -497,13 +497,13 @@ WINRT_EXPORT namespace winrt::impl
         std::uint32_t m_size{ 0 };
     };
 
-    template<typename T>
+    WINRT_EXPORT template<typename T>
     array_size_proxy<T> put_size_abi(com_array<T>& object) noexcept
     {
         return array_size_proxy<T>(object);
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct com_array_proxy
     {
         com_array_proxy(std::uint32_t* size, winrt::impl::arg_out<T>* value) noexcept : m_size(size), m_value(value)
@@ -533,29 +533,29 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     auto detach_abi(std::uint32_t* __valueSize, impl::arg_out<T>* value) noexcept
     {
         return impl::com_array_proxy<T>(__valueSize, value);
     }
 
-    inline hstring get_class_name(Windows::Foundation::IInspectable const& object)
+    WINRT_EXPORT inline hstring get_class_name(Windows::Foundation::IInspectable const& object)
     {
         void* value{};
         check_hresult(static_cast<impl::inspectable_abi*>(*impl::abi_cast(object))->GetRuntimeClassName(&value));
         return { value, take_ownership_from_abi };
     }
 
-    inline com_array<guid> get_interfaces(Windows::Foundation::IInspectable const& object)
+    WINRT_EXPORT inline com_array<guid> get_interfaces(Windows::Foundation::IInspectable const& object)
     {
         com_array<guid> value;
         check_hresult(static_cast<impl::inspectable_abi*>(*impl::abi_cast(object))->GetIids(impl::put_size_abi(value), put_abi(value)));
         return value;
     }
 
-    inline Windows::Foundation::TrustLevel get_trust_level(Windows::Foundation::IInspectable const& object)
+    WINRT_EXPORT inline Windows::Foundation::TrustLevel get_trust_level(Windows::Foundation::IInspectable const& object)
     {
         Windows::Foundation::TrustLevel value{};
         check_hresult(static_cast<impl::inspectable_abi*>(*impl::abi_cast(object))->GetTrustLevel(&value));

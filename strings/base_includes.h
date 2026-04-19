@@ -40,13 +40,16 @@
 #include <source_location>
 #include <coroutine>
 
-// <windowsnumerics.impl.h> pulls in large, hard-to-control legacy headers. In header builds we keep the
-// existing behavior, but in module builds it's provided by the winrt.numerics module.
-#ifndef WINRT_MODULE
 #if __has_include(<windowsnumerics.impl.h>)
 #define WINRT_IMPL_NUMERICS
 #include <directxmath.h>
-#endif
+#define _WINDOWS_NUMERICS_NAMESPACE_ winrt::Windows::Foundation::Numerics
+#define _WINDOWS_NUMERICS_BEGIN_NAMESPACE_ extern "C++" namespace _WINDOWS_NUMERICS_NAMESPACE_
+#define _WINDOWS_NUMERICS_END_NAMESPACE_
+#include <windowsnumerics.impl.h>
+#undef _WINDOWS_NUMERICS_NAMESPACE_
+#undef _WINDOWS_NUMERICS_BEGIN_NAMESPACE_
+#undef _WINDOWS_NUMERICS_END_NAMESPACE_
 #endif
 
 #ifdef WINRT_ENABLE_LEGACY_COM

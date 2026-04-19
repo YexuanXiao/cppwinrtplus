@@ -1,6 +1,6 @@
 
-WINRT_EXPORT namespace winrt::Windows::Foundation
+extern "C++" namespace winrt::Windows::Foundation
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     bool operator==(IReference<T> const& left, IReference<T> const& right);
 }

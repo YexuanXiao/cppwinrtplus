@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct fast_iterator
     {
         using iterator_concept = std::random_access_iterator_tag;
@@ -109,7 +109,7 @@ WINRT_EXPORT namespace winrt::impl
         std::uint32_t m_index = 0;
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     class has_GetAt
     {
         template <typename U, typename = decltype(std::declval<U>().GetAt(0))> static constexpr bool get_value(int) { return true; }
@@ -120,7 +120,7 @@ WINRT_EXPORT namespace winrt::impl
         static constexpr bool value = get_value<T>(0);
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
         requires (!has_GetAt<T>::value)
     auto get_begin_iterator(T const& collection) -> decltype(collection.First())
     {
@@ -134,41 +134,41 @@ WINRT_EXPORT namespace winrt::impl
         return result;
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
         requires (!has_GetAt<T>::value)
     auto get_end_iterator([[maybe_unused]] T const& collection) noexcept -> decltype(collection.First())
     {
         return {};
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
         requires has_GetAt<T>::value
     fast_iterator<T> get_begin_iterator(T const& collection) noexcept
     {
         return { collection, 0 };
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
         requires has_GetAt<T>::value
     fast_iterator<T> get_end_iterator(T const& collection)
     {
         return { collection, collection.Size() };
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
         requires has_GetAt<T>::value
     auto rbegin(T const& collection)
     {
         return std::make_reverse_iterator(get_end_iterator(collection));
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
         requires has_GetAt<T>::value
     auto rend(T const& collection)
     {
         return std::make_reverse_iterator(get_begin_iterator(collection));
     }
 
-    using std::begin;
-    using std::end;
+    WINRT_EXPORT using std::begin;
+    WINRT_EXPORT using std::end;
 }

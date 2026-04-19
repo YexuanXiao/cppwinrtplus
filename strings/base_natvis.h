@@ -5,9 +5,9 @@
 
 #ifdef WINRT_NATVIS
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    struct natvis
+    WINRT_EXPORT struct natvis
     {
         static auto __stdcall abi_val(void* object, wchar_t const * iid_str, int method)
         {
