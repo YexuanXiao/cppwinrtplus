@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    inline std::size_t hash_data(void const* ptr, std::size_t const bytes) noexcept
+    WINRT_EXPORT inline std::size_t hash_data(void const* ptr, std::size_t const bytes) noexcept
     {
 #ifdef _WIN64
         constexpr std::size_t fnv_offset_basis = 14695981039346656037ULL;
@@ -22,7 +22,7 @@ WINRT_EXPORT namespace winrt::impl
         return result;
     }
 
-    struct hash_base
+    WINRT_EXPORT struct hash_base
     {
         std::size_t operator()(Windows::Foundation::IUnknown const& value) const noexcept
         {
@@ -32,7 +32,7 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-namespace std
+extern "C++" namespace std
 {
     template<> struct hash<winrt::hstring>
     {

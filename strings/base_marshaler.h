@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    inline std::int32_t make_marshaler(unknown_abi* outer, void** result) noexcept
+    WINRT_EXPORT inline std::int32_t make_marshaler(unknown_abi* outer, void** result) noexcept
     {
         struct marshaler final : IMarshal
         {

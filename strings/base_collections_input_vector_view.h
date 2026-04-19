@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename T, typename Container>
+    WINRT_EXPORT template <typename T, typename Container>
     struct input_vector_view :
         implements<input_vector_view<T, Container>, non_agile, no_weak_ref, wfc::IVectorView<T>, wfc::IIterable<T>>,
         vector_view_base<input_vector_view<T, Container>, T>
@@ -22,7 +22,7 @@ WINRT_EXPORT namespace winrt::impl
         Container const m_values;
     };
 
-    template <typename T, typename InputIt>
+    WINRT_EXPORT template <typename T, typename InputIt>
     struct scoped_input_vector_view :
         input_scope,
         implements<scoped_input_vector_view<T, InputIt>, non_agile, no_weak_ref, wfc::IVectorView<T>, wfc::IIterable<T>>,
@@ -54,7 +54,7 @@ WINRT_EXPORT namespace winrt::impl
         InputIt const m_end;
     };
 
-    template <typename T, typename InputIt>
+    WINRT_EXPORT template <typename T, typename InputIt>
     auto make_scoped_input_vector_view(InputIt first, InputIt last)
     {
         using interface_type = wfc::IVectorView<T>;
@@ -66,9 +66,9 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt::param
+extern "C++" namespace winrt::param
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct vector_view
     {
         using value_type = T;
@@ -142,13 +142,13 @@ WINRT_EXPORT namespace winrt::param
         bool m_owned{ true };
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     auto get_abi(vector_view<T> const& object) noexcept
     {
         return *impl::abi_cast(object);
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct async_vector_view
     {
         using value_type = T;
@@ -203,7 +203,7 @@ WINRT_EXPORT namespace winrt::param
         bool m_owned{ true };
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     auto get_abi(async_vector_view<T> const& object) noexcept
     {
         return *impl::abi_cast(object);

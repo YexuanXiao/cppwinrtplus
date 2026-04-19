@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    struct file_time
+    WINRT_EXPORT struct file_time
     {
         std::uint64_t value{};
 
@@ -24,7 +24,7 @@ WINRT_EXPORT namespace winrt
 #endif
     };
 
-    struct clock
+    WINRT_EXPORT struct clock
     {
         using rep = std::int64_t;
         using period = impl::filetime_period;

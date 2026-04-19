@@ -1,67 +1,67 @@
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    hresult check_hresult(hresult const result, winrt::impl::slim_source_location const& sourceInformation = winrt::impl::slim_source_location::current());
-    hresult to_hresult() noexcept;
+    WINRT_EXPORT hresult check_hresult(hresult const result, winrt::impl::slim_source_location const& sourceInformation = winrt::impl::slim_source_location::current());
+    WINRT_EXPORT hresult to_hresult() noexcept;
 
-    template <typename D, typename I>
+    WINRT_EXPORT template <typename D, typename I>
     D* get_self(I const& from) noexcept;
 
-    struct take_ownership_from_abi_t {};
-    inline constexpr take_ownership_from_abi_t take_ownership_from_abi{};
+    WINRT_EXPORT struct take_ownership_from_abi_t {};
+    WINRT_EXPORT inline constexpr take_ownership_from_abi_t take_ownership_from_abi{};
 
     // Map implementations can implement TryLookup with trylookup_from_abi_t as an optimization
-    struct trylookup_from_abi_t {};
-    inline constexpr trylookup_from_abi_t trylookup_from_abi{};
+    WINRT_EXPORT struct trylookup_from_abi_t {};
+    WINRT_EXPORT inline constexpr trylookup_from_abi_t trylookup_from_abi{};
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct com_ptr;
 
-    template <typename D, typename I>
+    WINRT_EXPORT template <typename D, typename I>
     D* get_self(com_ptr<I> const& from) noexcept;
 
     namespace param
     {
-        template <typename T>
+        WINRT_EXPORT template <typename T>
         struct iterable;
 
-        template <typename T>
+        WINRT_EXPORT template <typename T>
         struct async_iterable;
 
-        template <typename K, typename V>
+        WINRT_EXPORT template <typename K, typename V>
         struct map_view;
 
-        template <typename K, typename V>
+        WINRT_EXPORT template <typename K, typename V>
         struct async_map_view;
 
-        template <typename K, typename V>
+        WINRT_EXPORT template <typename K, typename V>
         struct map;
 
-        template <typename T>
+        WINRT_EXPORT template <typename T>
         struct vector_view;
 
-        template <typename T>
+        WINRT_EXPORT template <typename T>
         struct async_vector_view;
 
-        template <typename T>
+        WINRT_EXPORT template <typename T>
         struct vector;
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
     using namespace std::literals;
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct reference_traits;
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct identity
     {
         using type = T;
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct abi
     {
         using type = T;
@@ -74,64 +74,64 @@ WINRT_EXPORT namespace winrt::impl
         using type = std::underlying_type_t<T>;
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     using abi_t = typename abi<T>::type;
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     auto abi_t_abi_cast(T const& value) noexcept
     {
         return reinterpret_cast<abi_t<T>**>(const_cast<T*>(&value));
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct consume;
 
-    template <typename D, typename I = D>
+    WINRT_EXPORT template <typename D, typename I = D>
     using consume_t = typename consume<I>::template type<D>;
 
-    template <typename T, typename H>
+    WINRT_EXPORT template <typename T, typename H>
     struct delegate;
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct default_interface
     {
         using type = T;
     };
 
-    struct basic_category;
-    struct interface_category;
-    struct delegate_category;
-    struct enum_category;
-    struct class_category;
+    WINRT_EXPORT struct basic_category;
+    WINRT_EXPORT struct interface_category;
+    WINRT_EXPORT struct delegate_category;
+    WINRT_EXPORT struct enum_category;
+    WINRT_EXPORT struct class_category;
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct category
     {
         using type = void;
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     using category_t = typename category<T>::type;
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     inline constexpr bool has_category_v = !std::is_same_v<category_t<T>, void>;
 
-    template <typename... Args>
+    WINRT_EXPORT template <typename... Args>
     struct generic_category;
 
-    template <typename... Fields>
+    WINRT_EXPORT template <typename... Fields>
     struct struct_category;
 
-    template <typename Category, typename T>
+    WINRT_EXPORT template <typename Category, typename T>
     struct category_signature;
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct signature
     {
         static constexpr auto data{ category_signature<category_t<T>, T>::data };
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct classic_com_guid_error
     {
 #if !defined(__MINGW32__) && defined(__clang__) && !WINRT_IMPL_HAS_DECLSPEC_UUID
@@ -143,30 +143,30 @@ WINRT_EXPORT namespace winrt::impl
 #endif
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
 #if (defined(_MSC_VER) && !defined(__clang__)) || ((WINRT_IMPL_HAS_DECLSPEC_UUID || defined(__MINGW32__)) && defined(WINRT_IMPL_IUNKNOWN_DEFINED))
     inline constexpr guid guid_v{ __uuidof(T) };
 #else
     inline constexpr guid guid_v = classic_com_guid_error<T>::value;
 #endif
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     constexpr auto to_underlying_type(T const value) noexcept
     {
         return static_cast<std::underlying_type_t<T>>(value);
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct is_implements : std::false_type {};
 
     template <typename T>
         requires requires { typename T::implements_type; }
     struct is_implements<T> : std::true_type {};
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     inline constexpr bool is_implements_v = is_implements<T>::value;
 
-    template <typename D, typename I>
+    WINRT_EXPORT template <typename D, typename I>
     struct require_one : consume_t<D, I>
     {
         operator I() const noexcept
@@ -175,11 +175,11 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename D, typename... I>
+    WINRT_EXPORT template <typename D, typename... I>
     struct WINRT_IMPL_EMPTY_BASES require : require_one<D, I>...
     {};
 
-    template <typename D, typename I>
+    WINRT_EXPORT template <typename D, typename I>
     struct base_one
     {
         operator I() const noexcept
@@ -188,11 +188,11 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename D, typename... I>
+    WINRT_EXPORT template <typename D, typename... I>
     struct WINRT_IMPL_EMPTY_BASES base : base_one<D, I>...
     {};
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     T empty_value() noexcept
     {
         if constexpr (std::is_base_of_v<Windows::Foundation::IUnknown, T>)
@@ -205,7 +205,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     }
 
-    template<typename T, auto empty_value = T{}>
+    WINRT_EXPORT template<typename T, auto empty_value = T{}>
     struct movable_primitive
     {
         T value = empty_value;
@@ -224,7 +224,7 @@ WINRT_EXPORT namespace winrt::impl
         T detach() { return std::exchange(value, empty_value); }
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct arg
     {
         using in = abi_t<T>;
@@ -237,16 +237,16 @@ WINRT_EXPORT namespace winrt::impl
         using in = void*;
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     using arg_in = typename arg<T>::in;
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     using arg_out = arg_in<T>*;
 
-    template <typename D, typename I>
+    WINRT_EXPORT template <typename D, typename I>
     struct produce_base;
 
-    template <typename D, typename I>
+    WINRT_EXPORT template <typename D, typename I>
     struct produce;
 
     template <typename D>
@@ -254,7 +254,7 @@ WINRT_EXPORT namespace winrt::impl
     {
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct wrapped_type
     {
         using type = T;
@@ -266,13 +266,13 @@ WINRT_EXPORT namespace winrt::impl
         using type = T;
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     using wrapped_type_t = typename wrapped_type<T>::type;
 
-    template <typename ... Types>
+    WINRT_EXPORT template <typename ... Types>
     struct typelist {};
 
-    template <typename ... Lists>
+    WINRT_EXPORT template <typename ... Lists>
     struct typelist_concat;
 
     template <>
@@ -286,7 +286,7 @@ WINRT_EXPORT namespace winrt::impl
         : typelist_concat<winrt::impl::typelist<List1..., List2...>, Rest...>
     {};
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct for_each;
 
     template <typename ... Types>
@@ -299,7 +299,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct find_if;
 
     template <typename ... Types>
@@ -312,7 +312,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename D, typename K>
+    WINRT_EXPORT template <typename D, typename K>
     struct has_TryLookup
     {
         template <typename U, typename = decltype(std::declval<U>().TryLookup(std::declval<K>(), trylookup_from_abi))> static constexpr bool get_value(int) { return true; }
@@ -321,6 +321,6 @@ WINRT_EXPORT namespace winrt::impl
         static constexpr bool value = get_value<D>(0);
     };
 
-    template <typename D, typename K>
+    WINRT_EXPORT template <typename D, typename K>
     inline constexpr bool has_TryLookup_v = has_TryLookup<D, K>::value;
 }

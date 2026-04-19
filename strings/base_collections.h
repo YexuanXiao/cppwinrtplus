@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
     namespace wfc = Windows::Foundation::Collections;
 
@@ -14,7 +14,7 @@ WINRT_EXPORT namespace winrt::impl
         return get_end_iterator(static_cast<D const&>(*this));
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct key_value_pair;
 
     template <typename K, typename V>
@@ -42,13 +42,13 @@ WINRT_EXPORT namespace winrt::impl
         V const m_value;
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct is_key_value_pair : std::false_type {};
 
     template <typename K, typename V>
     struct is_key_value_pair<wfc::IKeyValuePair<K, V>> : std::true_type {};
 
-    struct input_scope
+    WINRT_EXPORT struct input_scope
     {
         void invalidate_scope() noexcept
         {
@@ -68,7 +68,7 @@ WINRT_EXPORT namespace winrt::impl
         bool m_invalid{};
     };
 
-    struct no_collection_version
+    WINRT_EXPORT struct no_collection_version
     {
         struct iterator_type
         {
@@ -82,7 +82,7 @@ WINRT_EXPORT namespace winrt::impl
         };
     };
 
-    struct collection_version
+    WINRT_EXPORT struct collection_version
     {
         struct iterator_type
         {
@@ -119,7 +119,7 @@ WINRT_EXPORT namespace winrt::impl
         std::atomic<std::uint32_t> m_version{};
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct range_container
     {
         T const first;

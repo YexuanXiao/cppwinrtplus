@@ -622,7 +622,6 @@ R"(  local               Local ^%WinDir^%\System32\WinMetadata folder
 
             if (settings.modules)
             {
-                write_numerics_ixx();
                 write_base_ixx();
             }
 

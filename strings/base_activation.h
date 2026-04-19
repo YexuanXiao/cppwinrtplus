@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    struct library_traits
+    WINRT_EXPORT struct library_traits
     {
         using type = void*;
 
@@ -16,9 +16,9 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    using library_handle = handle_type<library_traits>;
+    WINRT_EXPORT using library_handle = handle_type<library_traits>;
 
-    template <bool isSameInterfaceAsIActivationFactory>
+    WINRT_EXPORT template <bool isSameInterfaceAsIActivationFactory>
     WINRT_IMPL_NOINLINE hresult get_runtime_activation_factory_impl(param::hstring const& name, winrt::guid const& guid, void** result) noexcept
     {
         if (winrt_activation_handler)
@@ -96,16 +96,16 @@ WINRT_EXPORT namespace winrt::impl
         return hr;
     }
 
-    template <typename Interface>
+    WINRT_EXPORT template <typename Interface>
     hresult get_runtime_activation_factory(param::hstring const& name, void** result) noexcept
     {
         return get_runtime_activation_factory_impl<std::is_same_v<Interface, Windows::Foundation::IActivationFactory>>(name, guid_of<Interface>(), result);
     }
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename Interface = Windows::Foundation::IActivationFactory>
+    WINRT_EXPORT template <typename Interface = Windows::Foundation::IActivationFactory>
     impl::com_ref<Interface> get_activation_factory(param::hstring const& name)
     {
         void* result{};
@@ -114,7 +114,7 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
 
 #ifdef __clang__
@@ -122,7 +122,7 @@ WINRT_EXPORT namespace winrt::impl
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     T* interlocked_read_pointer(T* const volatile* target) noexcept
     {
 #if defined(_M_IX86) || defined(_M_X64)
@@ -152,16 +152,16 @@ WINRT_EXPORT namespace winrt::impl
 #endif
 
 #ifdef _WIN64
-    inline constexpr std::uint32_t memory_allocation_alignment{ 16 };
+    WINRT_EXPORT inline constexpr std::uint32_t memory_allocation_alignment{ 16 };
 #if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(push)
 #pragma warning(disable:4324) // structure was padded due to alignment specifier
 #endif
-    struct alignas(16) slist_entry
+    WINRT_EXPORT struct alignas(16) slist_entry
     {
         slist_entry* next;
     };
-    union alignas(16) slist_header
+    WINRT_EXPORT union alignas(16) slist_header
     {
         struct
         {
@@ -180,12 +180,12 @@ WINRT_EXPORT namespace winrt::impl
 #pragma warning(pop)
 #endif
 #else
-    inline constexpr std::uint32_t memory_allocation_alignment{ 8 };
-    struct slist_entry
+    WINRT_EXPORT inline constexpr std::uint32_t memory_allocation_alignment{ 8 };
+    WINRT_EXPORT struct slist_entry
     {
         slist_entry* next;
     };
-    union slist_header
+    WINRT_EXPORT union slist_header
     {
         std::uint64_t reserved1;
         struct
@@ -197,7 +197,7 @@ WINRT_EXPORT namespace winrt::impl
     };
 #endif
 
-    struct factory_count_guard
+    WINRT_EXPORT struct factory_count_guard
     {
         factory_count_guard(factory_count_guard const&) = delete;
         factory_count_guard& operator=(factory_count_guard const&) = delete;
@@ -228,7 +228,7 @@ WINRT_EXPORT namespace winrt::impl
         [[maybe_unused]] std::size_t& m_count; // Field is unused when WINRT_NO_MODULE_LOCK is defined.
     };
 
-    struct factory_cache_entry_base
+    WINRT_EXPORT struct factory_cache_entry_base
     {
         struct alignas(sizeof(void*) * 2) object_and_count
         {
@@ -277,7 +277,7 @@ WINRT_EXPORT namespace winrt::impl
 #error Unsupported architecture: verify that zero-initialization of SLIST_HEADER is still safe
 #endif
 
-    struct factory_cache
+    WINRT_EXPORT struct factory_cache
     {
         factory_cache(factory_cache const&) = delete;
         factory_cache& operator=(factory_cache const&) = delete;
@@ -308,13 +308,13 @@ WINRT_EXPORT namespace winrt::impl
         alignas(memory_allocation_alignment) slist_header m_list;
     };
 
-    inline factory_cache& get_factory_cache() noexcept
+    WINRT_EXPORT inline factory_cache& get_factory_cache() noexcept
     {
         static factory_cache cache;
         return cache;
     }
 
-    template <typename Class, typename Interface>
+    WINRT_EXPORT template <typename Class, typename Interface>
     struct factory_cache_entry : factory_cache_entry_base
     {
         template <typename F>
@@ -351,10 +351,10 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename Class, typename Interface>
+    WINRT_EXPORT template <typename Class, typename Interface>
     factory_cache_entry<Class, Interface> factory_cache_entry_v{};
 
-    template <typename Class, typename Interface = Windows::Foundation::IActivationFactory, typename F>
+    WINRT_EXPORT template <typename Class, typename Interface = Windows::Foundation::IActivationFactory, typename F>
     auto call_factory(F&& callback)
     {
         auto& factory = factory_cache_entry_v<Class, Interface>;
@@ -371,7 +371,7 @@ WINRT_EXPORT namespace winrt::impl
         return factory.call(callback);
     }
 
-    template <typename CastType, typename Class, typename Interface = Windows::Foundation::IActivationFactory, typename F>
+    WINRT_EXPORT template <typename CastType, typename Class, typename Interface = Windows::Foundation::IActivationFactory, typename F>
     auto call_factory_cast(F&& callback)
     {
         auto& factory = factory_cache_entry_v<Class, Interface>;
@@ -388,7 +388,7 @@ WINRT_EXPORT namespace winrt::impl
         return factory.call(static_cast<CastType>(callback));
     }
 
-    template <typename Interface = Windows::Foundation::IActivationFactory>
+    WINRT_EXPORT template <typename Interface = Windows::Foundation::IActivationFactory>
     com_ref<Interface> try_get_activation_factory(param::hstring const& name, hresult_error* exception = nullptr) noexcept
     {
         void* result{};
@@ -422,15 +422,15 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    enum class apartment_type : std::int32_t
+    WINRT_EXPORT enum class apartment_type : std::int32_t
     {
         multi_threaded = 0,
         single_threaded = 2,
     };
 
-    inline void init_apartment(apartment_type const type = apartment_type::multi_threaded)
+    WINRT_EXPORT inline void init_apartment(apartment_type const type = apartment_type::multi_threaded)
     {
         hresult const result = WINRT_IMPL_CoInitializeEx(nullptr, static_cast<std::uint32_t>(type));
 
@@ -440,12 +440,12 @@ WINRT_EXPORT namespace winrt
         }
     }
 
-    inline void uninit_apartment() noexcept
+    WINRT_EXPORT inline void uninit_apartment() noexcept
     {
         WINRT_IMPL_CoUninitialize();
     }
 
-    template <typename Class, typename Interface = Windows::Foundation::IActivationFactory>
+    WINRT_EXPORT template <typename Class, typename Interface = Windows::Foundation::IActivationFactory>
     auto get_activation_factory()
     {
         // Normally, the callback avoids having to return a ref-counted object and the resulting AddRef/Release bump.
@@ -457,42 +457,42 @@ WINRT_EXPORT namespace winrt
         });
     }
 
-    template <typename Class, typename Interface = Windows::Foundation::IActivationFactory>
+    WINRT_EXPORT template <typename Class, typename Interface = Windows::Foundation::IActivationFactory>
     auto try_get_activation_factory() noexcept
     {
         return impl::try_get_activation_factory<Interface>(name_of<Class>());
     }
 
-    template <typename Class, typename Interface = Windows::Foundation::IActivationFactory>
+    WINRT_EXPORT template <typename Class, typename Interface = Windows::Foundation::IActivationFactory>
     auto try_get_activation_factory(hresult_error& exception) noexcept
     {
         return impl::try_get_activation_factory<Interface>(name_of<Class>(), &exception);
     }
 
-    template <typename Interface = Windows::Foundation::IActivationFactory>
+    WINRT_EXPORT template <typename Interface = Windows::Foundation::IActivationFactory>
     auto try_get_activation_factory(param::hstring const& name) noexcept
     {
         return impl::try_get_activation_factory<Interface>(name);
     }
 
-    template <typename Interface = Windows::Foundation::IActivationFactory>
+    WINRT_EXPORT template <typename Interface = Windows::Foundation::IActivationFactory>
     auto try_get_activation_factory(param::hstring const& name, hresult_error& exception) noexcept
     {
         return impl::try_get_activation_factory<Interface>(name, &exception);
     }
 
-    inline void clear_factory_cache() noexcept
+    WINRT_EXPORT inline void clear_factory_cache() noexcept
     {
         impl::get_factory_cache().clear();
     }
 
-    template <typename Interface>
+    WINRT_EXPORT template <typename Interface>
     auto try_create_instance(guid const& clsid, std::uint32_t context = 0x1 /*CLSCTX_INPROC_SERVER*/, void* outer = nullptr)
     {
         return try_capture<Interface>(WINRT_IMPL_CoCreateInstance, clsid, outer, context);
     }
 
-    template <typename Interface>
+    WINRT_EXPORT template <typename Interface>
     auto create_instance(guid const& clsid, std::uint32_t context = 0x1 /*CLSCTX_INPROC_SERVER*/, void* outer = nullptr)
     {
         return capture<Interface>(WINRT_IMPL_CoCreateInstance, clsid, outer, context);
@@ -500,7 +500,7 @@ WINRT_EXPORT namespace winrt
 
     namespace Windows::Foundation
     {
-        struct IActivationFactory : IInspectable
+        WINRT_EXPORT struct IActivationFactory : IInspectable
         {
             IActivationFactory(std::nullptr_t = nullptr) noexcept {}
             IActivationFactory(void* ptr, take_ownership_from_abi_t) noexcept : IInspectable(ptr, take_ownership_from_abi) {}
@@ -516,9 +516,9 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     T fast_activate(Windows::Foundation::IActivationFactory const& factory)
     {
         void* result{};

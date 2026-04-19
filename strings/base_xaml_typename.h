@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct xaml_typename_name
     {
         static constexpr std::wstring_view value() noexcept
@@ -50,7 +50,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct xaml_typename_kind
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Metadata;
@@ -138,9 +138,9 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     inline Windows::UI::Xaml::Interop::TypeName xaml_typename()
     {
         static_assert(impl::has_category_v<T>, "T must be WinRT type.");

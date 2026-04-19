@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct handle_type
     {
         using type = typename T::type;
@@ -79,7 +79,7 @@ WINRT_EXPORT namespace winrt
         type m_value = T::invalid();
     };
 
-    struct handle_traits
+    WINRT_EXPORT struct handle_traits
     {
         using type = void*;
 
@@ -94,9 +94,9 @@ WINRT_EXPORT namespace winrt
         }
     };
 
-    using handle = handle_type<handle_traits>;
+    WINRT_EXPORT using handle = handle_type<handle_traits>;
 
-    struct file_handle_traits
+    WINRT_EXPORT struct file_handle_traits
     {
         using type = void*;
 
@@ -111,5 +111,5 @@ WINRT_EXPORT namespace winrt
         }
     };
 
-    using file_handle = handle_type<file_handle_traits>;
+    WINRT_EXPORT using file_handle = handle_type<file_handle_traits>;
 }

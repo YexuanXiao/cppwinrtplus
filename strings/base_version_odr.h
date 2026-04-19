@@ -1,2 +1,3 @@
+
 #define CPPWINRT_VERSION "%"
 

@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    struct access_token : handle
+    WINRT_EXPORT struct access_token : handle
     {
         static access_token process()
         {

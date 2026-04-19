@@ -1,10 +1,10 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename T, typename Container>
+    WINRT_EXPORT template <typename T, typename Container>
     using multi_threaded_vector = vector_impl<T, Container, multi_threaded_collection_base>;
 
-    template <typename Container, typename ThreadingBase = single_threaded_collection_base>
+    WINRT_EXPORT template <typename Container, typename ThreadingBase = single_threaded_collection_base>
     struct inspectable_observable_vector :
         observable_vector_base<inspectable_observable_vector<Container, ThreadingBase>, Windows::Foundation::IInspectable>,
         implements<inspectable_observable_vector<Container, ThreadingBase>,
@@ -35,10 +35,10 @@ WINRT_EXPORT namespace winrt::impl
         Container m_values;
     };
 
-    template <typename Container>
+    WINRT_EXPORT template <typename Container>
     using multi_threaded_inspectable_observable_vector = inspectable_observable_vector<Container, multi_threaded_collection_base>;
 
-    template <typename T, typename Container, typename ThreadingBase = single_threaded_collection_base>
+    WINRT_EXPORT template <typename T, typename Container, typename ThreadingBase = single_threaded_collection_base>
     struct convertible_observable_vector :
         observable_vector_base<convertible_observable_vector<T, Container, ThreadingBase>, T>,
         implements<convertible_observable_vector<T, Container, ThreadingBase>,
@@ -293,25 +293,25 @@ WINRT_EXPORT namespace winrt::impl
         Container m_values;
     };
 
-    template <typename T, typename Container>
+    WINRT_EXPORT template <typename T, typename Container>
     using multi_threaded_convertible_observable_vector = convertible_observable_vector<T, Container, multi_threaded_collection_base>;
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename T, typename Allocator = std::allocator<T>>
+    WINRT_EXPORT template <typename T, typename Allocator = std::allocator<T>>
     Windows::Foundation::Collections::IVector<T> single_threaded_vector(std::vector<T, Allocator>&& values = {})
     {
         return make<impl::input_vector<T, std::vector<T, Allocator>>>(std::move(values));
     }
 
-    template <typename T, typename Allocator = std::allocator<T>>
+    WINRT_EXPORT template <typename T, typename Allocator = std::allocator<T>>
     Windows::Foundation::Collections::IVector<T> multi_threaded_vector(std::vector<T, Allocator>&& values = {})
     {
         return make<impl::multi_threaded_vector<T, std::vector<T, Allocator>>>(std::move(values));
     }
 
-    template <typename T, typename Allocator = std::allocator<T>>
+    WINRT_EXPORT template <typename T, typename Allocator = std::allocator<T>>
     Windows::Foundation::Collections::IObservableVector<T> single_threaded_observable_vector(std::vector<T, Allocator>&& values = {})
     {
         if constexpr (std::is_same_v<T, Windows::Foundation::IInspectable>)
@@ -324,7 +324,7 @@ WINRT_EXPORT namespace winrt
         }
     }
 
-    template <typename T, typename Allocator = std::allocator<T>>
+    WINRT_EXPORT template <typename T, typename Allocator = std::allocator<T>>
     Windows::Foundation::Collections::IObservableVector<T> multi_threaded_observable_vector(std::vector<T, Allocator>&& values = {})
     {
         if constexpr (std::is_same_v<T, Windows::Foundation::IInspectable>)

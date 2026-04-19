@@ -1,4 +1,6 @@
 
+extern "C++"
+{
 #ifndef WINRT_LEAN_AND_MEAN
 inline std::wostream& operator<<(std::wostream& stream, winrt::Windows::Foundation::IStringable const& stringable)
 {
@@ -6,3 +8,4 @@ inline std::wostream& operator<<(std::wostream& stream, winrt::Windows::Foundati
     return stream;
 }
 #endif
+}

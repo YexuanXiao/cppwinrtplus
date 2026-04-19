@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    [[nodiscard]] inline auto resume_foreground(
+    WINRT_EXPORT [[nodiscard]] inline auto resume_foreground(
         Windows::System::DispatcherQueue const& dispatcher,
         Windows::System::DispatcherQueuePriority const priority = Windows::System::DispatcherQueuePriority::Normal) noexcept
     {
@@ -41,7 +41,7 @@ WINRT_EXPORT namespace winrt
         return awaitable{ dispatcher, priority };
     };
 
-    inline auto operator co_await(Windows::System::DispatcherQueue const& dispatcher)
+    WINRT_EXPORT inline auto operator co_await(Windows::System::DispatcherQueue const& dispatcher)
     {
         return resume_foreground(dispatcher);
     }

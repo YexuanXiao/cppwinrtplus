@@ -1,25 +1,25 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    using ptp_io = struct tp_io*;
-    using ptp_timer = struct tp_timer*;
-    using ptp_wait = struct tp_wait*;
-    using ptp_pool = struct tp_pool*;
-    using srwlock = struct srwlock_*;
-    using condition_variable = struct condition_variable_*;
-    using bstr = wchar_t*;
+    WINRT_EXPORT using ptp_io = struct tp_io*;
+    WINRT_EXPORT using ptp_timer = struct tp_timer*;
+    WINRT_EXPORT using ptp_wait = struct tp_wait*;
+    WINRT_EXPORT using ptp_pool = struct tp_pool*;
+    WINRT_EXPORT using srwlock = struct srwlock_*;
+    WINRT_EXPORT using condition_variable = struct condition_variable_*;
+    WINRT_EXPORT using bstr = wchar_t*;
 
-    using filetime_period = std::ratio_multiply<std::ratio<100>, std::nano>;
-    struct IAgileObject;
+    WINRT_EXPORT using filetime_period = std::ratio_multiply<std::ratio<100>, std::nano>;
+    WINRT_EXPORT struct IAgileObject;
 
-    struct com_callback_args
+    WINRT_EXPORT struct com_callback_args
     {
         std::uint32_t reserved1;
         std::uint32_t reserved2;
         void* data;
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     constexpr std::uint8_t hex_to_uint(T const c)
     {
         if (c >= '0' && c <= '9')
@@ -40,31 +40,31 @@ WINRT_EXPORT namespace winrt::impl
         }
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     constexpr std::uint8_t hex_to_uint8(T const a, T const b)
     {
         return (hex_to_uint(a) << 4) | hex_to_uint(b);
     }
 
-    constexpr std::uint16_t uint8_to_uint16(std::uint8_t a, std::uint8_t b)
+    WINRT_EXPORT constexpr std::uint16_t uint8_to_uint16(std::uint8_t a, std::uint8_t b)
     {
         return (static_cast<std::uint16_t>(a) << 8) | static_cast<std::uint16_t>(b);
     }
 
-    constexpr std::uint32_t uint8_to_uint32(std::uint8_t a, std::uint8_t b, std::uint8_t c, std::uint8_t d)
+    WINRT_EXPORT constexpr std::uint32_t uint8_to_uint32(std::uint8_t a, std::uint8_t b, std::uint8_t c, std::uint8_t d)
     {
         return (static_cast<std::uint32_t>(uint8_to_uint16(a, b)) << 16) |
                 static_cast<std::uint32_t>(uint8_to_uint16(c, d));
     }
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    struct event_token;
-    struct hstring;
-    struct clock;
+    WINRT_EXPORT struct event_token;
+    WINRT_EXPORT struct hstring;
+    WINRT_EXPORT struct clock;
 
-    struct hresult
+    WINRT_EXPORT struct hresult
     {
         std::int32_t value{};
 
@@ -80,7 +80,7 @@ WINRT_EXPORT namespace winrt
         }
     };
 
-    struct guid
+    WINRT_EXPORT struct guid
     {
     private:
 
@@ -200,58 +200,58 @@ WINRT_EXPORT namespace winrt
     };
 }
 
-WINRT_EXPORT namespace winrt::Windows::Foundation
+extern "C++" namespace winrt::Windows::Foundation
 {
-    enum class TrustLevel : std::int32_t
+    WINRT_EXPORT enum class TrustLevel : std::int32_t
     {
         BaseTrust,
         PartialTrust,
         FullTrust
     };
 
-    struct IUnknown;
-    struct IInspectable;
-    struct IActivationFactory;
-    using TimeSpan = std::chrono::duration<std::int64_t, impl::filetime_period>;
-    using DateTime = std::chrono::time_point<clock, TimeSpan>;
+    WINRT_EXPORT struct IUnknown;
+    WINRT_EXPORT struct IInspectable;
+    WINRT_EXPORT struct IActivationFactory;
+    WINRT_EXPORT using TimeSpan = std::chrono::duration<std::int64_t, impl::filetime_period>;
+    WINRT_EXPORT using DateTime = std::chrono::time_point<clock, TimeSpan>;
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
 #ifdef WINRT_IMPL_IUNKNOWN_DEFINED
-    using hresult_type = long;
-    using count_type = unsigned long;
-    using guid_type = GUID;
+    WINRT_EXPORT using hresult_type = long;
+    WINRT_EXPORT using count_type = unsigned long;
+    WINRT_EXPORT using guid_type = GUID;
 #else
-    using hresult_type = std::int32_t;
-    using count_type = std::uint32_t;
-    using guid_type = guid;
+    WINRT_EXPORT using hresult_type = std::int32_t;
+    WINRT_EXPORT using count_type = std::uint32_t;
+    WINRT_EXPORT using guid_type = guid;
 #endif
 
 #ifdef __IInspectable_INTERFACE_DEFINED__
-    using hstring_type = HSTRING;
-    using trust_level_type = ::TrustLevel;
+    WINRT_EXPORT using hstring_type = HSTRING;
+    WINRT_EXPORT using trust_level_type = ::TrustLevel;
 #else
-    using hstring_type = void*;
-    using trust_level_type = Windows::Foundation::TrustLevel;
+    WINRT_EXPORT using hstring_type = void*;
+    WINRT_EXPORT using trust_level_type = Windows::Foundation::TrustLevel;
 #endif
 
-    inline constexpr hresult error_ok{ 0 }; // S_OK
-    inline constexpr hresult error_fail{ static_cast<hresult>(0x80004005) }; // E_FAIL
-    inline constexpr hresult error_access_denied{ static_cast<hresult>(0x80070005) }; // E_ACCESSDENIED
-    inline constexpr hresult error_wrong_thread{ static_cast<hresult>(0x8001010E) }; // RPC_E_WRONG_THREAD
-    inline constexpr hresult error_not_implemented{ static_cast<hresult>(0x80004001) }; // E_NOTIMPL
-    inline constexpr hresult error_invalid_argument{ static_cast<hresult>(0x80070057) }; // E_INVALIDARG
-    inline constexpr hresult error_out_of_bounds{ static_cast<hresult>(0x8000000B) }; // E_BOUNDS
-    inline constexpr hresult error_no_interface{ static_cast<hresult>(0x80004002) }; // E_NOINTERFACE
-    inline constexpr hresult error_class_not_available{ static_cast<hresult>(0x80040111) }; // CLASS_E_CLASSNOTAVAILABLE
-    inline constexpr hresult error_class_not_registered{ static_cast<hresult>(0x80040154) }; // REGDB_E_CLASSNOTREG
-    inline constexpr hresult error_changed_state{ static_cast<hresult>(0x8000000C) }; // E_CHANGED_STATE
-    inline constexpr hresult error_illegal_method_call{ static_cast<hresult>(0x8000000E) }; // E_ILLEGAL_METHOD_CALL
-    inline constexpr hresult error_illegal_state_change{ static_cast<hresult>(0x8000000D) }; // E_ILLEGAL_STATE_CHANGE
-    inline constexpr hresult error_illegal_delegate_assignment{ static_cast<hresult>(0x80000018) }; // E_ILLEGAL_DELEGATE_ASSIGNMENT
-    inline constexpr hresult error_canceled{ static_cast<hresult>(0x800704C7) }; // HRESULT_FROM_WIN32(ERROR_CANCELLED)
-    inline constexpr hresult error_bad_alloc{ static_cast<hresult>(0x8007000E) }; // E_OUTOFMEMORY
-    inline constexpr hresult error_not_initialized{ static_cast<hresult>(0x800401F0) }; // CO_E_NOTINITIALIZED
-    inline constexpr hresult error_file_not_found{ static_cast<hresult>(0x80070002) }; // HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND)
+    WINRT_EXPORT inline constexpr hresult error_ok{ 0 }; // S_OK
+    WINRT_EXPORT inline constexpr hresult error_fail{ static_cast<hresult>(0x80004005) }; // E_FAIL
+    WINRT_EXPORT inline constexpr hresult error_access_denied{ static_cast<hresult>(0x80070005) }; // E_ACCESSDENIED
+    WINRT_EXPORT inline constexpr hresult error_wrong_thread{ static_cast<hresult>(0x8001010E) }; // RPC_E_WRONG_THREAD
+    WINRT_EXPORT inline constexpr hresult error_not_implemented{ static_cast<hresult>(0x80004001) }; // E_NOTIMPL
+    WINRT_EXPORT inline constexpr hresult error_invalid_argument{ static_cast<hresult>(0x80070057) }; // E_INVALIDARG
+    WINRT_EXPORT inline constexpr hresult error_out_of_bounds{ static_cast<hresult>(0x8000000B) }; // E_BOUNDS
+    WINRT_EXPORT inline constexpr hresult error_no_interface{ static_cast<hresult>(0x80004002) }; // E_NOINTERFACE
+    WINRT_EXPORT inline constexpr hresult error_class_not_available{ static_cast<hresult>(0x80040111) }; // CLASS_E_CLASSNOTAVAILABLE
+    WINRT_EXPORT inline constexpr hresult error_class_not_registered{ static_cast<hresult>(0x80040154) }; // REGDB_E_CLASSNOTREG
+    WINRT_EXPORT inline constexpr hresult error_changed_state{ static_cast<hresult>(0x8000000C) }; // E_CHANGED_STATE
+    WINRT_EXPORT inline constexpr hresult error_illegal_method_call{ static_cast<hresult>(0x8000000E) }; // E_ILLEGAL_METHOD_CALL
+    WINRT_EXPORT inline constexpr hresult error_illegal_state_change{ static_cast<hresult>(0x8000000D) }; // E_ILLEGAL_STATE_CHANGE
+    WINRT_EXPORT inline constexpr hresult error_illegal_delegate_assignment{ static_cast<hresult>(0x80000018) }; // E_ILLEGAL_DELEGATE_ASSIGNMENT
+    WINRT_EXPORT inline constexpr hresult error_canceled{ static_cast<hresult>(0x800704C7) }; // HRESULT_FROM_WIN32(ERROR_CANCELLED)
+    WINRT_EXPORT inline constexpr hresult error_bad_alloc{ static_cast<hresult>(0x8007000E) }; // E_OUTOFMEMORY
+    WINRT_EXPORT inline constexpr hresult error_not_initialized{ static_cast<hresult>(0x800401F0) }; // CO_E_NOTINITIALIZED
+    WINRT_EXPORT inline constexpr hresult error_file_not_found{ static_cast<hresult>(0x80070002) }; // HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND)
 }

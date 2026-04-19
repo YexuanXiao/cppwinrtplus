@@ -1,3 +1,4 @@
+
 // The intrinsics (such as __builtin_FILE()) that power std::source_location are also used to power winrt:impl::slim_source_location.
 // The source location needs to be for the calling code, not cppwinrt itself, so that it is useful to developers building on top of
 // this library.  As a result any public-facing method that can result in an error needs a default-constructed slim_source_location
@@ -43,12 +44,12 @@
 #define WINRT_IMPL_BUILTIN_FUNCTION nullptr
 #endif
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
     // This struct is intended to be highly similar to std::source_location.  The key difference is
     // that function_name is NOT included.  Function names do not fold to identical strings and can
     // have heavy binary size overhead when templates cause many permutations to exist.
-    struct slim_source_location
+    WINRT_EXPORT struct slim_source_location
     {
         [[nodiscard]] static WINRT_IMPL_CONSTEVAL slim_source_location current(
             const std::uint_least32_t line = WINRT_IMPL_BUILTIN_LINE,

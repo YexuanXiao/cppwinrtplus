@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    struct event_token
+    WINRT_EXPORT struct event_token
     {
         std::int64_t value{};
 
@@ -13,10 +13,10 @@ WINRT_EXPORT namespace winrt
         bool operator==(event_token const& other) const noexcept = default;
     };
 
-    struct auto_revoke_t {};
-    inline constexpr auto_revoke_t auto_revoke{};
+    WINRT_EXPORT struct auto_revoke_t {};
+    WINRT_EXPORT inline constexpr auto_revoke_t auto_revoke{};
 
-    template <typename I>
+    WINRT_EXPORT template <typename I>
     struct event_revoker
     {
         using method_type = std::int32_t(__stdcall impl::abi_t<I>::*)(winrt::event_token);
@@ -71,7 +71,7 @@ WINRT_EXPORT namespace winrt
         event_token m_token{};
     };
 
-    template <typename I>
+    WINRT_EXPORT template <typename I>
     struct factory_event_revoker
     {
         using method_type = std::int32_t(__stdcall impl::abi_t<I>::*)(winrt::event_token);
@@ -127,9 +127,9 @@ WINRT_EXPORT namespace winrt
     };
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename I, auto Method>
+    WINRT_EXPORT template <typename I, auto Method>
     struct event_revoker
     {
         event_revoker() noexcept = default;
@@ -190,7 +190,7 @@ WINRT_EXPORT namespace winrt::impl
         event_token m_token{};
     };
 
-    template <typename I, auto Method>
+    WINRT_EXPORT template <typename I, auto Method>
     struct factory_event_revoker
     {
         factory_event_revoker() noexcept = default;
@@ -250,13 +250,13 @@ WINRT_EXPORT namespace winrt::impl
         event_token m_token{};
     };
 
-    template <typename D, typename Revoker, typename S>
+    WINRT_EXPORT template <typename D, typename Revoker, typename S>
     Revoker make_event_revoker(S source, event_token token)
     {
         return { static_cast<D const&>(*source), token };
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct event_array
     {
         using value_type = T;
@@ -324,7 +324,7 @@ WINRT_EXPORT namespace winrt::impl
         std::uint32_t m_size{ 0 };
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     com_ptr<event_array<T>> make_event_array(std::uint32_t const capacity)
     {
         void* raw = ::operator new(sizeof(event_array<T>) + (sizeof(T)* capacity));
@@ -334,7 +334,7 @@ WINRT_EXPORT namespace winrt::impl
         return { new(raw) event_array<T>(capacity), take_ownership_from_abi };
     }
 
-    WINRT_IMPL_NOINLINE inline bool report_failed_invoke()
+    WINRT_EXPORT WINRT_IMPL_NOINLINE inline bool report_failed_invoke()
     {
         std::int32_t const code = to_hresult();
         WINRT_IMPL_RoTransformError(code, 0, nullptr);
@@ -349,7 +349,7 @@ WINRT_EXPORT namespace winrt::impl
         return true;
     }
 
-    template <typename Delegate, typename... Arg>
+    WINRT_EXPORT template <typename Delegate, typename... Arg>
     bool invoke(Delegate const& delegate, Arg const&... args) noexcept
     {
         try
@@ -365,9 +365,9 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename Delegate>
+    WINRT_EXPORT template <typename Delegate>
     struct event
     {
         using delegate_type = Delegate;

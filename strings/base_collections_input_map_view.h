@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename K, typename V, typename Container>
+    WINRT_EXPORT template <typename K, typename V, typename Container>
     struct input_map_view :
         implements<input_map_view<K, V, Container>, non_agile, no_weak_ref, wfc::IMapView<K, V>, wfc::IIterable<wfc::IKeyValuePair<K, V>>>,
         map_view_base<input_map_view<K, V, Container>, K, V>
@@ -22,7 +22,7 @@ WINRT_EXPORT namespace winrt::impl
         Container const m_values;
     };
 
-    template <typename K, typename V, typename Container>
+    WINRT_EXPORT template <typename K, typename V, typename Container>
     struct scoped_input_map_view :
         input_scope,
         implements<scoped_input_map_view<K, V, Container>, non_agile, no_weak_ref, wfc::IMapView<K, V>, wfc::IIterable<wfc::IKeyValuePair<K, V>>>,
@@ -53,13 +53,13 @@ WINRT_EXPORT namespace winrt::impl
         Container const& m_values;
     };
 
-    template <typename K, typename V, typename Container>
+    WINRT_EXPORT template <typename K, typename V, typename Container>
     auto make_input_map_view(Container&& values)
     {
         return make<input_map_view<K, V, Container>>(std::forward<Container>(values));
     }
 
-    template <typename K, typename V, typename Container>
+    WINRT_EXPORT template <typename K, typename V, typename Container>
     auto make_scoped_input_map_view(Container const& values)
     {
         using interface_type = wfc::IMapView<K, V>;
@@ -71,9 +71,9 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt::param
+extern "C++" namespace winrt::param
 {
-    template <typename K, typename V>
+    WINRT_EXPORT template <typename K, typename V>
     struct map_view
     {
         using value_type = Windows::Foundation::Collections::IKeyValuePair<K, V>;
@@ -146,13 +146,13 @@ WINRT_EXPORT namespace winrt::param
         bool m_owned{ true };
     };
 
-    template <typename K, typename V>
+    WINRT_EXPORT template <typename K, typename V>
     auto get_abi(map_view<K, V> const& object) noexcept
     {
         return *impl::abi_cast(object);
     }
 
-    template <typename K, typename V>
+    WINRT_EXPORT template <typename K, typename V>
     struct async_map_view
     {
         using value_type = Windows::Foundation::Collections::IKeyValuePair<K, V>;
@@ -213,7 +213,7 @@ WINRT_EXPORT namespace winrt::param
         bool m_owned{ true };
     };
 
-    template <typename K, typename V>
+    WINRT_EXPORT template <typename K, typename V>
     auto get_abi(async_map_view<K, V> const& object) noexcept
     {
         return *impl::abi_cast(object);

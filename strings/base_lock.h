@@ -1,9 +1,9 @@
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    struct slim_condition_variable;
+    WINRT_EXPORT struct slim_condition_variable;
 
-    struct slim_mutex
+    WINRT_EXPORT struct slim_mutex
     {
         slim_mutex(slim_mutex const&) = delete;
         slim_mutex& operator=(slim_mutex const&) = delete;
@@ -50,7 +50,7 @@ WINRT_EXPORT namespace winrt
         impl::srwlock m_lock{};
     };
 
-    struct slim_lock_guard
+    WINRT_EXPORT struct slim_lock_guard
     {
         explicit slim_lock_guard(slim_mutex& m) noexcept :
         m_mutex(m)
@@ -69,7 +69,7 @@ WINRT_EXPORT namespace winrt
         slim_mutex& m_mutex;
     };
 
-    struct slim_shared_lock_guard
+    WINRT_EXPORT struct slim_shared_lock_guard
     {
         explicit slim_shared_lock_guard(slim_mutex& m) noexcept :
             m_mutex(m)
@@ -88,7 +88,7 @@ WINRT_EXPORT namespace winrt
         slim_mutex& m_mutex;
     };
 
-    struct slim_condition_variable
+    WINRT_EXPORT struct slim_condition_variable
     {
         slim_condition_variable(slim_condition_variable const&) = delete;
         slim_condition_variable const& operator=(slim_condition_variable const&) = delete;

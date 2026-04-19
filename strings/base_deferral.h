@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template<typename D>
+    WINRT_EXPORT template<typename D>
     struct deferrable_event_args
     {
         Windows::Foundation::Deferral GetDeferral()

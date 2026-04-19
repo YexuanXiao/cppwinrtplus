@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    inline hstring to_hstring(Windows::Foundation::IStringable const& stringable)
+    WINRT_EXPORT inline hstring to_hstring(Windows::Foundation::IStringable const& stringable)
     {
         return stringable.ToString();
     }

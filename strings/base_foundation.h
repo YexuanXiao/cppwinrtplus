@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::Windows::Foundation
+extern "C++" namespace winrt::Windows::Foundation
 {
-    struct Point
+    WINRT_EXPORT struct Point
     {
         float X;
         float Y;
@@ -28,7 +28,7 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
         constexpr bool operator==(Point const&) const noexcept = default;
     };
 
-    struct Size
+    WINRT_EXPORT struct Size
     {
         float Width;
         float Height;
@@ -55,7 +55,7 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
         constexpr bool operator==(Size const&) const noexcept = default;
     };
 
-    struct Rect
+    WINRT_EXPORT struct Rect
     {
         float X;
         float Y;
@@ -76,7 +76,7 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
     };
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
     template <> inline constexpr auto& name_v<Windows::Foundation::Point> = L"Windows.Foundation.Point";
     template <> inline constexpr auto& name_v<Windows::Foundation::Size> = L"Windows.Foundation.Size";

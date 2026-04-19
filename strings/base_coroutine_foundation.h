@@ -1,10 +1,10 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename Async>
+    WINRT_EXPORT template <typename Async>
     struct async_completed_handler;
 
-    template <typename Async>
+    WINRT_EXPORT template <typename Async>
     using async_completed_handler_t = typename async_completed_handler<Async>::type;
 
     template <>
@@ -31,14 +31,14 @@ WINRT_EXPORT namespace winrt::impl
         using type = Windows::Foundation::AsyncOperationWithProgressCompletedHandler<TResult, TProgress>;
     };
 
-    inline void check_sta_blocking_wait() noexcept
+    WINRT_EXPORT inline void check_sta_blocking_wait() noexcept
     {
         // Note: A blocking wait on the UI thread for an asynchronous operation can cause a deadlock.
         // See https://docs.microsoft.com/windows/uwp/cpp-and-winrt-apis/concurrency#block-the-calling-thread
         WINRT_ASSERT(!is_sta_thread());
     }
 
-    template <typename T, typename H>
+    WINRT_EXPORT template <typename T, typename H>
     std::pair<T, H*> make_delegate_with_shared_state(H&& handler)
     {
         auto d = make_delegate<T, H>(std::forward<H>(handler));
@@ -46,7 +46,7 @@ WINRT_EXPORT namespace winrt::impl
         return { std::move(d), abi };
     }
 
-    template <typename Async>
+    WINRT_EXPORT template <typename Async>
     auto wait_for_completed(Async const& async, std::uint32_t const timeout)
     {
         struct shared_type
@@ -67,7 +67,7 @@ WINRT_EXPORT namespace winrt::impl
         return shared->status;
     }
 
-    template <typename Async>
+    WINRT_EXPORT template <typename Async>
     auto wait_for(Async const& async, Windows::Foundation::TimeSpan const& timeout)
     {
         check_sta_blocking_wait();
@@ -76,7 +76,7 @@ WINRT_EXPORT namespace winrt::impl
         return wait_for_completed(async, static_cast<std::uint32_t>(milliseconds));
     }
 
-    inline void check_status_canceled(Windows::Foundation::AsyncStatus status)
+    WINRT_EXPORT inline void check_status_canceled(Windows::Foundation::AsyncStatus status)
     {
         if (status == Windows::Foundation::AsyncStatus::Canceled)
         {
@@ -84,7 +84,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     }
 
-    template <typename Async>
+    WINRT_EXPORT template <typename Async>
     auto wait_get(Async const& async)
     {
         check_sta_blocking_wait();
@@ -99,9 +99,9 @@ WINRT_EXPORT namespace winrt::impl
         return async.GetResults();
     }
 
-    struct ignore_apartment_context {};
+    WINRT_EXPORT struct ignore_apartment_context {};
 
-    template<bool preserve_context, typename Awaiter>
+    WINRT_EXPORT template<bool preserve_context, typename Awaiter>
     struct disconnect_aware_handler : private std::conditional_t<preserve_context, resume_apartment_context, ignore_apartment_context>
     {
         disconnect_aware_handler(Awaiter* awaiter, std::coroutine_handle<> handle) noexcept
@@ -149,7 +149,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    template <typename Async, bool preserve_context = true>
+    WINRT_EXPORT template <typename Async, bool preserve_context = true>
     struct await_adapter : cancellable_awaiter<await_adapter<Async, preserve_context>>
     {
         template<typename T>
@@ -257,9 +257,9 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template<typename Async>
+    WINRT_EXPORT template<typename Async>
         requires std::convertible_to<Async, winrt::Windows::Foundation::IAsyncInfo>
     inline impl::await_adapter<std::decay_t<Async>, false> resume_agile(Async&& async)
     {
@@ -267,52 +267,52 @@ WINRT_EXPORT namespace winrt
     };
 }
 
-WINRT_EXPORT namespace winrt::Windows::Foundation
+extern "C++" namespace winrt::Windows::Foundation
 {
-    inline impl::await_adapter<IAsyncAction> operator co_await(IAsyncAction const& async)
+    WINRT_EXPORT inline impl::await_adapter<IAsyncAction> operator co_await(IAsyncAction const& async)
     {
         return{ async };
     }
 
-    template <typename TProgress>
+    WINRT_EXPORT template <typename TProgress>
     impl::await_adapter<IAsyncActionWithProgress<TProgress>> operator co_await(IAsyncActionWithProgress<TProgress> const& async)
     {
         return{ async };
     }
 
-    template <typename TResult>
+    WINRT_EXPORT template <typename TResult>
     impl::await_adapter<IAsyncOperation<TResult>> operator co_await(IAsyncOperation<TResult> const& async)
     {
         return{ async };
     }
 
-    template <typename TResult, typename TProgress>
+    WINRT_EXPORT template <typename TResult, typename TProgress>
     impl::await_adapter<IAsyncOperationWithProgress<TResult, TProgress>> operator co_await(IAsyncOperationWithProgress<TResult, TProgress> const& async)
     {
         return{ async };
     }
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    struct get_progress_token_t {};
+    WINRT_EXPORT struct get_progress_token_t {};
 
-    inline get_progress_token_t get_progress_token() noexcept
+    WINRT_EXPORT inline get_progress_token_t get_progress_token() noexcept
     {
         return{};
     }
 
-    struct get_cancellation_token_t {};
+    WINRT_EXPORT struct get_cancellation_token_t {};
 
-    inline get_cancellation_token_t get_cancellation_token() noexcept
+    WINRT_EXPORT inline get_cancellation_token_t get_cancellation_token() noexcept
     {
         return{};
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename Promise>
+    WINRT_EXPORT template <typename Promise>
     struct cancellation_token
     {
         cancellation_token(Promise* promise) noexcept : m_promise(promise)
@@ -357,7 +357,7 @@ WINRT_EXPORT namespace winrt::impl
         Promise* m_promise;
     };
 
-    template <typename Promise, typename Progress>
+    WINRT_EXPORT template <typename Promise, typename Progress>
     struct progress_token
     {
         progress_token(Promise* promise) noexcept :
@@ -396,7 +396,7 @@ WINRT_EXPORT namespace winrt::impl
         Promise* m_promise;
     };
 
-    template <typename Derived, typename AsyncInterface, typename TProgress = void>
+    WINRT_EXPORT template <typename Derived, typename AsyncInterface, typename TProgress = void>
     struct promise_base : implements<Derived, AsyncInterface, Windows::Foundation::IAsyncInfo>, cancellable_promise
     {
         using AsyncStatus = Windows::Foundation::AsyncStatus;
@@ -702,7 +702,7 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace std
+extern "C++" namespace std
 {
     template <typename... Args>
     struct coroutine_traits<winrt::Windows::Foundation::IAsyncAction, Args...>
@@ -835,16 +835,16 @@ WINRT_EXPORT namespace std
     };
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    template <typename... T>
+    WINRT_EXPORT template <typename... T>
     Windows::Foundation::IAsyncAction when_all(T... async)
     {
         (void(co_await async), ...);
         co_return;
     }
 
-    template <typename T, typename... Rest>
+    WINRT_EXPORT template <typename T, typename... Rest>
     T when_any(T const& first, Rest const& ... rest)
     {
         static_assert(impl::has_category_v<T>, "T must be WinRT async type such as IAsyncAction or IAsyncOperation.");

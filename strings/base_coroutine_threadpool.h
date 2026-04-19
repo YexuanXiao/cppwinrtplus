@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    inline auto submit_threadpool_callback(void(__stdcall* callback)(void*, void* context), void* context)
+    WINRT_EXPORT inline auto submit_threadpool_callback(void(__stdcall* callback)(void*, void* context), void* context)
     {
         if (!WINRT_IMPL_TrySubmitThreadpoolCallback(callback, context, nullptr))
         {
@@ -9,17 +9,17 @@ WINRT_EXPORT namespace winrt::impl
         }
     }
 
-    inline void __stdcall resume_background_callback(void*, void* context) noexcept
+    WINRT_EXPORT inline void __stdcall resume_background_callback(void*, void* context) noexcept
     {
         std::coroutine_handle<>::from_address(context)();
     };
 
-    inline auto resume_background(std::coroutine_handle<> handle)
+    WINRT_EXPORT inline auto resume_background(std::coroutine_handle<> handle)
     {
         submit_threadpool_callback(resume_background_callback, handle.address());
     }
 
-    inline std::pair<std::int32_t, std::int32_t> get_apartment_type() noexcept
+    WINRT_EXPORT inline std::pair<std::int32_t, std::int32_t> get_apartment_type() noexcept
     {
         std::int32_t aptType;
         std::int32_t aptTypeQualifier;
@@ -33,7 +33,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     }
 
-    inline bool is_sta_thread() noexcept
+    WINRT_EXPORT inline bool is_sta_thread() noexcept
     {
         auto type = get_apartment_type();
         switch (type.first)
@@ -48,7 +48,7 @@ WINRT_EXPORT namespace winrt::impl
         return false;
     }
 
-    struct resume_apartment_context
+    WINRT_EXPORT struct resume_apartment_context
     {
         resume_apartment_context() = default;
         resume_apartment_context(std::nullptr_t) : m_context(nullptr), m_context_type(-1) {}
@@ -62,13 +62,13 @@ WINRT_EXPORT namespace winrt::impl
         movable_primitive<std::int32_t, -1> m_context_type = get_apartment_type().first;
     };
 
-    inline std::int32_t __stdcall resume_apartment_callback(com_callback_args* args) noexcept
+    WINRT_EXPORT inline std::int32_t __stdcall resume_apartment_callback(com_callback_args* args) noexcept
     {
         std::coroutine_handle<>::from_address(args->data)();
         return 0;
     };
 
-    [[nodiscard]] inline bool resume_apartment_sync(com_ptr<IContextCallback> const& context, std::coroutine_handle<> handle, std::int32_t* failure)
+    WINRT_EXPORT [[nodiscard]] inline bool resume_apartment_sync(com_ptr<IContextCallback> const& context, std::coroutine_handle<> handle, std::int32_t* failure)
     {
         com_callback_args args{};
         args.data = handle.address();
@@ -83,7 +83,7 @@ WINRT_EXPORT namespace winrt::impl
         return true;
     }
 
-    struct threadpool_resume
+    WINRT_EXPORT struct threadpool_resume
     {
         threadpool_resume(com_ptr<IContextCallback> const& context, std::coroutine_handle<> handle, std::int32_t* failure) :
             m_context(context), m_handle(handle), m_failure(failure) { }
@@ -92,7 +92,7 @@ WINRT_EXPORT namespace winrt::impl
         std::int32_t* m_failure;
     };
 
-    inline void __stdcall fallback_submit_threadpool_callback(void*, void* p) noexcept
+    WINRT_EXPORT inline void __stdcall fallback_submit_threadpool_callback(void*, void* p) noexcept
     {
         std::unique_ptr<threadpool_resume> state{ static_cast<threadpool_resume*>(p) };
         if (!resume_apartment_sync(state->m_context, state->m_handle, state->m_failure))
@@ -101,14 +101,14 @@ WINRT_EXPORT namespace winrt::impl
         }
     }
 
-    inline void resume_apartment_on_threadpool(com_ptr<IContextCallback> const& context, std::coroutine_handle<> handle, std::int32_t* failure)
+    WINRT_EXPORT inline void resume_apartment_on_threadpool(com_ptr<IContextCallback> const& context, std::coroutine_handle<> handle, std::int32_t* failure)
     {
         auto state = std::make_unique<threadpool_resume>(context, handle, failure);
         submit_threadpool_callback(fallback_submit_threadpool_callback, state.get());
         state.release();
     }
 
-    [[nodiscard]] inline auto resume_apartment(resume_apartment_context const& context, std::coroutine_handle<> handle, std::int32_t* failure)
+    WINRT_EXPORT [[nodiscard]] inline auto resume_apartment(resume_apartment_context const& context, std::coroutine_handle<> handle, std::int32_t* failure)
     {
         WINRT_ASSERT(context.valid());
         if ((context.m_context == nullptr) || (context.m_context == try_capture<IContextCallback>(WINRT_IMPL_CoGetObjectContext)))
@@ -131,9 +131,9 @@ WINRT_EXPORT namespace winrt::impl
         }
     }
 
-    using canceller_t = void(*)(void*);
+    WINRT_EXPORT using canceller_t = void(*)(void*);
 
-    struct unique_cancellation_lock
+    WINRT_EXPORT struct unique_cancellation_lock
     {
         std::atomic<canceller_t>& m_pcanceller;
 
@@ -144,9 +144,9 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    struct cancellable_promise
+    WINRT_EXPORT struct cancellable_promise
     {
         void set_canceller(impl::canceller_t canceller, void* context)
         {
@@ -202,7 +202,7 @@ WINRT_EXPORT namespace winrt
         bool m_originate_on_cancel{ true }; // By default, will call RoOriginateError before throwing a cancel error code.
     };
 
-    template <typename Derived>
+    WINRT_EXPORT template <typename Derived>
     struct cancellable_awaiter
     {
         cancellable_awaiter() noexcept = default;
@@ -242,9 +242,9 @@ WINRT_EXPORT namespace winrt
     };
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    [[nodiscard]] inline auto resume_background() noexcept
+    WINRT_EXPORT [[nodiscard]] inline auto resume_background() noexcept
     {
         struct awaitable
         {
@@ -266,7 +266,7 @@ WINRT_EXPORT namespace winrt
         return awaitable{};
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     [[nodiscard]] auto resume_background(T const& context) noexcept
     {
         struct awaitable
@@ -310,7 +310,7 @@ WINRT_EXPORT namespace winrt
         return awaitable{ context };
     }
 
-    struct apartment_context
+    WINRT_EXPORT struct apartment_context
     {
         apartment_context() = default;
         apartment_context(std::nullptr_t) : context(nullptr) { }
@@ -322,9 +322,9 @@ WINRT_EXPORT namespace winrt
     };
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    struct apartment_awaiter
+    WINRT_EXPORT struct apartment_awaiter
     {
         apartment_context const& context;
         std::int32_t failure = 0;
@@ -346,7 +346,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 
-    struct timespan_awaiter : cancellable_awaiter<timespan_awaiter>
+    WINRT_EXPORT struct timespan_awaiter : cancellable_awaiter<timespan_awaiter>
     {
         explicit timespan_awaiter(Windows::Foundation::TimeSpan duration) noexcept :
             m_duration(duration)
@@ -452,7 +452,7 @@ WINRT_EXPORT namespace winrt::impl
         std::atomic<state> m_state{ state::idle };
     };
 
-    struct signal_awaiter : cancellable_awaiter<signal_awaiter>
+    WINRT_EXPORT struct signal_awaiter : cancellable_awaiter<signal_awaiter>
     {
         signal_awaiter(void* handle, Windows::Foundation::TimeSpan timeout) noexcept :
             m_timeout(timeout),
@@ -567,29 +567,29 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    inline impl::apartment_awaiter operator co_await(apartment_context const& context)
+    WINRT_EXPORT inline impl::apartment_awaiter operator co_await(apartment_context const& context)
     {
         return{ context };
     }
 
-    [[nodiscard]] inline impl::timespan_awaiter resume_after(Windows::Foundation::TimeSpan duration) noexcept
+    WINRT_EXPORT [[nodiscard]] inline impl::timespan_awaiter resume_after(Windows::Foundation::TimeSpan duration) noexcept
     {
         return impl::timespan_awaiter{ duration };
     }
 
-    inline impl::timespan_awaiter operator co_await(Windows::Foundation::TimeSpan duration)
+    WINRT_EXPORT inline impl::timespan_awaiter operator co_await(Windows::Foundation::TimeSpan duration)
     {
         return resume_after(duration);
     }
 
-    [[nodiscard]] inline impl::signal_awaiter resume_on_signal(void* handle, Windows::Foundation::TimeSpan timeout = {}) noexcept
+    WINRT_EXPORT [[nodiscard]] inline impl::signal_awaiter resume_on_signal(void* handle, Windows::Foundation::TimeSpan timeout = {}) noexcept
     {
         return impl::signal_awaiter{ handle, timeout };
     }
 
-    struct thread_pool
+    WINRT_EXPORT struct thread_pool
     {
         thread_pool() :
             m_pool(check_pointer(WINRT_IMPL_CreateThreadpool(nullptr)))
@@ -669,10 +669,10 @@ WINRT_EXPORT namespace winrt
         environment m_environment;
     };
 
-    struct fire_and_forget {};
+    WINRT_EXPORT struct fire_and_forget {};
 }
 
-WINRT_EXPORT namespace std
+extern "C++" namespace std
 {
     template <typename... Args>
     struct coroutine_traits<winrt::fire_and_forget, Args...>

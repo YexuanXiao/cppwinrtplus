@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct reference : implements<reference<T>, Windows::Foundation::IReference<T>, Windows::Foundation::IPropertyValue>
     {
         reference(T const& value) : m_value(value)
@@ -107,7 +107,7 @@ WINRT_EXPORT namespace winrt::impl
         T m_value;
     };
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     struct reference_traits
     {
         static auto make(T const& value) { return winrt::make<impl::reference<T>>(value); }
@@ -395,9 +395,9 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt::Windows::Foundation
+extern "C++" namespace winrt::Windows::Foundation
 {
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     bool operator==(IReference<T> const& left, IReference<T> const& right)
     {
         if (get_abi(left) == get_abi(right))
@@ -414,9 +414,9 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+extern "C++" namespace winrt::impl
 {
-    template <typename T, typename From>
+    WINRT_EXPORT template <typename T, typename From>
     T unbox_value_type(From&& value)
     {
         if (!value)
@@ -446,7 +446,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     }
 
-    template <typename T, typename Ret = T, typename From, typename U>
+    WINRT_EXPORT template <typename T, typename Ret = T, typename From, typename U>
     Ret unbox_value_type_or(From&& value, U&& default_value)
     {
         if constexpr (std::is_enum_v<T>)
@@ -480,7 +480,7 @@ WINRT_EXPORT namespace winrt::impl
         return default_value;
     }
 
-    template <typename To, typename From>
+    WINRT_EXPORT template <typename To, typename From>
         requires (!is_com_interface_v<To>)
     auto as(From* ptr)
     {
@@ -494,7 +494,7 @@ WINRT_EXPORT namespace winrt::impl
         }
     }
 
-    template <typename To, typename From>
+    WINRT_EXPORT template <typename To, typename From>
         requires (!is_com_interface_v<To>)
     auto try_as(From* ptr) noexcept
     {
@@ -503,14 +503,14 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+extern "C++" namespace winrt
 {
-    inline Windows::Foundation::IInspectable box_value(param::hstring const& value)
+    WINRT_EXPORT inline Windows::Foundation::IInspectable box_value(param::hstring const& value)
     {
         return Windows::Foundation::IReference<hstring>(*reinterpret_cast<hstring const*>(&value));
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
         requires (!std::is_convertible_v<T, param::hstring>)
     Windows::Foundation::IInspectable box_value(T const& value)
     {
@@ -524,7 +524,7 @@ WINRT_EXPORT namespace winrt
         }
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     T unbox_value(Windows::Foundation::IInspectable const& value)
     {
         if constexpr (std::is_base_of_v<Windows::Foundation::IInspectable, T>)
@@ -537,7 +537,7 @@ WINRT_EXPORT namespace winrt
         }
     }
 
-    template <typename T = hstring>
+    WINRT_EXPORT template <typename T = hstring>
         requires std::same_as<T, hstring>
     hstring unbox_value_or(Windows::Foundation::IInspectable const& value, param::hstring const& default_value)
     {
@@ -552,7 +552,7 @@ WINRT_EXPORT namespace winrt
         return *reinterpret_cast<hstring const*>(&default_value);
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
         requires (!std::is_same_v<T, hstring>)
     T unbox_value_or(Windows::Foundation::IInspectable const& value, T const& default_value)
     {
@@ -573,6 +573,6 @@ WINRT_EXPORT namespace winrt
         return default_value;
     }
 
-    template <typename T>
+    WINRT_EXPORT template <typename T>
     using optional = typename impl::reference_traits<T>::itf;
 }

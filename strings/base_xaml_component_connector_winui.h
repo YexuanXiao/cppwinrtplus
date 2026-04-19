@@ -1,7 +1,7 @@
 
-WINRT_EXPORT namespace winrt::Microsoft::UI::Xaml::Markup
+extern "C++" namespace winrt::Microsoft::UI::Xaml::Markup
 {
-    template <typename D>
+    WINRT_EXPORT template <typename D>
     struct ComponentConnectorT : D
     {
         using composable_base = typename D::composable_base;
