@@ -268,6 +268,7 @@ WINRT_EXPORT namespace winrt
     impl::abi_t<I>* to_abi(impl::producer_convert<D, I> const* from) noexcept
     {
         return reinterpret_cast<impl::abi_t<I>*>(const_cast<impl::producer_convert<D, I>*>(from));
+        return reinterpret_cast<impl::abi_t<I>*>(static_cast<impl::producer<D, default_interface<I>>*>(from));
     }
 }
 
