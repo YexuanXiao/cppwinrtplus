@@ -9,7 +9,7 @@ extern "C++" namespace winrt::impl
             return name_of<T>();
         }
     };
-    template <>
+    WINRT_EXPORT template <>
     struct xaml_typename_name<Windows::Foundation::Point>
     {
         static constexpr std::wstring_view value() noexcept
@@ -17,7 +17,7 @@ extern "C++" namespace winrt::impl
             return L"Point"sv;
         }
     };
-    template <>
+    WINRT_EXPORT template <>
     struct xaml_typename_name<Windows::Foundation::Size>
     {
         static constexpr std::wstring_view value() noexcept
@@ -25,7 +25,7 @@ extern "C++" namespace winrt::impl
             return L"Size"sv;
         }
     };
-    template <>
+    WINRT_EXPORT template <>
     struct xaml_typename_name<Windows::Foundation::Rect>
     {
         static constexpr std::wstring_view value() noexcept
@@ -33,7 +33,7 @@ extern "C++" namespace winrt::impl
             return L"Rect"sv;
         }
     };
-    template <>
+    WINRT_EXPORT template <>
     struct xaml_typename_name<Windows::Foundation::DateTime>
     {
         static constexpr std::wstring_view value() noexcept
@@ -41,7 +41,7 @@ extern "C++" namespace winrt::impl
             return L"DateTime"sv;
         }
     };
-    template <>
+    WINRT_EXPORT template <>
     struct xaml_typename_name<Windows::Foundation::TimeSpan>
     {
         static constexpr std::wstring_view value() noexcept
@@ -55,72 +55,72 @@ extern "C++" namespace winrt::impl
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Metadata;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<bool>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<char16_t>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<std::uint8_t>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<std::int8_t>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<std::uint16_t>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<std::int16_t>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<std::uint32_t>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<std::int32_t>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<std::uint64_t>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<std::int64_t>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<float>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<double>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<hstring>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;
     };
-    template<>
+    WINRT_EXPORT template<>
     struct xaml_typename_kind<guid>
     {
         static constexpr Windows::UI::Xaml::Interop::TypeKind value = Windows::UI::Xaml::Interop::TypeKind::Primitive;

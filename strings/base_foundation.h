@@ -82,17 +82,17 @@ extern "C++" namespace winrt::impl
     template <> inline constexpr auto& name_v<Windows::Foundation::Size> = L"Windows.Foundation.Size";
     template <> inline constexpr auto& name_v<Windows::Foundation::Rect> = L"Windows.Foundation.Rect";
 
-    template <> struct category<Windows::Foundation::Point>
+    WINRT_EXPORT template <> struct category<Windows::Foundation::Point>
     {
         using type = struct_category<float, float>;
     };
 
-    template <> struct category<Windows::Foundation::Size>
+    WINRT_EXPORT template <> struct category<Windows::Foundation::Size>
     {
         using type = struct_category<float, float>;
     };
 
-    template <> struct category<Windows::Foundation::Rect>
+    WINRT_EXPORT template <> struct category<Windows::Foundation::Rect>
     {
         using type = struct_category<float, float, float, float>;
     };
@@ -107,27 +107,27 @@ extern "C++" namespace winrt::impl
     template <> inline constexpr auto& name_v<Windows::Foundation::Numerics::quaternion> = L"Windows.Foundation.Numerics.Quaternion";
     template <> inline constexpr auto& name_v<Windows::Foundation::Numerics::plane> = L"Windows.Foundation.Numerics.Plane";
 
-    template <> struct category<Windows::Foundation::Numerics::float2>
+    WINRT_EXPORT template <> struct category<Windows::Foundation::Numerics::float2>
     {
         using type = struct_category<float, float>;
     };
 
-    template <> struct category<Windows::Foundation::Numerics::float3>
+    WINRT_EXPORT template <> struct category<Windows::Foundation::Numerics::float3>
     {
         using type = struct_category<float, float, float>;
     };
 
-    template <> struct category<Windows::Foundation::Numerics::float4>
+    WINRT_EXPORT template <> struct category<Windows::Foundation::Numerics::float4>
     {
         using type = struct_category<float, float, float, float>;
     };
 
-    template <> struct category<Windows::Foundation::Numerics::float3x2>
+    WINRT_EXPORT template <> struct category<Windows::Foundation::Numerics::float3x2>
     {
         using type = struct_category<float, float, float, float, float, float>;
     };
 
-    template <> struct category<Windows::Foundation::Numerics::float4x4>
+    WINRT_EXPORT template <> struct category<Windows::Foundation::Numerics::float4x4>
     {
         using type = struct_category<
             float, float, float, float,
@@ -137,12 +137,12 @@ extern "C++" namespace winrt::impl
         >;
     };
 
-    template <> struct category<Windows::Foundation::Numerics::quaternion>
+    WINRT_EXPORT template <> struct category<Windows::Foundation::Numerics::quaternion>
     {
         using type = struct_category<float, float, float, float>;
     };
 
-    template <> struct category<Windows::Foundation::Numerics::plane>
+    WINRT_EXPORT template <> struct category<Windows::Foundation::Numerics::plane>
     {
         using type = struct_category<Windows::Foundation::Numerics::float3, float>;
     };

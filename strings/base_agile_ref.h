@@ -52,7 +52,7 @@ extern "C++" namespace winrt::impl
     WINRT_EXPORT template<bool UseModuleLock>
     struct module_lock_updater;
 
-    template<>
+    WINRT_EXPORT template<>
     struct module_lock_updater<true>
     {
         module_lock_updater() noexcept
@@ -66,7 +66,7 @@ extern "C++" namespace winrt::impl
         }
     };
 
-    template<>
+    WINRT_EXPORT template<>
     struct module_lock_updater<false> {};
 
     WINRT_EXPORT using update_module_lock = module_lock_updater<true>;

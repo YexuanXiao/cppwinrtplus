@@ -474,12 +474,12 @@ struct std::formatter<winrt::hstring, wchar_t> : std::formatter<std::wstring_vie
 
 extern "C++" namespace winrt::impl
 {
-    template <> struct abi<hstring>
+    WINRT_EXPORT template <> struct abi<hstring>
     {
         using type = void*;
     };
 
-    template <> struct category<hstring>
+    WINRT_EXPORT template <> struct category<hstring>
     {
         using type = basic_category;
     };

@@ -581,7 +581,7 @@ extern "C++" namespace winrt::impl
         INonDelegatingInspectable(std::nullptr_t = nullptr) noexcept {}
     };
 
-    template <> struct abi<INonDelegatingInspectable>
+    WINRT_EXPORT template <> struct abi<INonDelegatingInspectable>
     {
         using type = inspectable_abi;
     };

@@ -580,24 +580,24 @@ WINRT_EXPORT namespace winrt::impl
     template <> inline constexpr auto& name_v<Windows::Foundation::DateTime> = L"Windows.Foundation.DateTime";
     template <> inline constexpr auto& name_v<IAgileObject> = L"IAgileObject";
 
-    template <> struct category<bool> { using type = basic_category; };
-    template <> struct category<std::int8_t> { using type = basic_category; };
-    template <> struct category<std::int16_t> { using type = basic_category; };
-    template <> struct category<std::int32_t> { using type = basic_category; };
-    template <> struct category<std::int64_t> { using type = basic_category; };
-    template <> struct category<std::uint8_t> { using type = basic_category; };
-    template <> struct category<std::uint16_t> { using type = basic_category; };
-    template <> struct category<std::uint32_t> { using type = basic_category; };
-    template <> struct category<std::uint64_t> { using type = basic_category; };
-    template <> struct category<float> { using type = basic_category; };
-    template <> struct category<double> { using type = basic_category; };
-    template <> struct category<char16_t> { using type = basic_category; };
-    template <> struct category<guid> { using type = basic_category; };
-    template <> struct category<hresult> { using type = struct_category<std::int32_t>; };
-    template <> struct category<event_token> { using type = struct_category<std::int64_t>; };
-    template <> struct category<Windows::Foundation::IInspectable> { using type = basic_category; };
-    template <> struct category<Windows::Foundation::TimeSpan> { using type = struct_category<std::int64_t>; };
-    template <> struct category<Windows::Foundation::DateTime> { using type = struct_category<std::int64_t>; };
+    WINRT_EXPORT template <> struct category<bool> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<std::int8_t> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<std::int16_t> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<std::int32_t> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<std::int64_t> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<std::uint8_t> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<std::uint16_t> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<std::uint32_t> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<std::uint64_t> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<float> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<double> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<char16_t> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<guid> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<hresult> { using type = struct_category<std::int32_t>; };
+    WINRT_EXPORT template <> struct category<event_token> { using type = struct_category<std::int64_t>; };
+    WINRT_EXPORT template <> struct category<Windows::Foundation::IInspectable> { using type = basic_category; };
+    WINRT_EXPORT template <> struct category<Windows::Foundation::TimeSpan> { using type = struct_category<std::int64_t>; };
+    WINRT_EXPORT template <> struct category<Windows::Foundation::DateTime> { using type = struct_category<std::int64_t>; };
 
     template <typename T>
     struct category_signature<basic_category, T>
