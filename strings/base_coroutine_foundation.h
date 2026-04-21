@@ -883,3 +883,4 @@ WINRT_EXPORT namespace winrt
         co_return shared->result.GetResults();
     }
 }
+
