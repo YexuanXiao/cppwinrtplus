@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename T, typename Container, typename ThreadingBase>
     struct vector_impl :
@@ -35,7 +35,7 @@ WINRT_EXPORT namespace winrt::impl
     using input_vector = vector_impl<T, Container, single_threaded_collection_base>;
 }
 
-WINRT_EXPORT namespace winrt::param
+namespace winrt::param
 {
     template <typename T>
     struct vector
@@ -98,3 +98,10 @@ WINRT_EXPORT namespace winrt::param
         return *impl::abi_cast(object);
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt::param
+{
+    using winrt::param::vector;
+}
+#endif

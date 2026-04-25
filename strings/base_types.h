@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     using ptp_io = struct tp_io*;
     using ptp_timer = struct tp_timer*;
@@ -58,7 +58,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     struct event_token;
     struct hstring;
@@ -200,7 +200,7 @@ WINRT_EXPORT namespace winrt
     };
 }
 
-WINRT_EXPORT namespace winrt::Windows::Foundation
+namespace winrt::Windows::Foundation
 {
     enum class TrustLevel : std::int32_t
     {
@@ -216,7 +216,7 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
     using DateTime = std::chrono::time_point<clock, TimeSpan>;
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
 #ifdef WINRT_IMPL_IUNKNOWN_DEFINED
     using hresult_type = long;
@@ -256,3 +256,17 @@ WINRT_EXPORT namespace winrt::impl
     inline constexpr hresult error_file_not_found{ static_cast<hresult>(0x80070002) }; // HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND)
     inline constexpr hresult error_no_task_queue{ static_cast<hresult>(0x800701AB) }; // HRESULT_FROM_WIN32(ERROR_NO_TASK_QUEUE)
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::hresult;
+    using winrt::guid;
+}
+
+export namespace winrt::impl
+{
+    using winrt::impl::error_no_interface;
+    using winrt::impl::error_out_of_bounds;
+}
+#endif

@@ -6,7 +6,7 @@
 #endif
 #endif
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     struct marker
     {
@@ -14,7 +14,7 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     struct non_agile : impl::marker {};
     struct no_weak_ref : impl::marker {};
@@ -30,7 +30,7 @@ WINRT_EXPORT namespace winrt
     struct implements;
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template<typename...T>
     using tuple_cat_t = decltype(std::tuple_cat(std::declval<T>()...));
@@ -238,7 +238,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename D, typename I>
     D* get_self(I const& from) noexcept
@@ -271,7 +271,7 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename...> struct interface_list;
 
@@ -1397,7 +1397,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
 #if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(push)
@@ -1592,3 +1592,29 @@ WINRT_EXPORT namespace winrt
         friend struct weak_ref;
     };
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::non_agile;
+    using winrt::no_weak_ref;
+    using winrt::composing;
+    using winrt::composable;
+    using winrt::no_module_lock;
+    using winrt::static_lifetime;
+    using winrt::implements;
+    using winrt::cloaked;
+    using winrt::make;
+    using winrt::make_self;
+    using winrt::from_abi;
+    using winrt::to_abi;
+    using winrt::clear_factory_static_lifetime;
+}
+
+export namespace winrt::impl
+{
+    using winrt::impl::produce;
+    using winrt::impl::producer_ref;
+    using winrt::impl::base;
+}
+#endif

@@ -1,4 +1,4 @@
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     inline hstring concat_hstring(std::wstring_view const& left, std::wstring_view const& right)
     {
@@ -14,7 +14,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     inline hstring operator+(hstring const& left, hstring const& right)
     {
@@ -73,3 +73,13 @@ WINRT_EXPORT namespace winrt
     }
 #endif
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::operator+;
+#ifndef WINRT_LEAN_AND_MEAN
+    using winrt::operator<<;
+#endif
+}
+#endif

@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename T, typename Container>
     using multi_threaded_vector = vector_impl<T, Container, multi_threaded_collection_base>;
@@ -297,7 +297,7 @@ WINRT_EXPORT namespace winrt::impl
     using multi_threaded_convertible_observable_vector = convertible_observable_vector<T, Container, multi_threaded_collection_base>;
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename T, typename Allocator = std::allocator<T>>
     Windows::Foundation::Collections::IVector<T> single_threaded_vector(std::vector<T, Allocator>&& values = {})
@@ -337,3 +337,13 @@ WINRT_EXPORT namespace winrt
         }
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::single_threaded_vector;
+    using winrt::multi_threaded_vector;
+    using winrt::single_threaded_observable_vector;
+    using winrt::multi_threaded_observable_vector;
+}
+#endif

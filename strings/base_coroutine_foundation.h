@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename Async>
     struct async_completed_handler;
@@ -257,7 +257,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template<typename Async>
         requires std::convertible_to<Async, winrt::Windows::Foundation::IAsyncInfo>
@@ -267,7 +267,7 @@ WINRT_EXPORT namespace winrt
     };
 }
 
-WINRT_EXPORT namespace winrt::Windows::Foundation
+namespace winrt::Windows::Foundation
 {
     inline impl::await_adapter<IAsyncAction> operator co_await(IAsyncAction const& async)
     {
@@ -293,7 +293,7 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     struct get_progress_token_t {};
 
@@ -310,7 +310,7 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename Promise>
     struct cancellation_token
@@ -702,7 +702,7 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace std
+namespace std
 {
     template <typename... Args>
     struct coroutine_traits<winrt::Windows::Foundation::IAsyncAction, Args...>
@@ -835,7 +835,7 @@ WINRT_EXPORT namespace std
     };
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename... T>
     Windows::Foundation::IAsyncAction when_all(T... async)

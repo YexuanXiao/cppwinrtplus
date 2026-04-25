@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::param
+namespace winrt::param
 {
     struct hstring
     {
@@ -65,8 +65,20 @@ WINRT_EXPORT namespace winrt::param
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename T>
     using param_type = std::conditional_t<std::is_same_v<T, hstring>, param::hstring, T>;
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt::param
+{
+    using winrt::param::hstring;
+}
+
+export namespace winrt::impl
+{
+    using winrt::impl::param_type;
+}
+#endif

@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::Windows::UI::Xaml::Markup
+namespace winrt::Windows::UI::Xaml::Markup
 {
     template <typename D>
     struct ComponentConnectorT : D
@@ -51,3 +51,10 @@ WINRT_EXPORT namespace winrt::Windows::UI::Xaml::Markup
         bool m_dispatch_base{};
     };
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt::Windows::UI::Xaml::Markup
+{
+    using winrt::Windows::UI::Xaml::Markup::ComponentConnectorT;
+}
+#endif

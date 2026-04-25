@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename T>
     struct array_view
@@ -465,7 +465,7 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename T>
     struct array_size_proxy
@@ -533,7 +533,7 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename T>
     auto detach_abi(std::uint32_t* __valueSize, impl::arg_out<T>* value) noexcept
@@ -562,3 +562,16 @@ WINRT_EXPORT namespace winrt
         return value;
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::array_view;
+    using winrt::com_array;
+}
+
+export namespace winrt::impl
+{
+    using winrt::impl::put_size_abi;
+}
+#endif

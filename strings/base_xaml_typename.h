@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename T>
     struct xaml_typename_name
@@ -138,7 +138,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename T>
     inline Windows::UI::Xaml::Interop::TypeName xaml_typename()
@@ -148,3 +148,16 @@ WINRT_EXPORT namespace winrt
         return name;
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt::impl
+{
+    using winrt::impl::xaml_typename_name;
+    using winrt::impl::xaml_typename_kind;
+}
+
+export namespace winrt
+{
+    using winrt::xaml_typename;
+}
+#endif

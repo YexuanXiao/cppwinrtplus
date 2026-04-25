@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     hresult check_hresult(hresult const result, winrt::impl::slim_source_location const& sourceInformation = winrt::impl::slim_source_location::current());
     hresult to_hresult() noexcept;
@@ -48,7 +48,7 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     using namespace std::literals;
 
@@ -324,3 +324,23 @@ WINRT_EXPORT namespace winrt::impl
     template <typename D, typename K>
     inline constexpr bool has_TryLookup_v = has_TryLookup<D, K>::value;
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::take_ownership_from_abi_t;
+    using winrt::take_ownership_from_abi;
+    using winrt::trylookup_from_abi_t;
+    using winrt::trylookup_from_abi;
+}
+
+export namespace winrt::impl
+{
+    using winrt::impl::abi_t;
+    using winrt::impl::consume_t;
+    using winrt::impl::has_category_v;
+    using winrt::impl::require;
+    using winrt::impl::require_one;
+    using winrt::impl::to_underlying_type;
+}
+#endif

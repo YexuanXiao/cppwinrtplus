@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     struct slim_condition_variable;
 
@@ -140,3 +140,13 @@ WINRT_EXPORT namespace winrt
         impl::condition_variable m_cv{};
     };
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::slim_mutex;
+    using winrt::slim_lock_guard;
+    using winrt::slim_shared_lock_guard;
+    using winrt::slim_condition_variable;
+}
+#endif

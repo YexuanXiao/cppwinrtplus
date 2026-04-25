@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename K, typename V, typename Container>
     struct input_map_view :
@@ -71,7 +71,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt::param
+namespace winrt::param
 {
     template <typename K, typename V>
     struct map_view
@@ -219,3 +219,11 @@ WINRT_EXPORT namespace winrt::param
         return *impl::abi_cast(object);
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt::param
+{
+    using winrt::param::map_view;
+    using winrt::param::async_map_view;
+}
+#endif

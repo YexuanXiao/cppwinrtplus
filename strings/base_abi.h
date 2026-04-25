@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <> struct abi<Windows::Foundation::IUnknown>
     {

@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     struct file_time
     {
@@ -92,3 +92,11 @@ WINRT_EXPORT namespace winrt
         static constexpr std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds> epoch{ std::chrono::seconds{ -11644473600 } };
     };
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::file_time;
+    using winrt::clock;
+}
+#endif

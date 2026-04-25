@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename T>
     struct handle_type
@@ -113,3 +113,12 @@ WINRT_EXPORT namespace winrt
 
     using file_handle = handle_type<file_handle_traits>;
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::handle_type;
+    using winrt::handle;
+    using winrt::file_handle;
+}
+#endif
