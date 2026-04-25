@@ -60,7 +60,7 @@ namespace cppwinrt
 
             if (settings.modules)
             {
-                w.write("extern \"C++\"\n{\n");
+                write_extern_cxx_start(w);
             }
 
             w.write(strings::base_macros);
@@ -98,7 +98,7 @@ namespace cppwinrt
             
             if (settings.modules)
             {
-                w.write("} // extern \"C++\"\n");
+                write_extern_cxx_end(w);
             }
 
             if (settings.modules)
@@ -196,6 +196,11 @@ namespace cppwinrt
 
         if (settings.modules)
         {
+            write_extern_cxx_end(w);
+        }
+
+        if (settings.modules)
+        {
             get_namespace_module_imports(c, ns, w, module_imports);
         }
         else
@@ -215,6 +220,11 @@ namespace cppwinrt
                 auto wrap_type = wrap_type_namespace(w, depends.first);
                 w.write_each<write_forward>(depends.second);
             }
+        }
+
+        if (settings.modules)
+        {
+            write_extern_cxx_start(w);
         }
 
         w.save_header('0');
@@ -242,6 +252,11 @@ namespace cppwinrt
             module_imports.clear();
         }
 
+        if (settings.modules)
+        {
+            write_extern_cxx_end(w);
+        }
+
         write_close_file_guard(w);
         w.swap();
         write_preamble(w);
@@ -256,6 +271,11 @@ namespace cppwinrt
             }
 
             w.write_depends(w.type_namespace, '0');
+        }
+
+        if (settings.modules)
+        {
+            write_extern_cxx_start(w);
         }
 
         w.save_header('1');
@@ -286,6 +306,11 @@ namespace cppwinrt
             module_imports.clear();
         }
 
+        if (settings.modules)
+        {
+            write_extern_cxx_end(w);
+        }
+
         write_close_file_guard(w);
         w.swap();
         write_preamble(w);
@@ -302,6 +327,11 @@ namespace cppwinrt
             }
 
             w.write_depends(w.type_namespace, '1');
+        }
+
+        if (settings.modules)
+        {
+            write_extern_cxx_start(w);
         }
 
         w.save_header('2');
@@ -612,6 +642,12 @@ export import winrt.base;
         writer w;
         w.type_namespace = ns;
 
+        
+        if (settings.modules)
+        {
+            write_extern_cxx_start(w);
+        }
+
         {
             auto wrap_impl = wrap_impl_namespace(w);
             w.write_each<write_consume_definitions>(members.interfaces);
@@ -643,6 +679,13 @@ export import winrt.base;
             }
         }
 
+        
+        if (settings.modules)
+        {
+            write_extern_cxx_end(w);
+        }
+
+
         write_namespace_special(w, ns);
 
         if (settings.modules)
@@ -652,11 +695,6 @@ export import winrt.base;
         else
         {
             module_imports.clear();
-        }
-
-        if (settings.modules)
-        {
-            w.write("} // extern \"C++\"\n");
         }
 
         if (settings.modules)
@@ -679,11 +717,6 @@ export import winrt.base;
 
             write_version_assert(w);
 
-            if (settings.modules)
-            {
-                w.write("extern \"C++\"\n{\n");
-            }
-
             write_parent_depends(w, c, ns);
 
             for (auto&& depends : w.depends)
@@ -693,16 +726,6 @@ export import winrt.base;
 
             w.write_depends(w.type_namespace, '2');
 
-            if (settings.modules)
-            {
-                w.write("} // extern \"C++\"\n");
-            }
-
-        }
-
-        if (settings.modules)
-        {
-            w.write("extern \"C++\"\n{\n");
         }
 
         w.save_header();

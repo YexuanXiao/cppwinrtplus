@@ -151,6 +151,21 @@ namespace cppwinrt
         return { w, write_nothing };
     }
 
+    static void write_extern_cxx_start(writer& w)
+    {
+        w.write(R"(
+extern "C++"
+{
+)");
+    }
+
+    static void write_extern_cxx_end(writer& w)
+    {
+        w.write(R"(
+} // extern "C++"
+)");
+    }
+
     static void write_parent_depends(writer& w, cache const& c, std::string_view const& type_namespace)
     {
         auto pos = type_namespace.rfind('.');
@@ -205,7 +220,7 @@ namespace cppwinrt
 
         [[nodiscard]] static finish_with wrap_impl_namespace_without_export(writer& w)
     {
-        auto format = R"(extern "C++" namespace winrt::impl
+        auto format = R"(namespace winrt::impl
 {
 )";
 
