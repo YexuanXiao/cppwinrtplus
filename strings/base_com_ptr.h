@@ -1,11 +1,11 @@
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename T>
     struct com_ptr;
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     struct capture_decay
     {
@@ -35,7 +35,7 @@ WINRT_EXPORT namespace winrt::impl
     std::int32_t capture_to(void** result, com_ptr<O> const& object, M method, Args&& ...args);
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename T>
     struct com_ptr
@@ -303,7 +303,7 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename T, typename O, typename M, typename...Args>
     std::int32_t capture_to(void** result, com_ptr<O> const& object, M method, Args&& ...args)
@@ -317,3 +317,13 @@ void** IID_PPV_ARGS_Helper(winrt::com_ptr<T>* ptr) noexcept
 {
     return winrt::put_abi(*ptr);
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::com_ptr;
+    using winrt::capture;
+    using winrt::try_capture;
+    using winrt::get_self;
+}
+#endif

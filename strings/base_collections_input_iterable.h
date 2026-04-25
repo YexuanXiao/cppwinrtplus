@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename T, typename Container>
     struct input_iterable :
@@ -72,7 +72,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt::param
+namespace winrt::param
 {
     template <typename T>
     struct iterable
@@ -354,3 +354,11 @@ WINRT_EXPORT namespace winrt::param
         return *impl::abi_cast(object);
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt::param
+{
+    using winrt::param::iterable;
+    using winrt::param::async_iterable;
+}
+#endif

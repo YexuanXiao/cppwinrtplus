@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename T>
     using default_interface = typename impl::default_interface<T>::type;
@@ -17,7 +17,7 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <std::size_t Size, typename T, std::size_t... Index>
     constexpr std::array<T, Size> to_array(T const* value, std::index_sequence<Index...> const) noexcept
@@ -655,7 +655,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename T>
     constexpr auto name_of() noexcept
@@ -663,3 +663,13 @@ WINRT_EXPORT namespace winrt
         return impl::to_wstring_view(impl::name_v<T>);
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::default_interface;
+    using winrt::guid_of;
+    using winrt::is_guid_of;
+    using winrt::name_of;
+}
+#endif

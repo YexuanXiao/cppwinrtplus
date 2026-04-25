@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename D>
     struct composable_factory
@@ -85,3 +85,11 @@ WINRT_EXPORT namespace winrt::impl
         }
     };
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt::impl
+{
+    using winrt::impl::composable_factory;
+    using winrt::impl::dispatch_to_overridable;
+}
+#endif

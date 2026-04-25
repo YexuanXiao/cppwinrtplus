@@ -5,7 +5,7 @@
 
 #ifdef WINRT_NATVIS
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     struct natvis
     {

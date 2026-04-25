@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename T>
     struct reference : implements<reference<T>, Windows::Foundation::IReference<T>, Windows::Foundation::IPropertyValue>
@@ -114,6 +114,10 @@ WINRT_EXPORT namespace winrt::impl
         using itf = Windows::Foundation::IReference<T>;
     };
 
+}
+
+namespace winrt::impl
+{
     template <>
     struct reference_traits<std::uint8_t>
     {
@@ -395,7 +399,7 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt::Windows::Foundation
+namespace winrt::Windows::Foundation
 {
     template <typename T>
     bool operator==(IReference<T> const& left, IReference<T> const& right)
@@ -414,7 +418,7 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename T, typename From>
     T unbox_value_type(From&& value)
@@ -503,7 +507,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     inline Windows::Foundation::IInspectable box_value(param::hstring const& value)
     {
@@ -576,3 +580,17 @@ WINRT_EXPORT namespace winrt
     template <typename T>
     using optional = typename impl::reference_traits<T>::itf;
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::box_value;
+    using winrt::unbox_value;
+    using winrt::unbox_value_or;
+    using winrt::optional;
+}
+namespace winrt::impl
+{
+    using winrt::impl::reference_traits;
+}
+#endif

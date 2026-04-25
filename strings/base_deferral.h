@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template<typename D>
     struct deferrable_event_args
@@ -71,3 +71,10 @@ WINRT_EXPORT namespace winrt
         std::coroutine_handle<> m_handle = nullptr;
     };
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::deferrable_event_args;
+}
+#endif

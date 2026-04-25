@@ -1,4 +1,4 @@
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     struct nop_lock_guard {};
 
@@ -79,7 +79,7 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename D, typename T, typename Version = impl::no_collection_version>
     struct iterable_base : Version
@@ -672,3 +672,11 @@ WINRT_EXPORT namespace winrt
         };
     };
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::vector_view_base;
+    using winrt::iterable_base;
+}
+#endif

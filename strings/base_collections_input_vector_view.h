@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename T, typename Container>
     struct input_vector_view :
@@ -66,7 +66,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt::param
+namespace winrt::param
 {
     template <typename T>
     struct vector_view
@@ -209,3 +209,11 @@ WINRT_EXPORT namespace winrt::param
         return *impl::abi_cast(object);
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt::param
+{
+    using winrt::param::vector_view;
+    using winrt::param::async_vector_view;
+}
+#endif

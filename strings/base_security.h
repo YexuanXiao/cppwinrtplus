@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     struct access_token : handle
     {
@@ -97,3 +97,10 @@ WINRT_EXPORT namespace winrt
         }
     };
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::access_token;
+}
+#endif

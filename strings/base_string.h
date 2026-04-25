@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     struct atomic_ref_count
     {
@@ -157,7 +157,7 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     struct hstring
     {
@@ -472,7 +472,7 @@ WINRT_EXPORT namespace winrt
 template<>
 struct std::formatter<winrt::hstring, wchar_t> : std::formatter<std::wstring_view, wchar_t> {};
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <> struct abi<hstring>
     {
@@ -614,7 +614,7 @@ WINRT_EXPORT namespace winrt::impl
 #endif
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
 #if __cpp_lib_format >= 202207L
     template <typename... Args>
@@ -756,3 +756,16 @@ WINRT_EXPORT namespace winrt
         return result;
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::hstring;
+}
+
+export namespace winrt::impl
+{
+    using winrt::impl::bind_in;
+    using winrt::impl::bind_out;
+}
+#endif

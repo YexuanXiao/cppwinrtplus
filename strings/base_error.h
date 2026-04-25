@@ -7,7 +7,7 @@
 #define WINRT_IMPL_RETURNADDRESS() nullptr
 #endif
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     struct heap_traits
     {
@@ -80,7 +80,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     struct hresult_error
     {
@@ -548,7 +548,7 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     inline hresult check_hresult_allow_bounds(hresult const result, winrt::impl::slim_source_location const& sourceInformation = winrt::impl::slim_source_location::current())
     {
@@ -561,3 +561,39 @@ WINRT_EXPORT namespace winrt::impl
 }
 
 #undef WINRT_IMPL_RETURNADDRESS
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::hresult_error;
+    using winrt::hresult_access_denied;
+    using winrt::hresult_wrong_thread;
+    using winrt::hresult_not_implemented;
+    using winrt::hresult_invalid_argument;
+    using winrt::hresult_out_of_bounds;
+    using winrt::hresult_no_interface;
+    using winrt::hresult_class_not_available;
+    using winrt::hresult_class_not_registered;
+    using winrt::hresult_changed_state;
+    using winrt::hresult_illegal_method_call;
+    using winrt::hresult_illegal_state_change;
+    using winrt::hresult_illegal_delegate_assignment;
+    using winrt::hresult_no_task_queue;
+    using winrt::hresult_canceled;
+    using winrt::check_hresult;
+    using winrt::to_hresult;
+    using winrt::to_message;
+    using winrt::throw_hresult;
+    using winrt::throw_last_error;
+    using winrt::terminate;
+    using winrt::check_nt;
+    using winrt::check_win32;
+    using winrt::check_bool;
+    using winrt::check_pointer;
+}
+
+export namespace winrt::impl
+{
+    using winrt::impl::check_hresult_allow_bounds;
+}
+#endif

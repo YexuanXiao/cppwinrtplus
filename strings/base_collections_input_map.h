@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename K, typename V, typename Container, typename ThreadingBase>
     struct map_impl :
@@ -41,7 +41,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt::param
+namespace winrt::param
 {
     template <typename K, typename V>
     struct map
@@ -110,3 +110,10 @@ WINRT_EXPORT namespace winrt::param
         return *impl::abi_cast(object);
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt::param
+{
+    using winrt::param::map;
+}
+#endif

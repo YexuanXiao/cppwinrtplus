@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
 #if defined(WINRT_NO_MODULE_LOCK)
 
@@ -47,7 +47,7 @@ WINRT_EXPORT namespace winrt
 #endif
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template<bool UseModuleLock>
     struct module_lock_updater;
@@ -82,7 +82,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename T>
     struct agile_ref
@@ -127,3 +127,11 @@ WINRT_EXPORT namespace winrt
         return object;
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::agile_ref;
+    using winrt::make_agile;
+}
+#endif

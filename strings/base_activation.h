@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     struct library_traits
     {
@@ -103,7 +103,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename Interface = Windows::Foundation::IActivationFactory>
     impl::com_ref<Interface> get_activation_factory(param::hstring const& name)
@@ -114,7 +114,7 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
 
 #ifdef __clang__
@@ -422,7 +422,7 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     enum class apartment_type : std::int32_t
     {
@@ -516,7 +516,7 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename T>
     T fast_activate(Windows::Foundation::IActivationFactory const& factory)
@@ -526,3 +526,24 @@ WINRT_EXPORT namespace winrt::impl
         return{ result, take_ownership_from_abi };
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::apartment_type;
+    using winrt::get_activation_factory;
+    using winrt::try_get_activation_factory;
+    using winrt::try_create_instance;
+    using winrt::create_instance;
+    using winrt::init_apartment;
+    using winrt::uninit_apartment;
+    using winrt::clear_factory_cache;
+}
+
+export namespace winrt::impl
+{
+    using winrt::impl::call_factory;
+    using winrt::impl::call_factory_cast;
+    using winrt::impl::fast_activate;
+}
+#endif

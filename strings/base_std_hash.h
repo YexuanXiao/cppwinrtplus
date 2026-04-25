@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     inline std::size_t hash_data(void const* ptr, std::size_t const bytes) noexcept
     {
@@ -54,3 +54,10 @@ namespace std
         }
     };
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt::impl
+{
+    using winrt::impl::hash_base;
+}
+#endif

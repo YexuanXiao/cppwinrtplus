@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     inline auto submit_threadpool_callback(void(__stdcall* callback)(void*, void* context), void* context)
     {
@@ -144,7 +144,7 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     struct cancellable_promise
     {
@@ -242,7 +242,7 @@ WINRT_EXPORT namespace winrt
     };
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     [[nodiscard]] inline auto resume_background() noexcept
     {
@@ -322,7 +322,7 @@ WINRT_EXPORT namespace winrt
     };
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     struct apartment_awaiter
     {
@@ -567,7 +567,7 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     inline impl::apartment_awaiter operator co_await(apartment_context const& context)
     {
@@ -672,7 +672,7 @@ WINRT_EXPORT namespace winrt
     struct fire_and_forget {};
 }
 
-WINRT_EXPORT namespace std
+namespace std
 {
     template <typename... Args>
     struct coroutine_traits<winrt::fire_and_forget, Args...>
@@ -706,7 +706,7 @@ WINRT_EXPORT namespace std
     };
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     struct dispatched_handler_state
     {
@@ -756,7 +756,7 @@ WINRT_EXPORT namespace winrt::impl
     };
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename Dispatcher>
     struct dispatcher_traits;
@@ -820,3 +820,19 @@ WINRT_EXPORT namespace winrt
         return resume_foreground(dispatcher);
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::apartment_context;
+    using winrt::thread_pool;
+    using winrt::fire_and_forget;
+    using winrt::cancellable_promise;
+    using winrt::cancellable_awaiter;
+    using winrt::dispatcher_traits;
+    using winrt::resume_background;
+    using winrt::resume_after;
+    using winrt::resume_on_signal;
+    using winrt::resume_foreground;
+}
+#endif

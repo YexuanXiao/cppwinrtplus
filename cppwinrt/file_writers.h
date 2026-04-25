@@ -44,6 +44,11 @@ namespace cppwinrt
         {
             auto wrap_file_guard = wrap_open_file_guard(w, "BASE");
 
+            if (settings.modules)
+            {
+                w.write("#ifndef WINRT_CONSUME_MODULE\n");
+            }
+
             {
                 // In module builds, generated projection headers must be "module-aware":
                 // When `WINRT_MODULE` is defined (inside a module interface unit), suppress textual includes so the
@@ -51,6 +56,11 @@ namespace cppwinrt
                 // Switch WINRT_EXPORT between empty (header mode) and `export` (module mode).
                 auto wrap_includes_guard = wrap_module_aware_includes_guard(w, settings.modules);
                 w.write(strings::base_includes);
+            }
+
+            if (settings.modules)
+            {
+                write_extern_cxx_start(w);
             }
 
             w.write(strings::base_macros);
@@ -85,8 +95,19 @@ namespace cppwinrt
             w.write(strings::base_coroutine_threadpool);
             w.write(strings::base_natvis);
             w.write(strings::base_version);
+            
+            if (settings.modules)
+            {
+                write_extern_cxx_end(w);
+            }
+
+            if (settings.modules)
+            {
+                w.write("#endif\n");
+            }
         }
         w.flush_to_file(settings.output_folder + "winrt/base.h");
+
     }
 
     static void write_module_h()
@@ -142,7 +163,7 @@ namespace cppwinrt
             w.write_each<write_forward>(members.contracts);
         }
         {
-            auto wrap_impl = wrap_impl_namespace(w);
+            auto wrap_impl = wrap_impl_namespace_without_export(w);
             w.write_each<write_category>(members.interfaces, "interface_category");
             w.write_each<write_category>(members.classes, "class_category");
             w.write_each<write_category>(members.enums, "enum_category");
@@ -165,8 +186,17 @@ namespace cppwinrt
             w.write_each<write_default_interface>(members.classes);
             w.write_each<write_interface_abi>(members.interfaces);
             w.write_each<write_delegate_abi>(members.delegates);
-            w.write_each<write_consume>(members.interfaces);
             w.write_each<write_struct_abi>(members.structs);
+        }
+
+        {
+            auto wrap_impl = wrap_impl_namespace(w);
+            w.write_each<write_consume>(members.interfaces);
+        }
+
+        if (settings.modules)
+        {
+            write_extern_cxx_end(w);
         }
 
         if (settings.modules)
@@ -190,6 +220,11 @@ namespace cppwinrt
                 auto wrap_type = wrap_type_namespace(w, depends.first);
                 w.write_each<write_forward>(depends.second);
             }
+        }
+
+        if (settings.modules)
+        {
+            write_extern_cxx_start(w);
         }
 
         w.save_header('0');
@@ -217,6 +252,11 @@ namespace cppwinrt
             module_imports.clear();
         }
 
+        if (settings.modules)
+        {
+            write_extern_cxx_end(w);
+        }
+
         write_close_file_guard(w);
         w.swap();
         write_preamble(w);
@@ -231,6 +271,11 @@ namespace cppwinrt
             }
 
             w.write_depends(w.type_namespace, '0');
+        }
+
+        if (settings.modules)
+        {
+            write_extern_cxx_start(w);
         }
 
         w.save_header('1');
@@ -261,6 +306,11 @@ namespace cppwinrt
             module_imports.clear();
         }
 
+        if (settings.modules)
+        {
+            write_extern_cxx_end(w);
+        }
+
         write_close_file_guard(w);
         w.swap();
         write_preamble(w);
@@ -277,6 +327,11 @@ namespace cppwinrt
             }
 
             w.write_depends(w.type_namespace, '1');
+        }
+
+        if (settings.modules)
+        {
+            write_extern_cxx_start(w);
         }
 
         w.save_header('2');
@@ -353,28 +408,35 @@ export import winrt.numerics;
         write_module_global_fragment(w);
 
         w.write(R"(
+// Include in advance so that all of numerics's dependencies can be in the global module fragment
+#if __has_include(<directxmath.h>) && __has_include(<windowsnumerics.impl.h>)
+#include <stdexcept>
+#include <limits>
+#include <directxmath.h>
+#endif
+
 export module winrt.numerics;
 
 // Module dependencies:
 //   - (none)
 
-#if __has_include(<windowsnumerics.impl.h>)
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 5244)
 #endif
-#include <directxmath.h>
 
 #define _WINDOWS_NUMERICS_NAMESPACE_ winrt::Windows::Foundation::Numerics
 #define _WINDOWS_NUMERICS_BEGIN_NAMESPACE_ export extern "C++" namespace winrt::Windows::Foundation::Numerics
 #define _WINDOWS_NUMERICS_END_NAMESPACE_
+#if __has_include(<directxmath.h>) && __has_include(<windowsnumerics.impl.h>)
 #include <windowsnumerics.impl.h>
+#endif
 #undef _WINDOWS_NUMERICS_NAMESPACE_
 #undef _WINDOWS_NUMERICS_BEGIN_NAMESPACE_
 #undef _WINDOWS_NUMERICS_END_NAMESPACE_
+
 #ifdef _MSC_VER
 #pragma warning(pop)
-#endif
 #endif
 )");
 
@@ -580,6 +642,12 @@ export import winrt.base;
         writer w;
         w.type_namespace = ns;
 
+        
+        if (settings.modules)
+        {
+            write_extern_cxx_start(w);
+        }
+
         {
             auto wrap_impl = wrap_impl_namespace(w);
             w.write_each<write_consume_definitions>(members.interfaces);
@@ -611,6 +679,13 @@ export import winrt.base;
             }
         }
 
+        
+        if (settings.modules)
+        {
+            write_extern_cxx_end(w);
+        }
+
+
         write_namespace_special(w, ns);
 
         if (settings.modules)
@@ -641,6 +716,7 @@ export import winrt.base;
             auto wrap_includes_guard = wrap_module_aware_includes_guard(w, settings.modules);
 
             write_version_assert(w);
+
             write_parent_depends(w, c, ns);
 
             for (auto&& depends : w.depends)
@@ -649,6 +725,7 @@ export import winrt.base;
             }
 
             w.write_depends(w.type_namespace, '2');
+
         }
 
         w.save_header();

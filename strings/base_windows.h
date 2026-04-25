@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
 #ifdef WINRT_DIAGNOSTICS
 
@@ -164,7 +164,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt::Windows::Foundation
+namespace winrt::Windows::Foundation
 {
     struct IUnknown
     {
@@ -346,7 +346,7 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
     };
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template<typename T>
     void** abi_cast(T const& object) noexcept
@@ -355,7 +355,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename T>
         requires (!std::is_base_of_v<Windows::Foundation::IUnknown, T>)
@@ -463,7 +463,7 @@ WINRT_EXPORT namespace winrt
     }
 }
 
-WINRT_EXPORT namespace winrt::Windows::Foundation
+namespace winrt::Windows::Foundation
 {
     struct IInspectable : IUnknown
     {
@@ -472,7 +472,7 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
     };
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename Base, typename Derive, typename MemberPointer, typename ...Args>
     void consume_noexcept_remove_overload(Derive const* d, MemberPointer mptr, Args&&... args) noexcept
@@ -528,3 +528,24 @@ WINRT_EXPORT namespace winrt::impl
         }
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::get_abi;
+    using winrt::put_abi;
+    using winrt::attach_abi;
+    using winrt::detach_abi;
+    using winrt::copy_from_abi;
+    using winrt::copy_to_abi;
+    using winrt::get_unknown;
+}
+
+export namespace winrt::impl
+{
+    using winrt::impl::abi_cast;
+    using winrt::impl::consume_noexcept_remove_overload;
+    using winrt::impl::consume_noexcept;
+    using winrt::impl::consume_general;
+}
+#endif

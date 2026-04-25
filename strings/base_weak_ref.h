@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename T>
     struct weak_ref
@@ -97,3 +97,11 @@ WINRT_EXPORT namespace winrt
         return object;
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::weak_ref;
+    using winrt::make_weak;
+}
+#endif

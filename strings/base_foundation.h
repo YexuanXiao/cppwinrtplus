@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::Windows::Foundation
+namespace winrt::Windows::Foundation
 {
     struct Point
     {
@@ -76,7 +76,7 @@ WINRT_EXPORT namespace winrt::Windows::Foundation
     };
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <> inline constexpr auto& name_v<Windows::Foundation::Point> = L"Windows.Foundation.Point";
     template <> inline constexpr auto& name_v<Windows::Foundation::Size> = L"Windows.Foundation.Size";
@@ -149,3 +149,12 @@ WINRT_EXPORT namespace winrt::impl
 
 #endif
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt::Windows::Foundation
+{
+    using winrt::Windows::Foundation::Point;
+    using winrt::Windows::Foundation::Size;
+    using winrt::Windows::Foundation::Rect;
+}
+#endif

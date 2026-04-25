@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     struct event_token
     {
@@ -127,7 +127,7 @@ WINRT_EXPORT namespace winrt
     };
 }
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename I, auto Method>
     struct event_revoker
@@ -365,7 +365,7 @@ WINRT_EXPORT namespace winrt::impl
     }
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename Delegate>
     struct event
@@ -523,3 +523,19 @@ WINRT_EXPORT namespace winrt
         slim_mutex m_change;
     };
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::event_token;
+    using winrt::auto_revoke_t;
+    using winrt::auto_revoke;
+    using winrt::event_revoker;
+    using winrt::factory_event_revoker;
+    using winrt::event;
+}
+export namespace winrt::impl
+{
+    using winrt::impl::make_event_revoker;
+}
+#endif

@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
 #if defined(_MSC_VER) && !defined(__clang__)
 #pragma warning(push)
@@ -220,7 +220,7 @@ WINRT_EXPORT namespace winrt::impl
 #endif
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename... Args>
     struct WINRT_IMPL_EMPTY_BASES delegate : impl::delegate_base<void, Args...>
@@ -234,3 +234,15 @@ WINRT_EXPORT namespace winrt
         using impl::delegate_base<R, Args...>::delegate_base;
     };
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::delegate;
+}
+
+export namespace winrt::impl
+{
+    using winrt::impl::make_delegate;
+}
+#endif

@@ -1,5 +1,5 @@
 
-WINRT_EXPORT namespace winrt::impl
+namespace winrt::impl
 {
     template <typename K, typename V, typename Container>
     using multi_threaded_map = map_impl<K, V, Container, multi_threaded_collection_base>;
@@ -41,7 +41,7 @@ WINRT_EXPORT namespace winrt::impl
     using multi_threaded_observable_map = observable_map_impl<K, V, Container, multi_threaded_collection_base>;
 }
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <typename K, typename V, typename Compare = std::less<K>, typename Allocator = std::allocator<std::pair<K const, V>>>
     Windows::Foundation::Collections::IMap<K, V> single_threaded_map()
@@ -148,3 +148,18 @@ namespace winrt::Windows::Foundation::Collections
         }
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::single_threaded_map;
+    using winrt::multi_threaded_map;
+    using winrt::single_threaded_observable_map;
+    using winrt::multi_threaded_observable_map;
+}
+
+export namespace winrt::Windows::Foundation::Collections
+{
+    using winrt::Windows::Foundation::Collections::get;
+}
+#endif

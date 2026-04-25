@@ -14,7 +14,7 @@ char const * const WINRT_version = "C++/WinRT version:" CPPWINRT_VERSION;
 #pragma detect_mismatch("C++/WinRT version", CPPWINRT_VERSION)
 #endif
 
-WINRT_EXPORT namespace winrt
+namespace winrt
 {
     template <std::size_t BaseSize, std::size_t ComponentSize>
     constexpr bool check_version(char const(&base)[BaseSize], char const(&component)[ComponentSize]) noexcept
@@ -35,3 +35,10 @@ WINRT_EXPORT namespace winrt
         return true;
     }
 }
+
+#ifdef WINRT_MODULE
+export namespace winrt
+{
+    using winrt::check_version;
+}
+#endif
