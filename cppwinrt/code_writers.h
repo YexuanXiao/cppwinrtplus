@@ -194,7 +194,18 @@ namespace cppwinrt
 
     [[nodiscard]] static finish_with wrap_impl_namespace(writer& w)
     {
-        auto format = R"(WINRT_EXPORT namespace winrt::impl
+        auto format = R"(WINRT_EXPORT extern "C++" namespace winrt::impl
+{
+)";
+
+        w.write(format);
+
+        return { w, write_close_namespace };
+    }
+
+        [[nodiscard]] static finish_with wrap_impl_namespace_without_export(writer& w)
+    {
+        auto format = R"(extern "C++" namespace winrt::impl
 {
 )";
 
@@ -205,7 +216,7 @@ namespace cppwinrt
 
     [[nodiscard]] static finish_with wrap_std_namespace(writer& w)
     {
-        w.write(R"(WINRT_EXPORT namespace std
+        w.write(R"(extern "C++" namespace std
 {
 )");
 
@@ -214,7 +225,7 @@ namespace cppwinrt
 
     [[nodiscard]] static finish_with wrap_type_namespace(writer& w, std::string_view const& ns)
     {
-        auto format = R"(WINRT_EXPORT namespace winrt::@
+        auto format = R"(WINRT_EXPORT extern "C++" namespace winrt::@
 {
 )";
 
@@ -225,7 +236,7 @@ namespace cppwinrt
 
     [[nodiscard]] static finish_with wrap_type_namespace_without_export(writer& w, std::string_view const& ns)
     {
-        auto format = R"(namespace winrt::@
+        auto format = R"(extern "C++" namespace winrt::@
 {
 )";
 
@@ -1548,7 +1559,7 @@ namespace cppwinrt
         }
     }
 
-    static void write_consume(writer& w, TypeDef const& type)
+    static void write_consume_type(writer& w, TypeDef const& type)
     {
         auto generics = type.GenericParam();
         auto guard{ w.push_generic_params(generics) };
@@ -1561,51 +1572,71 @@ namespace cppwinrt
 
         auto type_namespace = type.TypeNamespace();
         auto impl_name = get_impl_name(type_namespace, type_name);
-
+    
         if (empty(generics))
         {
-            auto format = R"(    template <typename D>
+        auto format = R"(    template <typename D>
     struct consume_%
     {
 %%%    };
-    template <> struct consume<%>
+)";
+            w.write(format,
+                    impl_name,
+                    bind_each<write_consume_declaration>(type.MethodList()),
+                    bind<write_fast_consume_declarations>(type),
+                    bind<write_consume_extensions>(type));
+        }
+        else
+        {
+        auto format = R"(    template <typename D, %>
+    struct consume_%
+    {
+%%%    };
+)";
+            w.write(format,
+                    bind<write_generic_typenames>(generics),
+                    impl_name,
+                    bind_each<write_consume_declaration>(type.MethodList()),
+                    bind<write_fast_consume_declarations>(type),
+                    bind<write_consume_extensions>(type));
+        }
+    }
+    
+    static void write_consume_specialization(writer& w, TypeDef const& type)
+    {
+        auto generics = type.GenericParam();
+        auto guard{ w.push_generic_params(generics) };
+        auto type_name = type.TypeName();
+
+        if (!empty(generics))
+        {
+            type_name = remove_tick(type_name);
+        }
+
+        auto type_namespace = type.TypeNamespace();
+        auto impl_name = get_impl_name(type_namespace, type_name);
+    
+        if (empty(generics))
+        {
+        auto format = R"(    template <> struct consume<%>
     {
         template <typename D> using type = consume_%<D>;
     };
 )";
-
-
-            w.write(format,
-                impl_name,
-                bind_each<write_consume_declaration>(type.MethodList()),
-                bind<write_fast_consume_declarations>(type),
-                bind<write_consume_extensions>(type),
-                type,
-                impl_name);
+            w.write(format, type, impl_name);
         }
         else
         {
-            auto format = R"(    template <typename D, %>
-    struct consume_%
-    {
-%%%    };
-    template <%> struct consume<%>
+        auto format = R"(    template <%> struct consume<%>
     {
         template <typename D> using type = consume_%<D, %>;
     };
 )";
-
-
             w.write(format,
-                bind<write_generic_typenames>(generics),
-                impl_name,
-                bind_each<write_consume_declaration>(type.MethodList()),
-                bind<write_fast_consume_declarations>(type),
-                bind<write_consume_extensions>(type),
-                bind<write_generic_typenames>(generics),
-                type,
-                impl_name,
-                bind_list(", ", generics));
+                    bind<write_generic_typenames>(generics),
+                    type,
+                    impl_name,
+                    bind_list(", ", generics));
         }
     }
 
