@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 ***********************************************************************************************
 Copyright (C) Microsoft Corporation. All rights reserved.
 ***********************************************************************************************
@@ -917,6 +917,11 @@ $(XamlMetaDataProviderPch)
                 <CompileAs>CompileAsCppModule</CompileAs>
                 <ModulesSupported>true</ModulesSupported>
                 <PrecompiledHeader>NotUsing</PrecompiledHeader>
+                <ModuleOutputFile>$(IntDir)Microsoft\cppwinrt\</ModuleOutputFile>
+                <ObjectFileName>$(IntDir)Microsoft\cppwinrt\</ObjectFileName>
+                <ModuleDependenciesFile>$(IntDir)Microsoft\cppwinrt\</ModuleDependenciesFile>
+                <SourceDependenciesFile>$(IntDir)Microsoft\cppwinrt\</SourceDependenciesFile>
+                <AdditionalBMIDirectories Condition="'$(_CppWinRTModuleIfcSearchDirs)' != ''">$(_CppWinRTModuleIfcSearchDirs)</AdditionalBMIDirectories>
             </ClCompile>
         </ItemGroup>
     </Target>
@@ -924,17 +929,48 @@ $(XamlMetaDataProviderPch)
     <!--
       When CppWinRTBuildModule is true, export the generated files directory and IFC output
       directory so that consuming projects can resolve them via ProjectReference.
-      The IFC files are written to IntDir by MSBuild's module build system.
+      The IFC files are written to '$(IntDir)Microsoft\cppwinrt\' by MSBuild's module build system.
     -->
     <Target Name="CppWinRTGetModuleOutputs"
             Condition="'$(CppWinRTBuildModule)'=='true'"
+            DependsOnTargets="CppWinRTMakeProjections"
             Returns="@(CppWinRTModuleOutputs)">
+        <PropertyGroup>
+            <_CppWinRTModuleOutputDir Condition="!$([System.IO.Path]::IsPathRooted('$(IntDir)'))">$(MSBuildProjectDirectory)\$(IntDir)Microsoft\cppwinrt\</_CppWinRTModuleOutputDir>
+            <_CppWinRTModuleOutputDir Condition="'$(_CppWinRTModuleOutputDir)' == ''">$(IntDir)Microsoft\cppwinrt\</_CppWinRTModuleOutputDir>
+        </PropertyGroup>
         <ItemGroup>
             <CppWinRTModuleOutputs Include="$(MSBuildProjectFullPath)">
                 <CppWinRTModuleGeneratedFilesDir>$(GeneratedFilesDir)</CppWinRTModuleGeneratedFilesDir>
-                <CppWinRTModuleIfcDir>$(IntDir)</CppWinRTModuleIfcDir>
-                <CppWinRTModuleLibDir>$(OutDir)</CppWinRTModuleLibDir>
+                <CppWinRTModuleIfcDir>$(_CppWinRTModuleOutputDir)</CppWinRTModuleIfcDir>
             </CppWinRTModuleOutputs>
+            <_CppWinRTModuleInterfaces Include="$(GeneratedFilesDir)winrt\*.ixx" />
+            <CppWinRTModuleOutputs Include="@(_CppWinRTModuleInterfaces->'$(_CppWinRTModuleOutputDir)%(Filename)%(Extension).ifc')">
+                <CppWinRTModuleGeneratedFilesDir>$(GeneratedFilesDir)</CppWinRTModuleGeneratedFilesDir>
+                <CppWinRTModuleIfcDir>$(_CppWinRTModuleOutputDir)</CppWinRTModuleIfcDir>
+                <CppWinRTModuleFileType>ifc</CppWinRTModuleFileType>
+            </CppWinRTModuleOutputs>
+            <CppWinRTModuleOutputs Include="@(_CppWinRTModuleInterfaces->'$(_CppWinRTModuleOutputDir)%(Filename)%(Extension).obj')">
+                <CppWinRTModuleGeneratedFilesDir>$(GeneratedFilesDir)</CppWinRTModuleGeneratedFilesDir>
+                <CppWinRTModuleIfcDir>$(_CppWinRTModuleOutputDir)</CppWinRTModuleIfcDir>
+                <CppWinRTModuleFileType>obj</CppWinRTModuleFileType>
+            </CppWinRTModuleOutputs>
+            <_CppWinRTModuleInterfaces Remove="@(_CppWinRTModuleInterfaces)" />
+        </ItemGroup>
+    </Target>
+
+    <!--
+      Module consumers use the provider's compiled C++/WinRT module objects
+      directly. The provider project output library/import library is not needed
+      for those module interfaces.
+    -->
+    <Target Name="CppWinRTPrepareModuleReferences"
+            BeforeTargets="ResolveProjectReferences">
+        <ItemGroup>
+            <ProjectReference Update="@(ProjectReference)"
+                              Condition="'%(ProjectReference.CppWinRTConsumeModule)' == 'true'">
+                <LinkLibraryDependencies>false</LinkLibraryDependencies>
+            </ProjectReference>
         </ItemGroup>
     </Target>
 
@@ -949,7 +985,7 @@ $(XamlMetaDataProviderPch)
     -->
     <Target Name="CppWinRTResolveModuleReferences"
             DependsOnTargets="ResolveProjectReferences"
-            BeforeTargets="CppWinRTMakePlatformProjection;CppWinRTAddModuleInterfaces;ClCompile">
+            BeforeTargets="CppWinRTMakePlatformProjection;CppWinRTAddModuleInterfaces;FixupCLCompileOptions;ClCompile">
         <!-- Find ProjectReferences tagged for module consumption -->
         <ItemGroup>
             <_CppWinRTModuleProviders Remove="@(_CppWinRTModuleProviders)" />
@@ -983,6 +1019,16 @@ $(XamlMetaDataProviderPch)
             <ClCompile>
                 <AdditionalBMIDirectories>$(_CppWinRTModuleIfcSearchDirs);%(ClCompile.AdditionalBMIDirectories)</AdditionalBMIDirectories>
             </ClCompile>
+        </ItemGroup>
+        <ItemGroup>
+            <_CppWinRTResolvedModuleIfcs Include="@(_CppWinRTResolvedModuleRefs)"
+                                        Condition="'%(_CppWinRTResolvedModuleRefs.CppWinRTModuleFileType)' == 'ifc'" />
+            <ReferencedProjectsPublicModules Include="@(_CppWinRTResolvedModuleIfcs->ClearMetadata())" />
+            <_CppWinRTResolvedModuleObjs Include="@(_CppWinRTResolvedModuleRefs)"
+                                        Condition="'%(_CppWinRTResolvedModuleRefs.CppWinRTModuleFileType)' == 'obj'" />
+            <Object Include="@(_CppWinRTResolvedModuleObjs->ClearMetadata())" />
+            <_CppWinRTResolvedModuleIfcs Remove="@(_CppWinRTResolvedModuleIfcs)" />
+            <_CppWinRTResolvedModuleObjs Remove="@(_CppWinRTResolvedModuleObjs)" />
         </ItemGroup>
     </Target>
 
