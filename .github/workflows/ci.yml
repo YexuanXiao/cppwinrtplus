@@ -329,7 +329,7 @@ jobs:
       matrix:
         compiler:
           - MSVC
-        arch: [x86, x64]
+        arch: [x86, x64, arm64]
         config: [Release]
     runs-on: windows-2025-vs2026
     steps:
