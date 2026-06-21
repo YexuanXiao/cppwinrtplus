@@ -338,8 +338,8 @@ jobs:
       - name: Fetch cppwinrt executables
         uses: actions/download-artifact@v7
         with:
-          name: msvc-build-${{ matrix.compiler}}-${{ matrix.arch }}-${{ matrix.config }}-bin
-          path: _build/${{ matrix.arch }}/${{ matrix.config }}/
+            name: msvc-build-${{ matrix.compiler }}-x64-${{ matrix.config }}-bin
+            path: _build/x64/${{ matrix.config }}/
 
       - name: Download nuget
         run: |
