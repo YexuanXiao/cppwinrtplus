@@ -368,7 +368,7 @@ jobs:
         run: |
           $target_configuration = "${{ matrix.config }}"
           $target_platform = "${{ matrix.arch }}"
-          & "_build\$target_platform\$target_configuration\cppwinrt.exe" -in local -out _build\$target_platform\$target_configuration -verbose
+          & "_build\x64\$target_configuration\cppwinrt.exe" -in local -out _build\$target_platform\$target_configuration -verbose
       
       - name: Run nuget test
         run: |
