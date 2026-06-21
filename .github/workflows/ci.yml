@@ -329,7 +329,7 @@ jobs:
       matrix:
         compiler:
           - MSVC
-        arch: [x86, x64]
+        arch: [x86, x64, arm64]
         config: [Release]
     runs-on: windows-2025-vs2026
     steps:
@@ -338,8 +338,8 @@ jobs:
       - name: Fetch cppwinrt executables
         uses: actions/download-artifact@v7
         with:
-          name: msvc-build-${{ matrix.compiler}}-${{ matrix.arch }}-${{ matrix.config }}-bin
-          path: _build/${{ matrix.arch }}/${{ matrix.config }}/
+            name: msvc-build-${{ matrix.compiler }}-x64-${{ matrix.config }}-bin
+            path: _build/x64/${{ matrix.config }}/
 
       - name: Download nuget
         run: |
@@ -356,7 +356,7 @@ jobs:
       - name: Prepare build flags
         run: |
           $target_configuration = "${{ matrix.config }}"
-          $target_platform = "${{ matrix.arch }}"
+          $target_platform = "x64"
           $target_version = "1.2.3.4"
           Add-Content $env:GITHUB_ENV "msbuild_config_props=/p:Configuration=$target_configuration,Platform=$target_platform,CppWinRTBuildVersion=$target_version"
 
@@ -368,7 +368,7 @@ jobs:
         run: |
           $target_configuration = "${{ matrix.config }}"
           $target_platform = "${{ matrix.arch }}"
-          & "_build\$target_platform\$target_configuration\cppwinrt.exe" -in local -out _build\$target_platform\$target_configuration -verbose
+          & "_build\x64\$target_configuration\cppwinrt.exe" -in local -out _build\$target_platform\$target_configuration -verbose
       
       - name: Run nuget test
         run: |
