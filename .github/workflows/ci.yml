@@ -356,7 +356,7 @@ jobs:
       - name: Prepare build flags
         run: |
           $target_configuration = "${{ matrix.config }}"
-          $target_platform = "${{ matrix.arch }}"
+          $target_platform = "x64"
           $target_version = "1.2.3.4"
           Add-Content $env:GITHUB_ENV "msbuild_config_props=/p:Configuration=$target_configuration,Platform=$target_platform,CppWinRTBuildVersion=$target_version"
 
