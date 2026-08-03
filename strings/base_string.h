@@ -674,14 +674,7 @@ WINRT_EXPORT namespace winrt
     template <typename T, std::enable_if_t<std::is_same_v<T, bool>, int> = 0>
     hstring to_hstring(T const value)
     {
-        if (value)
-        {
-            return hstring{ L"true" };
-        }
-        else
-        {
-            return hstring{ L"false" };
-        }
+        return hstring{ value ? L"true" : L"false" };
     }
 
     inline hstring to_hstring(guid const& value)
@@ -719,8 +712,17 @@ WINRT_EXPORT namespace winrt
             return{};
         }
 
-        std::string result(size, '?');
-        WINRT_VERIFY_(size, WINRT_IMPL_WideCharToMultiByte(65001 /*CP_UTF8*/, 0, value.data(), static_cast<std::int32_t>(value.size()), result.data(), size, nullptr, nullptr));
+#if defined(__cpp_lib_string_resize_and_overwrite) && __cpp_lib_string_resize_and_overwrite >= 202110L
+    	std::string result;
+    	result.resize_and_overwrite(size, [&](char* buffer, std::size_t) -> std::size_t
+    		{
+    			WINRT_VERIFY_(size, WINRT_IMPL_WideCharToMultiByte(65001 /*CP_UTF8*/, 0, value.data(), static_cast<std::int32_t>(value.size()), buffer, size, nullptr, nullptr));
+    			return size;
+    		});
+#else
+    	std::string result(size, '?');
+    	WINRT_VERIFY_(size, WINRT_IMPL_WideCharToMultiByte(65001 /*CP_UTF8*/, 0, value.data(), static_cast<std::int32_t>(value.size()), result.data(), size, nullptr, nullptr));
+#endif
         return result;
     }
 }
