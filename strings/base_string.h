@@ -716,8 +716,9 @@ WINRT_EXPORT namespace winrt
     	std::string result;
     	result.resize_and_overwrite(size, [&](char* buffer, std::size_t) -> std::size_t
     		{
-    			WINRT_VERIFY_(size, WINRT_IMPL_WideCharToMultiByte(65001 /*CP_UTF8*/, 0, value.data(), static_cast<std::int32_t>(value.size()), buffer, size, nullptr, nullptr));
-    			return size;
+    			auto bytes_written = WINRT_IMPL_WideCharToMultiByte(65001 /*CP_UTF8*/, 0, value.data(), static_cast<std::int32_t>(value.size()), buffer, size, nullptr, nullptr);
+                WINRT_VERIFY_(size, bytes_written);
+    			return bytes_written == size ? size : 0;
     		});
 #else
         std::string result(size, '?');
