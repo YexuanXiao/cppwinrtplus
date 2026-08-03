@@ -720,8 +720,8 @@ WINRT_EXPORT namespace winrt
     			return size;
     		});
 #else
-    	std::string result(size, '?');
-    	WINRT_VERIFY_(size, WINRT_IMPL_WideCharToMultiByte(65001 /*CP_UTF8*/, 0, value.data(), static_cast<std::int32_t>(value.size()), result.data(), size, nullptr, nullptr));
+        std::string result(size, '?');
+        WINRT_VERIFY_(size, WINRT_IMPL_WideCharToMultiByte(65001 /*CP_UTF8*/, 0, value.data(), static_cast<std::int32_t>(value.size()), result.data(), size, nullptr, nullptr));
 #endif
         return result;
     }
