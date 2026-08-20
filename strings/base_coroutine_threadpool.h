@@ -146,32 +146,42 @@ WINRT_EXPORT namespace winrt
         void set_canceller(canceller_t canceller, void* context)
         {
             m_context = context;
-            m_canceller.store(canceller, std::memory_order_release);
+            canceller_t expected = nullptr;
+            m_canceller.compare_exchange_strong(expected, canceller, std::memory_order_release, std::memory_order_relaxed);
         }
 
         void revoke_canceller()
         {
-            while (m_canceller.exchange(nullptr, std::memory_order_acquire) == cancelling_ptr)
+            auto existing = m_canceller.load(std::memory_order_relaxed);
+            do
             {
-                std::this_thread::yield();
+                while (existing == cancelling_ptr)
+                {
+                    std::this_thread::yield();
+                    existing = m_canceller.load(std::memory_order_relaxed);
+                }
             }
+            while (!m_canceller.compare_exchange_weak(existing, nullptr, std::memory_order_acquire, std::memory_order_relaxed));
         }
 
         void cancel()
         {
             auto canceller = m_canceller.exchange(cancelling_ptr, std::memory_order_acquire);
-            struct unique_cancellation_lock
+            if (canceller != cancelling_ptr)
             {
-                cancellable_promise* promise;
-                ~unique_cancellation_lock()
+                struct unique_cancellation_lock
                 {
-                    promise->m_canceller.store(nullptr, std::memory_order_release);
-                }
-            } lock{ this };
+                    cancellable_promise* promise;
+                    ~unique_cancellation_lock()
+                    {
+                        promise->m_canceller.store(nullptr, std::memory_order_release);
+                    }
+                } lock{ this };
 
-            if ((canceller != nullptr) && (canceller != cancelling_ptr))
-            {
-                canceller(m_context);
+                if (canceller != nullptr)
+                {
+                    canceller(m_context);
+                }
             }
         }
 
