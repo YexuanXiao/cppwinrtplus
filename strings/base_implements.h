@@ -1386,6 +1386,446 @@ WINRT_EXPORT namespace winrt::impl
     {
         return detach_abi(std::forward<T>(object));
     }
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4702) // Compiler bug causing spurious "unreachable code" warnings
+#endif
+
+    // =========================================================================
+    // Abi entry point helpers.
+    //
+    // These factor out the bodies that cppwinrt/code_writers.h used to emit
+    // inline, for both kinds of abi entry point a projection produces: the
+    // members of a produce<> specialization, and a delegate's Invoke. Each
+    // helper reproduces, statement for statement, this sequence:
+    //
+    //     <slot preparation>
+    //     typename D::abi_guard guard(shim);    produce<> members only
+    //     <upcall and abi transfers>
+    //     return 0;
+    //
+    // The handler lives here, not at the call site: a generated entry point is a
+    // single statement with nothing to catch around it.
+    //
+    //     std::int32_t __stdcall Method(<abi args>) noexcept final
+    //     {
+    //         return produce_call(this->shim(), <callable>, <slots>...);
+    //     }
+    //
+    // A slot is one abi output that needs preparing or transferring: an output
+    // parameter, or the return value. Each slot carries a small tag whose type
+    // names the preparation, and which holds whatever state that preparation
+    // needs. Slots are listed in abi order with the return value last, which is
+    // the order the generator has always emitted them in. Outputs that need
+    // nothing done to them, which is fundamental and enum outputs, are not slots
+    // at all: the callable reads them directly.
+    //
+    // The callable receives the shim, where there is one, followed by one
+    // argument per slot, in the same order, and returns the method's value. Give
+    // its parameters `auto&&`: a slot is handed over either as a pointer or, for
+    // an Object output, as a reference to the local that output is built in.
+    //
+    // Its return type is left to be deduced, because the conversion belongs to the
+    // slot: assign's parameter is what the callable's result binds to, and the
+    // entry point names the method's return type there. That is what lets the
+    // handler return something that only converts to it, which is a shim's
+    // prerogative -- convertible_observable_vector's First returns a proxy whose
+    // two conversion operators reach either IIterator<T> or
+    // IIterator<IInspectable>, and the type the result binds to is what picks
+    // between them.
+    //
+    // An Object output is the one slot that needs something declared for it, and
+    // it is the generated member function that declares it, ahead of the call:
+    //
+    //     Windows::Foundation::IInspectable winrt_impl_value_local;
+    //     return produce_call(this->shim(), <callable>, object_slot(winrt_impl_value_local, value));
+    //
+    // The tag holds that local by reference, which is what keeps the temporary
+    // tag trivially destructible. Nothing is named winrt_impl_value: the
+    // callable's parameter is the reference the tag hands it, so the local and
+    // the parameter would otherwise be the same name in nested scopes. For the
+    // shapes that have none of these, the member function is the single statement
+    // above and nothing else.
+    //
+    // There are two entry points per exception behavior, because the presence of
+    // the return slot changes the signature, and only the returning one names the
+    // method's return type:
+    //
+    //     produce_call                 no return slot
+    //     produce_call_return<T>       return slot, passed before the output slots
+    //
+    // T is the method's return type, and the one thing the arguments cannot say:
+    // the abi erases it, since an interface return travels as void** and
+    // arg_out<V> is void** too. It is named rather than deduced for the reason
+    // above -- a shim may return a proxy -- and it is named on its own entry
+    // point rather than on the callable's return type so that the callable does
+    // not have to repeat it.
+    //
+    // D is not written at all. The entry points deduce it from the shim they are
+    // handed, which is the implementation object, and produce_base<D, I>::shim
+    // returns D&. Only the return type has to be said out loud.
+    //
+    // The `_noexcept` twins drop the catch-all handler, for the methods where
+    // cppwinrt::is_noexcept (cppwinrt/helpers.h) is true: `remove_` accessors and
+    // NoExceptionAttribute methods. They are declared noexcept, so a thrown
+    // exception terminates, which is what the generator's handler-less
+    // `noexcept final` skeleton does as well.
+    //
+    // delegate_call and delegate_call_return are the same pair for a delegate's
+    // Invoke, which reaches its handler through the callable rather than through
+    // a shim. They have no `_noexcept` twins, because a delegate's Invoke never
+    // carries NoExceptionAttribute.
+    //
+    // The generator used to write detach_from<T>(shim().Method()), whose parameter
+    // type T&& did the converting. These helpers write the same thing, with the
+    // callable's result as the argument:
+    //
+    //     ret.assign<T>(call(shim, slots.get()...));
+    //
+    // When the handler that call reaches never returns normally, the assignment
+    // after it cannot be reached, and the compiler says so, pointing at the
+    // inlined body of assign and of the detach_abi it calls. That is not a real
+    // defect: the same method body written out by hand assigns inside the call
+    // expression, so the transfer is equally absent, and equally harmless -- the
+    // slot is left as prepare left it, and the error travels back through the
+    // handler. It is only this shape that makes the compiler look, which is the
+    // C4702 the block is wrapped in.
+    //
+    // The handlers that do this are the property getters of a boxed value.
+    // impl::reference_producer implements all of IPropertyValue, and each getter
+    // returns whatever the one value it holds converts to; a getter that does not
+    // match throws rather than converting, so e.g. GetGuid on the reference that
+    // box_value makes of a string is an unconditional throw.
+    // =========================================================================
+
+    // clear_abi, for an output that has to be nulled before the upcall. Covers
+    // interfaces, classes, delegates, strings, generic parameters, generic
+    // instantiations and arrays. The type parameter is deduced from the abi
+    // pointer and does not affect behavior, because clear_abi only cares how deep
+    // the pointer is.
+    template <typename P>
+    struct abi_slot_clear
+    {
+        P ptr;
+
+        void prepare() const noexcept
+        {
+            clear_abi(ptr);
+        }
+
+        P get() const noexcept
+        {
+            return ptr;
+        }
+
+        void transfer() const noexcept
+        {
+        }
+
+        template <typename V>
+        void assign(V&& value) const noexcept
+        {
+            *ptr = detach_abi(std::forward<V>(value));
+        }
+    };
+
+    template <typename P>
+    abi_slot_clear<P> clear_slot(P const& ptr) noexcept
+    {
+        return { ptr };
+    }
+
+    // An array return, which the abi splits into a size and a pointer that are
+    // released together. The preparation is the same clear_abi as above, but the
+    // assignment takes the pair apart, so it is a slot of its own rather than a
+    // flag carried by abi_slot_clear. The size comes first, as it does in the abi
+    // signature and in zero_size_slot below.
+    //
+    // P is the abi pointer of the element type, and is deduced: an array of
+    // strings or objects travels as void**, but an array of anything else keeps
+    // its own pointer, so writing void** here would only compile for the first.
+    template <typename P>
+    struct abi_slot_array_return
+    {
+        std::uint32_t* size;
+        P ptr;
+
+        void prepare() const noexcept
+        {
+            clear_abi(ptr);
+        }
+
+        P get() const noexcept
+        {
+            return ptr;
+        }
+
+        void transfer() const noexcept
+        {
+        }
+
+        template <typename V>
+        void assign(V&& value) const noexcept
+        {
+            std::tie(*size, *ptr) = detach_abi(std::forward<V>(value));
+        }
+    };
+
+    template <typename P>
+    abi_slot_array_return<P> array_return_slot(std::uint32_t* const size, P const& ptr) noexcept
+    {
+        return { size, ptr };
+    }
+
+    // zero_abi, for a structure output, which is zeroed rather than nulled. T is
+    // the projected structure type and has to be written out: zero_abi only
+    // writes memory when the type is not trivially destructible, and a structure
+    // holding a string or an interface is the case that needs it. The abi type it
+    // travels as is trivially destructible, so it is not interchangeable with the
+    // projected one, and T cannot be deduced from the pointer.
+    template <typename T, typename P>
+    struct abi_slot_zero
+    {
+        P ptr;
+
+        void prepare() const noexcept
+        {
+            zero_abi<T>(ptr);
+        }
+
+        P get() const noexcept
+        {
+            return ptr;
+        }
+
+        void transfer() const noexcept
+        {
+        }
+
+        template <typename V>
+        void assign(V&& value) const noexcept
+        {
+            *ptr = detach_abi(std::forward<V>(value));
+        }
+    };
+
+    template <typename T, typename P>
+    abi_slot_zero<T, P> zero_slot(P const& ptr) noexcept
+    {
+        return { ptr };
+    }
+
+    // The by-value array output, which carries its capacity in the abi. T is the
+    // projected element type, for the same reason as above.
+    template <typename T, typename P>
+    struct abi_slot_zero_size
+    {
+        std::uint32_t size;
+        P ptr;
+
+        void prepare() const noexcept
+        {
+            zero_abi<T>(ptr, size);
+        }
+
+        P get() const noexcept
+        {
+            return ptr;
+        }
+
+        void transfer() const noexcept
+        {
+        }
+    };
+
+    template <typename T, typename P>
+    abi_slot_zero_size<T, P> zero_size_slot(std::uint32_t const size, P const& ptr) noexcept
+    {
+        return { size, ptr };
+    }
+
+    // An output declared as Object in metadata. Unlike the other slots this one
+    // is not written through a pointer: the projected signature of such a
+    // parameter is a reference, so the implementation needs a projected
+    // IInspectable to write into, and the transfer into the abi slot happens once
+    // the upcall has returned.
+    //
+    // That IInspectable is declared by the generated member function and held by
+    // reference here, rather than being a member of this tag. Owning it would
+    // make the tag non-trivially destructible, and since a tag is a temporary
+    // that would add a second destruction of the same object: one in the
+    // temporary, one in the member function. Held by reference the tag is
+    // trivially destructible and the local is destroyed exactly once, at the end
+    // of the member function, which is where the generator declares it today.
+    // transfer clears the local through detach_abi, so that destruction is a
+    // null check in the normal path, and a release in the failure path.
+    struct abi_slot_object
+    {
+        Windows::Foundation::IInspectable& local;
+        void** ptr;
+
+        void prepare() const noexcept
+        {
+            if (ptr) *ptr = nullptr;
+        }
+
+        Windows::Foundation::IInspectable& get() const noexcept
+        {
+            return local;
+        }
+
+        void transfer() const noexcept
+        {
+            if (ptr) *ptr = detach_abi(local);
+        }
+    };
+
+    inline abi_slot_object object_slot(Windows::Foundation::IInspectable& local, void** const ptr) noexcept
+    {
+        return { local, ptr };
+    }
+
+    // The shared bodies. prepare runs before the guard and transfer after the
+    // upcall, in slot order; the return slot is prepared after the outputs, and
+    // takes its value from the callable's result. D sits behind T and is never
+    // written: the shim is D, so it deduces.
+    template <typename F, typename D, typename... S>
+    std::int32_t produce_call_body(D& shim, F&& call, S&&... slots)
+    {
+        (slots.prepare(), ...);
+
+        typename D::abi_guard guard(shim);
+        call(shim, slots.get()...);
+        (slots.transfer(), ...);
+        return 0;
+    }
+
+    template <typename T, typename D, typename F, typename R, typename... S>
+    std::int32_t produce_return_body(D& shim, F&& call, R&& ret, S&&... slots)
+    {
+        (slots.prepare(), ...);
+        ret.prepare();
+
+        typename D::abi_guard guard(shim);
+        ret.template assign<T>(call(shim, slots.get()...));
+        (slots.transfer(), ...);
+        return 0;
+    }
+
+    // void Method(...) const;
+    template <typename F, typename D, typename... S>
+    std::int32_t produce_call(D& shim, F&& call, S&&... slots) try
+    {
+        return produce_call_body(shim, std::forward<F>(call), std::forward<S>(slots)...);
+    }
+    catch (...) { return to_hresult(); }
+
+    template <typename F, typename D, typename... S>
+    std::int32_t produce_call_noexcept(D& shim, F&& call, S&&... slots) noexcept
+    {
+        return produce_call_body(shim, std::forward<F>(call), std::forward<S>(slots)...);
+    }
+
+    // T Method(...) const;
+    template <typename T, typename D, typename F, typename R, typename... S>
+    std::int32_t produce_call_return(D& shim, F&& call, R&& ret, S&&... slots) try
+    {
+        return produce_return_body<T>(shim, std::forward<F>(call), std::forward<R>(ret), std::forward<S>(slots)...);
+    }
+    catch (...) { return to_hresult(); }
+
+    template <typename T, typename D, typename F, typename R, typename... S>
+    std::int32_t produce_call_return_noexcept(D& shim, F&& call, R&& ret, S&&... slots) noexcept
+    {
+        return produce_return_body<T>(shim, std::forward<F>(call), std::forward<R>(ret), std::forward<S>(slots)...);
+    }
+
+    // -------------------------------------------------------------------------
+    // A delegate's Invoke, which reaches its handler through the callable rather
+    // than through a shim: implements_delegate derives from abi_t<T> directly, so
+    // there is no D and no abi_guard. Everything else is the same, and the slots
+    // are the same ones -- a slot is an argument, and it never needed a shim.
+    // What the shim is for is the guard and the callable's first parameter, and
+    // a delegate has neither.
+    //
+    // delegate_call_return needs no T either, unlike produce_call_return: the
+    // handler is reached through the delegate's operator(), which the projection
+    // declares and which therefore already returns the delegate's return type. A
+    // shim's return type is its own business in a way that operator()'s is not.
+    // -------------------------------------------------------------------------
+
+    template <typename F, typename... S>
+    std::int32_t delegate_call(F&& call, S&&... slots) try
+    {
+        (slots.prepare(), ...);
+
+        call(slots.get()...);
+        (slots.transfer(), ...);
+        return 0;
+    }
+    catch (...) { return to_hresult(); }
+
+    template <typename F, typename R, typename... S>
+    std::int32_t delegate_call_return(F&& call, R&& ret, S&&... slots) try
+    {
+        (slots.prepare(), ...);
+        ret.prepare();
+
+        ret.assign(call(slots.get()...));
+        (slots.transfer(), ...);
+        return 0;
+    }
+    catch (...) { return to_hresult(); }
+
+    // -------------------------------------------------------------------------
+    // IMap<K, V>::Lookup and IMapView<K, V>::Lookup. The generator special-cases
+    // these two methods so that an implementation which also provides TryLookup
+    // can report a miss without originating an exception. K has to be supplied
+    // because arg_out<V> is a non-deduced context; the branch that `if constexpr`
+    // discards is never instantiated, so `try_lookup` is free to name TryLookup
+    // unconditionally.
+    //
+    // V is supplied as well, and this is the one place a slot is asked for a type
+    // rather than left to deduce one. Both callables return whatever the shim
+    // produced, which may be a proxy that only converts to V; letting assign
+    // deduce would make that proxy the type of the transfer, and detach_abi would
+    // then take its value-type path and hand the proxy itself to an abi pointer.
+    // Naming V on assign makes its parameter the conversion, as detach_from<V>'s
+    // was, and costs no temporary when the payload is already V.
+    //
+    // The return is a slot like any other, so that a structure or an interface
+    // gets the same preparation here as it does through produce_call_return.
+    // -------------------------------------------------------------------------
+
+    template <typename K, typename V, typename F, typename D, typename G, typename R>
+    std::int32_t produce_call_map_lookup(D& shim, F&& try_lookup, G&& lookup, R&& ret) try
+    {
+        ret.prepare();
+        typename D::abi_guard guard(shim);
+        if constexpr (has_TryLookup_v<D, K>)
+        {
+            auto out_param_val = try_lookup(shim);
+
+            if (out_param_val.has_value())
+            {
+                ret.template assign<V>(std::move(*out_param_val));
+            }
+            else
+            {
+                return error_out_of_bounds;
+            }
+        }
+        else
+        {
+            ret.template assign<V>(lookup(shim));
+        }
+        return 0;
+    }
+    catch (...) { return to_hresult(); }
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 }
 
 WINRT_EXPORT namespace winrt

@@ -1638,29 +1638,57 @@ namespace cppwinrt
         }
     }
 
-    static void write_produce_params(writer& w, method_signature const& signature)
+    enum class produce_slot
     {
-        write_abi_params(w, signature);
+        none,           // fundamental and enum
+        clear,          // clear_abi
+        zero,           // zero_abi<T>
+        zero_size,      // zero_abi<T>(ptr, capacity)
+        array_return,   // the size and pointer of an array
+        object,         // Object: built in a local, then transferred
+    };
+
+    template <typename T>
+    static void write_produce_slot(writer& w, T const& param_signature, std::string_view const& param_name, produce_slot slot)
+    {
+        switch (slot)
+        {
+        case produce_slot::none:
+            break;
+        case produce_slot::clear:
+            w.write("clear_slot(%)", param_name);
+            break;
+        case produce_slot::zero:
+            w.write("zero_slot<%>(%)", param_signature.Type().Type(), param_name);
+            break;
+        case produce_slot::zero_size:
+            w.write("zero_size_slot<%>(__%Size, %)", param_signature.Type().Type(), param_name, param_name);
+            break;
+        case produce_slot::array_return:
+            w.write("array_return_slot(__%Size, %)", param_name, param_name);
+            break;
+        case produce_slot::object:
+            w.write("object_slot(winrt_impl_%_local, %)", param_name, param_name);
+            break;
+        }
     }
 
     template <typename T>
-    static void write_produce_cleanup_param(writer& w, T const& param_signature, std::string_view const& param_name, bool out)
+    static produce_slot get_produce_slot(T const& param_signature, bool out)
     {
         TypeSig const& signature = param_signature.Type();
-        bool clear{};
-        bool optional{};
-        bool zero{};
+        produce_slot result{ produce_slot::none };
 
         call(signature.Type(),
             [&](ElementType type)
             {
                 if (out && type == ElementType::Object)
                 {
-                    optional = true;
+                    result = produce_slot::object;
                 }
                 else if (type == ElementType::String || type == ElementType::Object)
                 {
-                    clear = true;
+                    result = produce_slot::clear;
                 }
             },
             [&](coded_index<TypeDefOrRef> const& index)
@@ -1682,13 +1710,19 @@ namespace cppwinrt
                 {
                     auto category = get_category(type);
 
-                    clear = category == category::class_type || category == category::interface_type || category == category::delegate_type;
-                    zero = category == category::struct_type;
+                    if (category == category::class_type || category == category::interface_type || category == category::delegate_type)
+                    {
+                        result = produce_slot::clear;
+                    }
+                    else if (category == category::struct_type)
+                    {
+                        result = produce_slot::zero;
+                    }
                 }
             },
             [&](GenericTypeIndex const&)
             {
-                clear = true;
+                result = produce_slot::clear;
             },
             [](GenericMethodTypeIndex)
             {
@@ -1696,81 +1730,34 @@ namespace cppwinrt
             },
             [&](GenericTypeInstSig const&)
             {
-                clear = true;
+                result = produce_slot::clear;
             });
 
         if (signature.is_szarray())
         {
             if constexpr (std::is_same_v<RetTypeSig, T>)
             {
-                clear = true;
+                return produce_slot::array_return;
             }
-            else if (param_signature.ByRef())
+            if (param_signature.ByRef())
             {
-                clear = true;
+                result = produce_slot::clear;
             }
-            else if (optional || clear)
+            else if (result == produce_slot::clear || result == produce_slot::object)
             {
-                clear = false;
-                zero = true;
+                result = produce_slot::zero_size;
             }
-        }
-
-        if (clear)
-        {
-            auto format = R"(            clear_abi(%);
-)";
-
-            w.write(format, param_name);
-        }
-        else if (zero)
-        {
-            if (signature.is_szarray())
+            else if (result == produce_slot::zero)
             {
-                auto format = R"(            zero_abi<%>(%, __%Size);
-)";
-
-                w.write(format,
-                    signature.Type(),
-                    param_name,
-                    param_name);
-            }
-            else
-            {
-                auto format = R"(            zero_abi<%>(%);
-)";
-
-                w.write(format,
-                    signature.Type(),
-                    param_name);
+                // An array of structures is zeroed like any other array output,
+                // with the element count. Only the type written into zero_abi
+                // separates this from an array of fundamentals, which is not
+                // zeroed at all.
+                result = produce_slot::zero_size;
             }
         }
-        else if (optional)
-        {
-            auto format = R"(            if (%) *% = nullptr;
-            winrt::Windows::Foundation::IInspectable winrt_impl_%;
-)";
 
-            w.write(format, param_name, param_name, param_name);
-        }
-    }
-
-    static void write_produce_cleanup(writer& w, method_signature const& method_signature)
-    {
-        for (auto&& [param, param_signature] : method_signature.params())
-        {
-            if (param.Flags().In())
-            {
-                continue;
-            }
-
-            write_produce_cleanup_param(w, *param_signature, param.Name(), true);
-        }
-
-        if (method_signature.return_signature())
-        {
-            write_produce_cleanup_param(w, method_signature.return_signature(), method_signature.return_param_name(), false);
-        }
+        return result;
     }
 
     static void write_produce_args(writer& w, method_signature const& method_signature)
@@ -1851,28 +1838,137 @@ namespace cppwinrt
         }
     }
 
-    static void write_produce_upcall(writer& w, std::string_view const& upcall, method_signature const& method_signature)
+    // An Object output is built in a local, which the generated member function
+    // declares and the slot holds by reference. The local belongs to the member
+    // function, rather than to the slot, so that it is constructed and destroyed
+    // exactly once, which is where and how it is declared today.
+    //
+    // The name carries a `_local` suffix because the callable also has a
+    // parameter for this output, and write_produce_args names that one
+    // winrt_impl_<name>, since that is what the original member-function body
+    // called the projected object. Two distinct objects need two distinct names,
+    // or the parameter would shadow the local it is bound to.
+    static void write_produce_locals(writer& w, method_signature const& method_signature)
     {
-        if (method_signature.return_signature())
+        for (auto&& [param, param_signature] : method_signature.params())
         {
-            auto name = method_signature.return_param_name();
-
-            if (method_signature.return_signature().Type().is_szarray())
+            if (param.Flags().In())
             {
-                w.write("std::tie(*__%Size, *%) = detach_abi(%(%));",
-                    name,
-                    name,
-                    upcall,
-                    bind<write_produce_args>(method_signature));
+                continue;
+            }
+
+            if (get_produce_slot(*param_signature, true) == produce_slot::object)
+            {
+                w.write("            winrt::Windows::Foundation::IInspectable winrt_impl_%_local;\n", param.Name());
+            }
+        }
+    }
+
+    // The callable takes the shim, where the helper passes one, followed by one
+    // argument per slot, in the same order. An Object slot's parameter is named
+    // winrt_impl_<name>, because that is the name write_produce_args writes for
+    // such an output, and the upcall it writes is the same text either way.
+    static void write_produce_lambda_params(writer& w, method_signature const& method_signature, std::string_view const& shim)
+    {
+        separator s{ w };
+
+        if (!shim.empty())
+        {
+            s();
+            w.write(shim);
+        }
+
+        for (auto&& [param, param_signature] : method_signature.params())
+        {
+            if (param.Flags().In())
+            {
+                continue;
+            }
+
+            auto slot = get_produce_slot(*param_signature, true);
+
+            if (slot == produce_slot::none)
+            {
+                continue;
+            }
+
+            s();
+
+            if (slot == produce_slot::object)
+            {
+                w.write("auto&& winrt_impl_%", param.Name());
             }
             else
             {
-                w.write("*% = detach_from<%>(%(%));",
-                    name,
-                    method_signature.return_signature(),
-                    upcall,
-                    bind<write_produce_args>(method_signature));
+                w.write("auto&& %", param.Name());
             }
+        }
+    }
+
+    // The return slot alone, because a method that is not a plain call still
+    // prepares its return the way any other method does. A return value always
+    // occupies a slot, even when its type needs nothing done to it, because the
+    // slot is also what receives it, and clear_abi degenerates to nothing for an
+    // output that is not a pointer: that is what lets clear_slot carry a
+    // fundamental or enum return as well.
+    //
+    // The separator is the caller's, because the two callers lay their argument
+    // list out differently: a plain call has its slots inline, so the return
+    // follows on the same line, while a map lookup puts one argument per line.
+    static void write_produce_return_slot(writer& w, method_signature const& method_signature, std::string_view const& separator)
+    {
+        if (!method_signature.return_signature())
+        {
+            return;
+        }
+
+        auto slot = get_produce_slot(method_signature.return_signature(), false);
+
+        w.write(separator);
+        write_produce_slot(w,
+            method_signature.return_signature(),
+            method_signature.return_param_name(),
+            slot == produce_slot::none ? produce_slot::clear : slot);
+    }
+
+    // The slots, in the order the helper takes them: the return value first, then
+    // the outputs in abi order. The return slot is the one write_produce_return_slot
+    // writes on its own; it has to come first because the generated parameter list
+    // reads that way, and because produce_call_return takes it before the outputs.
+    static void write_produce_slots(writer& w, method_signature const& method_signature)
+    {
+        write_produce_return_slot(w, method_signature, ", ");
+
+        for (auto&& [param, param_signature] : method_signature.params())
+        {
+            if (param.Flags().In())
+            {
+                continue;
+            }
+
+            auto slot = get_produce_slot(*param_signature, true);
+
+            if (slot == produce_slot::none)
+            {
+                continue;
+            }
+
+            w.write(", ");
+            write_produce_slot(w, *param_signature, param.Name(), slot);
+        }
+    }
+
+    // The callable's body: the upcall, and nothing else. It returns the method's
+    // value rather than transferring it, because the slot that receives the value
+    // does the transfer. That is also what lets an array return hand back the
+    // array it allocated, for the slot to pair with its size.
+    static void write_produce_lambda_body(writer& w, std::string_view const& upcall, method_signature const& method_signature)
+    {
+        if (method_signature.return_signature())
+        {
+            w.write("return %(%);",
+                upcall,
+                bind<write_produce_args>(method_signature));
         }
         else
         {
@@ -1880,116 +1976,100 @@ namespace cppwinrt
                 upcall,
                 bind<write_produce_args>(method_signature));
         }
-
-        for (auto&& [param, param_signature] : method_signature.params())
-        {
-            if (param.Flags().Out() && !param_signature->Type().is_szarray() && is_object(param_signature->Type()))
-            {
-                auto param_name = param.Name();
-
-                w.write("\n            if (%) *% = detach_abi(winrt_impl_%);", param_name, param_name, param_name);
-            }
-        }
     }
 
-    static void write_produce_upcall_TryLookup(writer& w, std::string_view const& upcall, method_signature const& method_signature)
+    // A delegate's Invoke, whose handler is reached through the callable rather
+    // than through a shim. The slots and the callable are the same ones a produce
+    // member uses; only the helper differs, in that it passes no shim.
+    static void write_delegate_body(writer& w, method_signature const& signature)
     {
-        auto name = method_signature.return_param_name();
+        write_produce_locals(w, signature);
+        w.write("            return ");
 
-        w.write("auto out_param_val = %(%, trylookup_from_abi);",
-            upcall,
-            bind<write_produce_args>(method_signature));
-        w.write(R"(
-                if (out_param_val.has_value()) 
-                {
-                    *% = detach_from<%>(std::move(*out_param_val));
-                }
-                else 
-                {
-                    return impl::error_out_of_bounds; 
-                }
-)", 
-            name, method_signature.return_signature());
+        w.write("%([&](", signature.return_signature() ? "delegate_call_return" : "delegate_call");
+        write_produce_lambda_params(w, signature, {});
+        w.write(") { ");
+        write_produce_lambda_body(w, "(*this)", signature);
+        w.write(" }");
+        write_produce_slots(w, signature);
+        w.write(");\n");
+    }
 
-        for (auto&& [param, param_signature] : method_signature.params())
-        {
-            if (param.Flags().Out() && !param_signature->Type().is_szarray() && is_object(param_signature->Type()))
-            {
-                auto param_name = param.Name();
+    // IMap<K, V>::Lookup and IMapView<K, V>::Lookup are special-cased so that an
+    // implementation which also provides TryLookup can report a miss without
+    // originating an exception. Both type parameters go to the helper as template
+    // arguments, because neither can be deduced where the slots are: K because
+    // arg_out<V> is a non-deduced context, and V because no slot carries it.
+    static bool is_map_lookup(MethodDef const& method, TypeDef const& type)
+    {
+        auto const& type_name = type.TypeName();
 
-                w.write("\n            if (%) *% = detach_abi(winrt_impl_%);", param_name, param_name, param_name);
-            }
-        }
+        return ((type_name == "IMapView`2") || (type_name == "IMap`2")) && (get_name(method) == "Lookup");
+    }
+
+    // Both callables are left to deduce what they return. What a shim hands back
+    // is its own business: the payload may be a proxy that only converts to the
+    // value type, and the optional it travels in is the implementation's choice
+    // as well -- all the helper asks of it is has_value() and operator*, which is
+    // all the generator ever asked of it either. The helper names the value type
+    // instead, and converts with it, where the generator used to write
+    // detach_from<V>.
+    static void write_produce_map_lookup(writer& w, method_signature const& signature)
+    {
+        w.write("produce_call_map_lookup<K, %>(this->shim(),\n", signature.return_signature());
+        w.write("                [&](D& d) { return d.TryLookup(%, trylookup_from_abi); },\n",
+            bind<write_produce_args>(signature));
+        w.write("                [&](D& d) { return d.Lookup(%); }",
+            bind<write_produce_args>(signature));
+        write_produce_return_slot(w, signature, ",\n                ");
+        w.write(");\n");
     }
 
     static void write_produce_method(writer& w, MethodDef const& method, TypeDef const& type)
     {
-        std::string_view format;
-
-        if (is_noexcept(method))
-        {
-            format = R"(        std::int32_t __stdcall %(%) noexcept final
-        {
-%            typename D::abi_guard guard(this->shim());
-            %
-            return 0;
-        }
-)";
-        }
-        else
-        {
-            format = R"(        std::int32_t __stdcall %(%) noexcept final try
-        {
-%            typename D::abi_guard guard(this->shim());
-            %
-            return 0;
-        }
-        catch (...) { return to_hresult(); }
-)";
-        }
-
         method_signature signature{ method };
         auto async_types_guard = w.push_async_types(signature.is_async());
-        std::string upcall = "this->shim().";
-        auto name = get_name(method);
-        upcall += name;
 
-        auto typeName = type.TypeName();
-        if (((typeName == "IMapView`2") || (typeName == "IMap`2"))
-            && (name == "Lookup"))
+        // Every produce member is noexcept: the handler, where there is one,
+        // lives in the helper the body calls.
+        w.write("        std::int32_t __stdcall %(%) noexcept final\n        {\n",
+            get_abi_name(method),
+            bind<write_abi_params>(signature));
+
+        write_produce_locals(w, signature);
+        w.write("            return ");
+
+        if (is_map_lookup(method, type))
         {
-            // Special-case IMap*::Lookup to look for a TryLookup here, to avoid extranous throw/originates
-            std::string tryLookupUpCall = "this->shim().TryLookup";
-            format = R"(        std::int32_t __stdcall %(%) noexcept final try
-        {
-%            typename D::abi_guard guard(this->shim());
-            if constexpr (has_TryLookup_v<D, K>)
-            {
-                %
-            }
-            else
-            {
-                %
-            }
-            return 0;
-        }
-        catch (...) { return to_hresult(); }
-)";
-            w.write(format,
-                get_abi_name(method),
-                bind<write_produce_params>(signature),
-                bind<write_produce_cleanup>(signature), // clear_abi
-                bind<write_produce_upcall_TryLookup>(tryLookupUpCall, signature),
-                bind<write_produce_upcall>(upcall, signature));
+            write_produce_map_lookup(w, signature);
         }
         else
         {
-            w.write(format,
-                get_abi_name(method),
-                bind<write_produce_params>(signature),
-                bind<write_produce_cleanup>(signature),
-                bind<write_produce_upcall>(upcall, signature));
+            auto const no_handler = is_noexcept(method);
+            auto const helper = signature.return_signature()
+                ? (no_handler ? "produce_call_return_noexcept" : "produce_call_return")
+                : (no_handler ? "produce_call_noexcept" : "produce_call");
+            auto const upcall = w.write_temp("d.%", get_name(method));
+
+            // The entry point names the method's return type, where the generator
+            // used to write detach_from<T>. That is the only place it can be
+            // named: a shim may return a proxy that only converts to it, and the
+            // abi does not carry it, since an interface return travels as void**.
+            // D is left off: the helper deduces it from the shim.
+            auto const entry = signature.return_signature()
+                ? w.write_temp("%<%>", helper, signature.return_signature())
+                : w.write_temp("%", helper);
+
+            w.write("%(this->shim(), [&](", entry);
+            write_produce_lambda_params(w, signature, "D& d");
+            w.write(") { ");
+            write_produce_lambda_body(w, upcall, signature);
+            w.write(" }");
+            write_produce_slots(w, signature);
+            w.write(");\n");
         }
+
+        w.write("        }\n");
     }
 
     static void write_fast_produce_methods(writer& w, TypeDef const& default_interface)
@@ -2646,31 +2726,23 @@ struct WINRT_IMPL_EMPTY_BASES produce_dispatch_to_overridable<T, D, %>
 
     static void write_delegate_implementation(writer& w, TypeDef const& type)
     {
-        auto format = R"(    template <typename H%> struct delegate<%, H> final : implements_delegate<%, H>
-    {
-        delegate(H&& handler) : implements_delegate<%, H>(std::forward<H>(handler)) {}
-
-        std::int32_t __stdcall Invoke(%) noexcept final try
-        {
-%            %
-            return 0;
-        }
-        catch (...) { return to_hresult(); }
-    };
-)";
-
         auto generics = type.GenericParam();
         auto guard{ w.push_generic_params(generics) };
         method_signature signature{ get_delegate_method(type) };
 
-        w.write(format,
+        w.write("    template <typename H%> struct delegate<%, H> final : implements_delegate<%, H>\n",
             bind<write_comma_generic_typenames>(generics),
             type,
-            type,
-            type,
-            bind<write_abi_params>(signature),
-            bind<write_produce_cleanup>(signature),
-            bind<write_produce_upcall>("(*this)", signature));
+            type);
+
+        w.write("    {\n        delegate(H&& handler) : implements_delegate<%, H>(std::forward<H>(handler)) {}\n\n", type);
+
+        w.write("        std::int32_t __stdcall Invoke(%) noexcept final\n        {\n",
+            bind<write_abi_params>(signature));
+
+        write_delegate_body(w, signature);
+
+        w.write("        }\n    };\n");
     }
 
     static void write_delegate_definition(writer& w, TypeDef const& type)
