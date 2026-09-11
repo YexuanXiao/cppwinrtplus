@@ -15,7 +15,7 @@ Each WinRT namespace gets its own C++20 named module (`winrt.<Namespace>`). Base
 ### MSBuild Flow
 
 1. `CppWinRTBuildModule=true` adds `-modules` to cppwinrt.exe invocations
-2. `CppWinRTAddModuleInterfaces` discovers `$(GeneratedFilesDir)winrt\*.ixx` and adds to ClCompile
+2. `CppWinRTAddModuleInterfaces` discovers `$(GeneratedFilesDir)winrt\modules\*.ixx` and adds to ClCompile
 3. `CppWinRTConsumeModule` metadata on ProjectReference controls per-reference IFC sharing
 4. `CppWinRTResolveModuleReferences` calls `CppWinRTGetModuleOutputs` on tagged references
 5. Platform projection suppresses `-modules` when consuming pre-built IFCs

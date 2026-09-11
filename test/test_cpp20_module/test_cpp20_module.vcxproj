@@ -81,7 +81,7 @@
        BeforeTargets="FixupCLCompileOptions" ensures items are added before the module dependency scanner. -->
   <Target Name="AddModuleInterfaceUnits" DependsOnTargets="PreBuildEvent" BeforeTargets="FixupCLCompileOptions">
     <ItemGroup>
-      <ClCompile Include="$(CppWinRTGenDir)winrt\*.ixx">
+      <ClCompile Include="$(CppWinRTGenDir)winrt\modules\*.ixx">
         <CompileAs>CompileAsCppModule</CompileAs>
         <ModulesSupported>true</ModulesSupported>
         <PrecompiledHeader>NotUsing</PrecompiledHeader>

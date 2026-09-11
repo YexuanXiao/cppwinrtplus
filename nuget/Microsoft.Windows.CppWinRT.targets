@@ -913,7 +913,7 @@ $(XamlMetaDataProviderPch)
             DependsOnTargets="CppWinRTMakeProjections"
             BeforeTargets="FixupCLCompileOptions">
         <ItemGroup>
-            <ClCompile Include="$(GeneratedFilesDir)winrt\*.ixx">
+            <ClCompile Include="$(GeneratedFilesDir)winrt\modules\*.ixx">
                 <CompileAs>CompileAsCppModule</CompileAs>
                 <ModulesSupported>true</ModulesSupported>
                 <PrecompiledHeader>NotUsing</PrecompiledHeader>

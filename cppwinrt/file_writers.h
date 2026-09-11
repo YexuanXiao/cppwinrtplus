@@ -437,7 +437,7 @@ namespace cppwinrt
         w.write(strings::base_detect_numerics);
         w.write("\n");
         w.write_root_include("base");
-        w.flush_to_file(settings.output_folder + "winrt/winrt_base.ixx");
+        w.flush_to_file(settings.output_folder + "winrt/modules/winrt_base.ixx");
     }
 
     static void write_numerics_ixx()
@@ -467,7 +467,7 @@ namespace cppwinrt
             auto wrap = wrap_ifdef(w, "_MSC_VER");
             w.write("#pragma warning(pop)\n");
         }
-        w.flush_to_file(settings.output_folder + "winrt/winrt_numerics.ixx");
+        w.flush_to_file(settings.output_folder + "winrt/modules/winrt_numerics.ixx");
     }
 
     // Emits a per-namespace module interface unit for namespaces that are NOT
@@ -530,7 +530,7 @@ namespace cppwinrt
         w.write_depends(ns, '2');
         w.write_root_include(ns);
 
-        w.flush_to_file(settings.output_folder + "winrt/winrt." + std::string(ns) + ".ixx");
+        w.flush_to_file(settings.output_folder + "winrt/modules/winrt." + std::string(ns) + ".ixx");
     }
 
     // Emits the SCC (Strongly Connected Component) owner module interface unit.
@@ -627,7 +627,7 @@ namespace cppwinrt
             w.write_root_include(ns);
         }
 
-        w.flush_to_file(settings.output_folder + "winrt/winrt." + std::string(owner) + ".ixx");
+        w.flush_to_file(settings.output_folder + "winrt/modules/winrt." + std::string(owner) + ".ixx");
     }
 
     // Emits a thin re-export stub module for SCC non-owner namespaces.
@@ -645,6 +645,6 @@ namespace cppwinrt
         w.write("// WinRT namespace module dependency graph (SCC owner consolidation).\n\n");
         w.write("export module winrt.%;\n", ns);
         w.write("export import winrt.%;\n", owner);
-        w.flush_to_file(settings.output_folder + "winrt/winrt." + std::string(ns) + ".ixx");
+        w.flush_to_file(settings.output_folder + "winrt/modules/winrt." + std::string(ns) + ".ixx");
     }
 }
