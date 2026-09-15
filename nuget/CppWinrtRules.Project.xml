@@ -107,4 +107,8 @@
                   Description="Semicolon-delimited list of namespace prefixes to exclude from module (.ixx) generation. Use to avoid generating modules with unsatisfied dependencies, or to avoid duplicating modules already provided by a referenced project."
                   Category="Modules" />
 
+  <BoolProperty Name="CppWinRTEmbedNatvisMetadata"
+                DisplayName="Provide WinMD Dirs for Natvis"
+                Description="Embeds WinMD directories list into the binary so that natvis can correctly resolve all WinMD files. Only executable targets need to enable this."
+                Category="General" />
 </Rule>

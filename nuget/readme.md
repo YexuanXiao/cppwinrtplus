@@ -73,6 +73,7 @@ C++/WinRT behavior can be customized with these project properties:
 | CppWinRTBuildModule | true \| *false | Generates per-namespace C++20 module interface units (.ixx) alongside projection headers |
 | CppWinRTModuleInclude | namespace list | Semicolon-delimited namespaces to include in module generation (default: all) |
 | CppWinRTModuleExclude | namespace list | Semicolon-delimited namespaces to exclude from module generation |
+| CppWinRTEmbedNatvisMetadata | true \| *false | Embeds WinMD directories list into the binary so that natvis can resolve all WinMD files. Only executable targets need to enable this. |
 \*Default value
 
 To customize common C++/WinRT project properties: 

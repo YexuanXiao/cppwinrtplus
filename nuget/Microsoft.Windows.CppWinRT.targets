@@ -30,6 +30,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         <CppWinRTCommandModules Condition="'$(CppWinRTBuildModule)'=='true'">-modules</CppWinRTCommandModules>
         <CppWinRTCommandModuleFilter Condition="'$(CppWinRTModuleInclude)' != ''">-module_include $(CppWinRTModuleInclude.Replace(';', ' '))</CppWinRTCommandModuleFilter>
         <CppWinRTCommandModuleFilter Condition="'$(CppWinRTModuleExclude)' != ''">$(CppWinRTCommandModuleFilter) -module_exclude $(CppWinRTModuleExclude.Replace(';', ' '))</CppWinRTCommandModuleFilter>
+        <CppWinRTEmbedNatvisMetadata Condition="'$(CppWinRTEmbedNatvisMetadata)' == ''">false</CppWinRTEmbedNatvisMetadata>
         <CppWinRTPath Condition="'$(CppWinRTPackage)' == 'true' and '$(CppWinRTPath)'==''">"$(CppWinRTPackageDir)bin\"</CppWinRTPath>
         <CppWinRTPath Condition="'$(CppWinRTPackage)' != 'true' and '$(CppWinRTPath)'==''">"$(CppWinRTPackageDir)"</CppWinRTPath>
         <!-- By default enable C++/WinRT to include target platform winmds if we didn't override sdk references and the C++ Project system isn't already adding them -->
@@ -883,6 +884,35 @@ $(XamlMetaDataProviderPch)
             <CppWinRTMetadataAssembly></CppWinRTMetadataAssembly>
             <XamlLocalAssembly>$(CppWinRTProjectWinMD)</XamlLocalAssembly>
         </PropertyGroup>
+    </Target>
+
+    <!--
+      Tell the debug visualizer where to find .winmd that this project consumes.
+    -->
+    <Target Name="CppWinRTAddNatvisWinmdDirs"
+            Condition="'$(CppWinRTEmbedNatvisMetadata)' == 'true'"
+            DependsOnTargets="CppWinRTResolveReferences"
+            BeforeTargets="ClCompile;SelectClCompile">
+        <ItemGroup>
+            <_CppWinRTNatvisWinmdDirItemsRaw Include="@(CppWinRTPlatformWinMDReferences->'%(RootDir)%(Directory)')" />
+            <_CppWinRTNatvisWinmdDirItemsRaw Include="@(CppWinRTDirectWinMDReferences->'%(RootDir)%(Directory)')" />
+            <_CppWinRTNatvisWinmdDirItemsRaw Include="@(CppWinRTDynamicProjectWinMDReferences->'%(RootDir)%(Directory)')" />
+            <_CppWinRTNatvisWinmdDirItemsRaw Include="@(CppWinRTStaticProjectWinMDReferences->'%(RootDir)%(Directory)')" />
+            <_CppWinRTNatvisWinmdDirItemsRaw Condition="'$(CppWinRTProjectWinMD)' != ''"
+                Include="$([System.IO.Path]::GetDirectoryName($([System.IO.Path]::GetFullPath('$(CppWinRTProjectWinMD)'))))" />
+            <_CppWinRTNatvisWinmdDirItems Include="@(_CppWinRTNatvisWinmdDirItemsRaw->Distinct())" />
+        </ItemGroup>
+        <PropertyGroup>
+            <_CppWinRTNatvisWinmdDirs>@(_CppWinRTNatvisWinmdDirItems->'%(Identity)', ';')</_CppWinRTNatvisWinmdDirs>
+        </PropertyGroup>
+        <ItemGroup Condition="'$(_CppWinRTNatvisWinmdDirs)' != ''">
+            <!-- The value becomes a wide string literal, so backslashes are escaped, and semicolons
+                 are escaped as %3B so that the whole directory list reaches the compiler as a single
+                 preprocessor definition. -->
+            <ClCompile>
+                <PreprocessorDefinitions>%(ClCompile.PreprocessorDefinitions);WINRT_ADDITIONAL_WINMD_DIR=L&quot;$([System.String]::Copy('$(_CppWinRTNatvisWinmdDirs)').Replace('\','\\').Replace(';','%3B'))&quot;</PreprocessorDefinitions>
+            </ClCompile>
+        </ItemGroup>
     </Target>
 
     <!--Append any additional item metadata after all default and project settings have been applied-->
