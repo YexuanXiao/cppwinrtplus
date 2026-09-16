@@ -139,7 +139,7 @@ static HRESULT EvaluatePropertyExpression(
     com_ptr<DkmInspectionContext> pInspectionContext;
     if ( (pExpression->InspectionContext()->EvaluationFlags() & evalFlags) != evalFlags)
     {
-        DkmInspectionContext::Create(
+        IF_FAIL_RET(DkmInspectionContext::Create(
             inspectionContext->InspectionSession(),
             inspectionContext->RuntimeInstance(),
             inspectionContext->Thread(),
@@ -150,7 +150,7 @@ static HRESULT EvaluatePropertyExpression(
             inspectionContext->Language(),
             inspectionContext->ReturnValue(),
             pInspectionContext.put()
-        );
+        ));
     }
     else
     {
@@ -341,11 +341,12 @@ static HRESULT CreateChildVisualizedExpression(
 }
 
 std::optional<PropertyCategory> GetPropertyCategory(
-    Microsoft::VisualStudio::Debugger::DkmProcess* process,
+    DkmVisualizedExpression* pExpression,
     TypeSig const& owningType,
     TypeSig const& propertyType
 )
 {
+    auto process = pExpression->RuntimeInstance()->Process();
     std::optional<PropertyCategory> propCategory;
     if (auto pElementType = std::get_if<ElementType>(&propertyType.Type()))
     {
@@ -361,7 +362,7 @@ std::optional<PropertyCategory> GetPropertyCategory(
     }
     else if (auto pIndex = std::get_if<coded_index<TypeDefOrRef>>(&propertyType.Type()))
     {
-        auto type = ResolveType(process, *pIndex);
+        auto type = ResolveType(pExpression, *pIndex);
         if (type)
         {
             if (get_category(type) == category::class_type || get_category(type) == category::interface_type)
@@ -393,7 +394,7 @@ std::optional<PropertyCategory> GetPropertyCategory(
         {
             auto const& index = pGenericIndex->index;
             auto const& genericArgs = pOwner->GenericArgs();
-            propCategory = GetPropertyCategory(process, owningType, genericArgs.first[index]);
+            propCategory = GetPropertyCategory(pExpression, owningType, genericArgs.first[index]);
         }
         else
         {
@@ -618,12 +619,12 @@ std::wstring string_to_wstring(std::string_view const& str)
 }
 
 void GetInterfaceData(
-    Microsoft::VisualStudio::Debugger::DkmProcess* process,
+    DkmVisualizedExpression* pExpression,
     TypeSig const& typeSig,
     _Inout_ std::vector<PropertyData>& propertyData,
     _Out_ bool& isStringable
 ){
-    auto [type, propIid] = ResolveTypeInterface(process, typeSig);
+    auto [type, propIid] = ResolveTypeInterface(pExpression, typeSig);
 
     if (!type)
     {
@@ -647,7 +648,7 @@ void GetInterfaceData(
             continue;
         }
 
-        std::optional<PropertyCategory> propCategory = GetPropertyCategory(process, typeSig, method.Signature().ReturnType().Type());
+        std::optional<PropertyCategory> propCategory = GetPropertyCategory(pExpression, typeSig, method.Signature().ReturnType().Type());
         if (propCategory)
         {
             std::wstring propAbiType;
@@ -688,9 +689,8 @@ void object_visualizer::GetPropertyData()
     {
         return;
     }
-    auto process = m_pVisualizedExpression->RuntimeInstance()->Process();
     // runtime class name is delimited by L"..."
-    GetTypeProperties(process, std::string_view{ rc.data() + 2, rc.length() - 3 });
+    GetTypeProperties(m_pVisualizedExpression.get(), std::string_view{ rc.data() + 2, rc.length() - 3 });
 }
 
 GenericTypeInstSig ReplaceGenericIndices(GenericTypeInstSig const& sig, std::vector<TypeSig> const& genericArgs)
@@ -728,18 +728,18 @@ TypeSig ExpandInterfaceImplForType(coded_index<TypeDefOrRef> impl, TypeSig const
     return TypeSig{ impl };
 }
 
-void object_visualizer::GetTypeProperties(Microsoft::VisualStudio::Debugger::DkmProcess* process, std::string_view const& type_name)
+void object_visualizer::GetTypeProperties(DkmVisualizedExpression* pExpression, std::string_view const& type_name)
 {
     // TODO: add support for direct generic interface implementations (e.g., key_value_pair)
-    auto typeSig = FindType(process, type_name);
+    auto typeSig = FindType(pExpression, type_name);
     TypeDef type{};
     if (auto const* index = std::get_if<coded_index<TypeDefOrRef>>(&typeSig.Type()))
     {
-        type = ResolveType(process, *index);
+        type = ResolveType(pExpression, *index);
     }
     else if (auto const* genericInst = std::get_if<GenericTypeInstSig>(&typeSig.Type()))
     {
-        type = ResolveType(process, genericInst->GenericType());
+        type = ResolveType(pExpression, genericInst->GenericType());
     }
 
     if (!type)
@@ -755,13 +755,13 @@ void object_visualizer::GetTypeProperties(Microsoft::VisualStudio::Debugger::Dkm
             auto base_type = std::string(extends_namespace) + "." + std::string(extends_name);
             if (base_type != "System.Object")
             {
-                GetTypeProperties(process, base_type);
+                GetTypeProperties(pExpression, base_type);
             }
         }
         auto impls = type.InterfaceImpl();
         for (auto&& impl : impls)
         {
-            GetInterfaceData(process, ExpandInterfaceImplForType(impl.Interface(), typeSig), m_propertyData, m_isStringable);
+            GetInterfaceData(pExpression, ExpandInterfaceImplForType(impl.Interface(), typeSig), m_propertyData, m_isStringable);
         }
     }
     else if (get_category(type) == category::interface_type)
@@ -769,9 +769,9 @@ void object_visualizer::GetTypeProperties(Microsoft::VisualStudio::Debugger::Dkm
         auto impls = type.InterfaceImpl();
         for (auto&& impl : impls)
         {
-            GetInterfaceData(process, ExpandInterfaceImplForType(impl.Interface(), typeSig), m_propertyData, m_isStringable);
+            GetInterfaceData(pExpression, ExpandInterfaceImplForType(impl.Interface(), typeSig), m_propertyData, m_isStringable);
         }
-        GetInterfaceData(process, typeSig, m_propertyData, m_isStringable);
+        GetInterfaceData(pExpression, typeSig, m_propertyData, m_isStringable);
     }
 }
 

@@ -100,4 +100,21 @@ decltype(winrt::impl::natvis::get_val) & WINRT_get_val = winrt::impl::natvis::ge
 #pragma comment(linker, "/include:WINRT_get_val")
 #endif
 
+#ifdef WINRT_ADDITIONAL_WINMD_DIR
+extern "C"
+__declspec(selectany)
+wchar_t const* WINRT_Additional_Winmd_Dirs = WINRT_ADDITIONAL_WINMD_DIR;
+extern "C"
+__declspec(selectany)
+unsigned long WINRT_Additional_Winmd_Dirs_Size = sizeof(WINRT_ADDITIONAL_WINMD_DIR);
+
+#ifdef _M_IX86
+#pragma comment(linker, "/include:_WINRT_Additional_Winmd_Dirs")
+#pragma comment(linker, "/include:_WINRT_Additional_Winmd_Dirs_Size")
+#else
+#pragma comment(linker, "/include:WINRT_Additional_Winmd_Dirs")
+#pragma comment(linker, "/include:WINRT_Additional_Winmd_Dirs_Size")
+#endif
+#endif
+
 #endif
