@@ -1,4 +1,20 @@
-# Microsoft.Windows.CppWinRT NuGet Package
+# YexuanXiao.CppWinRTPlus NuGet Package
+
+Please read the [repository](https://github.com/YexuanXiao/cppwinrtplus)'s README.md for usage instructions.
+
+## Changelog
+
+Since the C++/WinRT mainline has accepted our module implementation, C++/WinRT Plus is now rebased onto the C++/WinRT 3.0 mainline to maintain compatibility.
+
+All the changes listed here only show the differences from the C++/WinRT mainline, and once the C++/WinRT Plus commits are merged upstream, they will be removed.
+
+2026/09/17:
+
+1. C++/WinRT Plus can now work with our VSIX extension to provide visualization for WinRT types in third-party NuGet packages (such as WindowsAppSDK).
+2. Fixed the issue where XamlMetadataProvider.cpp still requires the pch.h even when it is disabled.
+3. Optimized the performance of winrt::to_string using C++23's new resize_and_overwrite function.
+
+2026/03/24: Support using lambdas with explicit object parameter as delegates to resolve the issue where the captured lifetime may be shorter than the lifetime of the coroutine frame.
 
 ## Overview
 
@@ -7,11 +23,12 @@ Please visit [Microsoft.Windows.CppWinRT](https://www.nuget.org/packages/Microso
 To add build support for C++/WinRT vcxproj projects, add a reference to the Microsoft.Windows.CppWinRT NuGet package.  This customizes your project's build rules to automatically generate C++/WinRT projection headers, enabling you to both consume and produce Windows Runtime classes.
 
 C++/WinRT detects Windows metadata required by the project, from:
+
 * Platform winmd files in the SDK (both MSI and NuGet)
 * NuGet package references containing winmd files
 * Other project references producing winmd files
 * Raw winmd file references
-* Interface definition language (IDL) files in the project 
+* Interface definition language (IDL) files in the project
 
 For any winmd file discovered above, C++/WinRT creates reference (consuming) projection headers.  Client code can simply #include these headers, which are created in the generated files directory (see below).
 
@@ -20,6 +37,7 @@ For any IDL file contained in the project, C++/WinRT creates component (producin
 ## Details
 
 C++/WinRT configures build rules for the following tools:
+
 * C++ compiler
 * C++/WinRT compiler
 * MdMerge utility
@@ -30,7 +48,7 @@ It sets the following project properties and item metadata:
 
 | Property | Value | Description |
 |-|-|-|
-| [PreferredToolArchitecture](https://docs.microsoft.com/en-us/cpp/build/msbuild-visual-cpp-overview?view=vs-2017) | x64 | Enables the compiler to use more memory |
+| [PreferredToolArchitecture](https://learn.microsoft.com/en-us/cpp/build/reference/msbuild-visual-cpp-overview?view=msvc-180) | x64 | Enables the compiler to use more memory |
 | CanReferenceWinRT | true | Enables native project references (e.g., to WinMD files) |
 | GeneratedFilesDir | *$(IntDir)Generated Files\ | Sets the folder for C++/WinRT generated source files |
 | XamlLanguage | CppWinRT | Directs the Xaml compiler to generate C++/WinRT code |
@@ -42,13 +60,16 @@ It sets the following project properties and item metadata:
 | Midl.AdditionalOptions | /reference ... | Enables faster compilation with winmd references (versus idl imports) |
 | Midl.EnableWindowsRuntime | true | Enables Windows Runtime semantics |
 | Midl.MetadataFileName | Unmerged\%(Filename).winmd | Generates unmerged metadata in a temporary location |
-| Midl.GenerateClientFiles, GenerateServerFiles, GenerateStublessProxies, GenerateTypeLibrary, HeaderFileName, DllDataFileName, InterfaceIdentifierFileName, ProxyFileName, TypeLibraryName | *nul, *None, *false | Disable unnecessary output |
-\*If not already set 
+| Midl.GenerateClientFiles, GenerateServerFiles, GenerateStublessProxies, GenerateTypeLibrary, HeaderFileName, DllDataFileName, InterfaceIdentifierFileName, ProxyFileName, TypeLibraryName | \*nul, \*None, \*false | Disable unnecessary output |
+
+\*If not already set
 
 ## Generated Files
+
 The generated files directory created by C++/WinRT contains two subfolders:
-* sources: runtime class skeleton implementations 
-* winrt: reference projection headers 
+
+* sources: runtime class skeleton implementations
+* winrt: reference projection headers
 
 ## Customizing
 
@@ -58,7 +79,7 @@ C++/WinRT behavior can be customized with these project properties:
 |-|-|-|
 | CppWinRTLibs | *true \| false | Enables the Link item metadata settings above |
 | CppWinRTModernIDL | *true \| false | Enables the Midl item metadata settings above |
-| CppWinRTVerbosity | low \| *normal \| high | Sets the [importance](https://docs.microsoft.com/en-us/visualstudio/msbuild/message-task?view=vs-2017) of C++/WinRT build messages (see below) |
+| CppWinRTVerbosity | low \| *normal \| high | Sets the [importance](https://learn.microsoft.com/en-us/visualstudio/msbuild/message-task?view=visualstudio) of C++/WinRT build messages (see below) |
 | CppWinRTNamespaceMergeDepth | *1 | Sets the depth of namespace merging (Xaml apps require 1) |
 | CppWinRTRootNamespaceAutoMerge | true \| *false | Sets the namespace merge depth to be the length of the root namespace |
 | CppWinRTMergeNoValidate | true \| *false | Disables mdmerge validation |
@@ -156,7 +177,7 @@ The msbuild verbosity level maps to msbuild message importance as follows:
 | m[inimal] | high |
 | n[ormal] | normal+ |
 | d[etailed], diag[nostic] | low+ |
-For example, if the verbosity is set to minimal, then only messages with high importance are generated.  However, if the verbosity is set to diagnostic, then all messages are generated.  
+For example, if the verbosity is set to minimal, then only messages with high importance are generated.  However, if the verbosity is set to diagnostic, then all messages are generated.
 
 The default importance of C++/WinRT build messages is 'normal', but this can be overridden with the CppWinRTVerbosity property to enable throttling of C++/WinRT messages independent of the overall verbosity level.
 
