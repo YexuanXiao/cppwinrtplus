@@ -957,6 +957,9 @@ $(XamlMetaDataProviderPch)
                 <CompileAs>CompileAsCppModule</CompileAs>
                 <ModulesSupported>true</ModulesSupported>
                 <PrecompiledHeader>NotUsing</PrecompiledHeader>
+                <ModuleOutputFile>$(IntDir)Microsoft\cppwinrt\</ModuleOutputFile>
+                <ObjectFileName>$(IntDir)Microsoft\cppwinrt\</ObjectFileName>
+                <ModuleDependenciesFile>$(IntDir)Microsoft\cppwinrt\</ModuleDependenciesFile>
                 <!--
                    Tell the debug visualizer where to find .winmd that this project consumes.
                 -->
@@ -968,7 +971,7 @@ $(XamlMetaDataProviderPch)
     <!--
       When CppWinRTBuildModule is true, export the generated files directory and IFC output
       directory so that consuming projects can resolve them via ProjectReference.
-      The IFC files are written to IntDir by MSBuild's module build system.
+      The IFC files are written to '$(IntDir)Microsoft\cppwinrt\' by MSBuild's module build system.
     -->
     <Target Name="CppWinRTGetModuleOutputs"
             Condition="'$(CppWinRTBuildModule)'=='true'"
@@ -976,8 +979,7 @@ $(XamlMetaDataProviderPch)
         <ItemGroup>
             <CppWinRTModuleOutputs Include="$(MSBuildProjectFullPath)">
                 <CppWinRTModuleGeneratedFilesDir>$(GeneratedFilesDir)</CppWinRTModuleGeneratedFilesDir>
-                <CppWinRTModuleIfcDir>$(IntDir)</CppWinRTModuleIfcDir>
-                <CppWinRTModuleLibDir>$(OutDir)</CppWinRTModuleLibDir>
+                <CppWinRTModuleIfcDir>$(IntDir)Microsoft\cppwinrt\</CppWinRTModuleIfcDir>
             </CppWinRTModuleOutputs>
         </ItemGroup>
     </Target>
