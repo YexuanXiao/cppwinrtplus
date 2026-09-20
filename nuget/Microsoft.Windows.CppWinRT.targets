@@ -943,14 +943,13 @@ $(XamlMetaDataProviderPch)
             Overwrite="true"
             Condition="'$(_CppWinRTNatvisWinmdFilesEscaped)' != ''" />
 
-        <ItemGroup Condition="'$(_CppWinRTNatvisWinmdFilesEscaped)' != '' and '$(CppWinRTBuildModule)' != 'true'">
-            <ClCompile Update="@(ClCompile->WithMetadataValue('PrecompiledHeader','Create'))">
+        <ItemGroup>
+            <ClCompile Update="@(ClCompile->WithMetadataValue('PrecompiledHeader','Create'))"
+                       Condition="'$(_CppWinRTNatvisWinmdFilesEscaped)' != '' and '$(CppWinRTBuildModule)' != 'true'">
                 <AdditionalOptions>%(ClCompile.AdditionalOptions) @&quot;$(_CppWinRTNatvisWinmdRspFile)&quot;</AdditionalOptions>
             </ClCompile>
-        </ItemGroup>
-
-        <ItemGroup Condition="'$(_CppWinRTNatvisWinmdFilesEscaped)' != '' and '$(CppWinRTBuildModule)' == 'true'">
-            <ClCompile Update="$(GeneratedFilesDir)winrt\winrt_base.ixx">
+            <ClCompile Update="$(GeneratedFilesDir)winrt\winrt_base.ixx"
+                       Condition="'$(_CppWinRTNatvisWinmdFilesEscaped)' != '' and '$(CppWinRTBuildModule)' == 'true'">
                 <AdditionalOptions>%(ClCompile.AdditionalOptions) @&quot;$(_CppWinRTNatvisWinmdRspFile)&quot;</AdditionalOptions>
             </ClCompile>
         </ItemGroup>
