@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 ***********************************************************************************************
 Copyright (C) Microsoft Corporation. All rights reserved.
 ***********************************************************************************************
@@ -908,7 +908,7 @@ $(XamlMetaDataProviderPch)
     -->
     <Target Name="CppWinRTNatvisComputeWinmdFilesList"
             DependsOnTargets="CppWinRTResolveReferences"
-            Returns="$(_CppWinRTNatvisWinmdFiles)">
+            Returns="$(_CppWinRTNatvisWinmdFilesEscaped)">
         <ItemGroup>
             <_CppWinRTNatvisWinmdFileItemsRaw Include="@(CppWinRTPlatformWinMDReferences->'%(RootDir)%(Directory)%(Filename)%(Extension)')" />
             <_CppWinRTNatvisWinmdFileItemsRaw Include="@(CppWinRTDirectWinMDReferences->'%(RootDir)%(Directory)%(Filename)%(Extension)')" />
@@ -921,23 +921,37 @@ $(XamlMetaDataProviderPch)
         <PropertyGroup>
             <_CppWinRTNatvisWinmdFilesJoined>@(_CppWinRTNatvisWinmdFileItems->'%(Identity)', ';')</_CppWinRTNatvisWinmdFilesJoined>
             <_CppWinRTNatvisWinmdFilesEscaped>$([System.String]::Copy('$(_CppWinRTNatvisWinmdFilesJoined)').Replace('\','\\').Replace(';','%3B'))</_CppWinRTNatvisWinmdFilesEscaped>
-            <_CppWinRTNatvisWinmdFiles Condition="'$(_CppWinRTNatvisWinmdFilesEscaped)' != ''">L&quot;$(_CppWinRTNatvisWinmdFilesEscaped)&quot;</_CppWinRTNatvisWinmdFiles>
         </PropertyGroup>
     </Target>
-    
+
     <!--
       Tell the debug visualizer where to find .winmd that this project consumes.
       Since only one variable provides this information, different definitions will
       overwrite each other, so only Application is suitable for enabling.
       If C++/WinRT modules is enabled, the definition is provided by the modules.
     -->
-    <Target Name="CppWinRTEbmedNatvisWinmds"
-            Condition="'$(ConfigurationType)' == 'Application' and '$(CppWinRTBuildModule)' != 'true'"
+    <Target Name="CppWinRTEmbedNatvisWinmds"
+            Condition="'$(ConfigurationType)' == 'Application'"
             DependsOnTargets="CppWinRTNatvisComputeWinmdFilesList"
-            BeforeTargets="ClCompile;SelectClCompile">
-        <ItemGroup Condition="'$(_CppWinRTNatvisWinmdFiles)' != ''">
-            <ClCompile>
-               <PreprocessorDefinitions>%(ClCompile.PreprocessorDefinitions);WINRT_KNOWN_WINMDS=$(_CppWinRTNatvisWinmdFiles)</PreprocessorDefinitions>
+            BeforeTargets="ClCompile">
+        <PropertyGroup>
+            <_CppWinRTNatvisWinmdRspFile>$(IntDir)$(MSBuildProjectFile).winrt_natvis_winmds.rsp</_CppWinRTNatvisWinmdRspFile>
+        </PropertyGroup>
+        <WriteLinesToFile
+            File="$(_CppWinRTNatvisWinmdRspFile)"
+            Lines="/DWINRT_KNOWN_WINMDS=&quot;L\&quot;$(_CppWinRTNatvisWinmdFilesEscaped)\&quot;&quot;"
+            Overwrite="true"
+            Condition="'$(_CppWinRTNatvisWinmdFilesEscaped)' != ''" />
+
+        <ItemGroup Condition="'$(_CppWinRTNatvisWinmdFilesEscaped)' != '' and '$(CppWinRTBuildModule)' != 'true'">
+            <ClCompile Update="@(ClCompile->WithMetadataValue('PrecompiledHeader','Create'))">
+                <AdditionalOptions>%(ClCompile.AdditionalOptions) @&quot;$(_CppWinRTNatvisWinmdRspFile)&quot;</AdditionalOptions>
+            </ClCompile>
+        </ItemGroup>
+
+        <ItemGroup Condition="'$(_CppWinRTNatvisWinmdFilesEscaped)' != '' and '$(CppWinRTBuildModule)' == 'true'">
+            <ClCompile Update="$(GeneratedFilesDir)winrt\winrt_base.ixx">
+                <AdditionalOptions>%(ClCompile.AdditionalOptions) @&quot;$(_CppWinRTNatvisWinmdRspFile)&quot;</AdditionalOptions>
             </ClCompile>
         </ItemGroup>
     </Target>
@@ -950,7 +964,7 @@ $(XamlMetaDataProviderPch)
     -->
     <Target Name="CppWinRTAddModuleInterfaces"
             Condition="'$(CppWinRTBuildModule)'=='true'"
-            DependsOnTargets="CppWinRTMakeProjections;CppWinRTNatvisComputeWinmdFilesList"
+            DependsOnTargets="CppWinRTMakeProjections"
             BeforeTargets="FixupCLCompileOptions">
         <ItemGroup>
             <ClCompile Include="$(GeneratedFilesDir)winrt\*.ixx">
@@ -960,10 +974,6 @@ $(XamlMetaDataProviderPch)
                 <ModuleOutputFile>$(IntDir)Microsoft\cppwinrt\</ModuleOutputFile>
                 <ObjectFileName>$(IntDir)Microsoft\cppwinrt\</ObjectFileName>
                 <ModuleDependenciesFile>$(IntDir)Microsoft\cppwinrt\</ModuleDependenciesFile>
-                <!--
-                   Tell the debug visualizer where to find .winmd that this project consumes.
-                -->
-                <PreprocessorDefinitions Condition="'$(_CppWinRTNatvisWinmdFiles)' != ''">%(ClCompile.PreprocessorDefinitions);WINRT_KNOWN_WINMDS=$(_CppWinRTNatvisWinmdFiles)</PreprocessorDefinitions>
             </ClCompile>
         </ItemGroup>
     </Target>
