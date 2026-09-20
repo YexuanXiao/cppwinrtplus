@@ -47,30 +47,32 @@ coded_index<TypeDefOrRef> FindGuidType()
     return guid_TypeRef;
 }
 
-void MetadataDiagnostic(DkmProcess* process, std::wstring const& status, std::filesystem::path const& path)
+void MetadataDiagnostic(DkmProcess* process, std::wstring const& status, std::filesystem::path const& path, HRESULT errorCode = 0L)
 {
-    auto message = status + path.native();
-    NatvisDiagnostic(process, message, NatvisDiagnosticLevel::Verbose);
+    auto message = status + L" " + path.native();
+    NatvisDiagnostic(process, message, NatvisDiagnosticLevel::Verbose, errorCode);
 }
 
-// Downloads a metadata file from a remote target.
-HRESULT DownloadMetadata(DkmProcess* process, std::filesystem::path const& remote_path, std::filesystem::path const& local_path)
+bool IsLocalConnection(DkmProcess* process)
 {
-    auto conn = process->Connection();
-    if ((conn->Flags() & DkmTransportConnectionFlags_t::LocalComputer) != 0)
-    {
-        return E_FAIL;
-    }
+	return (process->Connection()->Flags() & DkmTransportConnectionFlags_t::LocalComputer) != 0;
+}
 
+void DownloadMetadata(DkmProcess* process, std::filesystem::path const& remote_path, std::filesystem::path const& local_path)
+try
+{
+    XLANG_ASSERT(!IsLocalConnection(process));
+    auto conn = process->Connection();
     com_ptr<DkmString> root_dir;
-    IF_FAIL_RET(DkmString::Create(remote_path.parent_path().c_str(), root_dir.put()));
+    winrt::check_hresult(DkmString::Create(remote_path.parent_path().c_str(), root_dir.put()));
     com_ptr<DkmString> search_spec;
-    IF_FAIL_RET(DkmString::Create(remote_path.filename().c_str(), search_spec.put()));
+    winrt::check_hresult(DkmString::Create(remote_path.filename().c_str(), search_spec.put()));
     DkmArray<DkmFileInfo*> results;
-    IF_FAIL_RET(conn->GetFileListing(root_dir.get(), search_spec.get(), false, &results));
-    if (results.Length != 1)
+    winrt::check_hresult(conn->GetFileListing(root_dir.get(), search_spec.get(), false, &results));
+    if (results.Length < 1)
     {
-        return E_FAIL;
+        MetadataDiagnostic(process, L"Remote file not found", remote_path);
+        return;
     }
 
     auto& remote_listing = results.Members[0];
@@ -84,29 +86,33 @@ HRESULT DownloadMetadata(DkmProcess* process, std::filesystem::path const& remot
         auto local_file_size = file_size(local_path);
         if ((local_file_time >= remote_file_time) && (local_file_size == remote_file_size))
         {
-            return S_OK;
+            return;
         }
     }
 
-    MetadataDiagnostic(process, L"Downloading ", remote_path);
+    MetadataDiagnostic(process, L"Downloading", remote_path);
     com_ptr<DkmString> local_file_path;
-    IF_FAIL_RET(DkmString::Create(local_path.c_str(), local_file_path.put()));
-    IF_FAIL_RET(conn->DownloadFile(remote_file_path, local_file_path.get(), true));
+    winrt::check_hresult(DkmString::Create(local_path.c_str(), local_file_path.put()));
+    winrt::check_hresult(conn->DownloadFile(remote_file_path, local_file_path.get(), true));
     last_write_time(local_path, remote_file_time);
-    return S_OK;
+    return;
+}
+catch (winrt::hresult_error const& e)
+{
+    MetadataDiagnostic(process, L"Download failed", remote_path, e.code());
 }
 
 // If local file found, use it
 // If newer remote file found, download it to cache
 // If cached file found (downloaded or not), use it
-bool FindMetadata(DkmProcess* process, std::filesystem::path& winmd_path, bool remote)
+bool FindMetadata(DkmProcess* process, std::filesystem::path& winmd_path)
 {
     if (exists(winmd_path))
     {
         return true;
     }
 
-    if (!remote)
+    if (IsLocalConnection(process))
     {
         return false;
     }
@@ -116,7 +122,7 @@ bool FindMetadata(DkmProcess* process, std::filesystem::path& winmd_path, bool r
     DownloadMetadata(process, winmd_path, cached_path);
     if (exists(cached_path))
     {
-        winmd_path = cached_path;
+        winmd_path = std::move(cached_path);
         return true;
     }
 
@@ -140,59 +146,62 @@ void AddWinmdCandidate(std::filesystem::path const& candidate)
     }
 }
 
-void CollectWinmdFromDirectoryLocal(std::filesystem::path const& directory)
+void CollectWinmdFromDirectoryLocal(DkmProcess* process, std::filesystem::path const& directory)
+try
 {
+    for (auto const& entry : std::filesystem::directory_iterator(directory))
+    {
+        if (std::filesystem::is_regular_file(entry) && entry.path().extension() == L".winmd")
+        {
+            AddWinmdCandidate(entry.path());
+        }
+    }
+}
+catch (std::filesystem::filesystem_error const& e)
+{
+    NatvisDiagnostic(process, string_to_wstring(e.what()), NatvisDiagnosticLevel::Verbose);
+}
+
+// Collects the metadata from the directory where the debuggee executable is located.
+// If the debuggee is running on a remote machine, it will download the metadata to %temp%.
+void CollectFromAppDirectory(DkmProcess* process)
+{
+    auto processPath = process->Path()->Value();
+    auto directory = std::filesystem::path(processPath).parent_path();
+
+    if (IsLocalConnection(process))
+    {
+        CollectWinmdFromDirectoryLocal(process, directory);
+        return;
+    }
     try
     {
-        for (auto const& entry : std::filesystem::directory_iterator(directory))
+        auto conn = process->Connection();
+        com_ptr<DkmString> remote_dir;
+        com_ptr<DkmString> search_spec;
+        winrt::check_hresult(DkmString::Create(directory.c_str(), remote_dir.put()));
+        winrt::check_hresult(DkmString::Create(L"*.winmd", search_spec.put()));
+
+        DkmArray<DkmFileInfo*> results;
+        winrt::check_hresult(conn->GetFileListing(remote_dir.get(), search_spec.get(), false, &results));
+
+        for (UINT32 i = 0; i < results.Length; ++i)
         {
-            if (std::filesystem::is_regular_file(entry) && entry.path().extension() == L".winmd")
+            auto file_path = results.Members[i]->FilePath();
+            if (file_path)
             {
-                AddWinmdCandidate(entry.path());
+                AddWinmdCandidate(file_path->Value());
             }
         }
     }
-    catch (...)
+    catch (winrt::hresult_error const& e)
     {
-        // If unable to read metadata, don't take down VS 
+        MetadataDiagnostic(process, L"Collect remote files failed", directory, e.code());
     }
 }
 
-void CollectWinmdDirectory(DkmProcess* process, std::filesystem::path const& directory, bool remote)
-{
-    CollectWinmdFromDirectoryLocal(directory);
-
-    if (!remote)
-    {
-        return;
-    }
-
-    auto conn = process->Connection();
-    com_ptr<DkmString> remote_dir;
-    com_ptr<DkmString> search_spec;
-    if (FAILED(DkmString::Create(directory.c_str(), remote_dir.put())) ||
-        FAILED(DkmString::Create(L"*.winmd", search_spec.put())))
-    {
-        return;
-    }
-
-    DkmArray<DkmFileInfo*> results;
-    if (FAILED(conn->GetFileListing(remote_dir.get(), search_spec.get(), false, &results)))
-    {
-        return;
-    }
-
-    for (UINT32 i = 0; i < results.Length; ++i)
-    {
-        auto file_path = results.Members[i]->FilePath();
-        if (file_path)
-        {
-            AddWinmdCandidate(file_path->Value());
-        }
-    }
-}
-
-void CollectSystemMetadata()
+// Collects the system metadata from %windir%\system32\WinMetadata.
+void CollectSystemMetadata(DkmProcess* process)
 {
     std::array<wchar_t, MAX_PATH> local{};
 #ifdef _WIN64
@@ -200,47 +209,39 @@ void CollectSystemMetadata()
 #else
     ExpandEnvironmentStringsW(L"%windir%\\SysNative\\WinMetadata", local.data(), static_cast<DWORD>(local.size()));
 #endif
-    CollectWinmdFromDirectoryLocal(local.data());
+    CollectWinmdFromDirectoryLocal(process,local.data());
 }
 
+// Evaluates an expression in the debuggee and returns the result as a UINT64.
+// Returns false if the evaluation fails or the result cannot be converted to a UINT64.
 bool EvaluateUInt64(DkmVisualizedExpression* pExpression, wchar_t const* expression, UINT64& value)
+try
 {
     com_ptr<DkmString> pEvalText;
-    if (FAILED(DkmString::Create(DkmSourceString(expression), pEvalText.put())))
-    {
-        return false;
-    }
-
+	winrt::check_hresult(DkmString::Create(DkmSourceString(expression), pEvalText.put()));
     auto evalFlags = DkmEvaluationFlags::TreatAsExpression
-                   | DkmEvaluationFlags::ForceEvaluationNow
-                   | DkmEvaluationFlags::ForceRealFuncEval;
+                   | DkmEvaluationFlags::ForceEvaluationNow;
 
     auto inspectionContext = pExpression->InspectionContext();
 
     com_ptr<DkmLanguageExpression> pLanguageExpression;
-    if (FAILED(DkmLanguageExpression::Create(inspectionContext->Language(),
-        evalFlags, pEvalText.get(), DkmDataItem::Null(), pLanguageExpression.put())))
-    {
-        return false;
-    }
+	winrt::check_hresult(DkmLanguageExpression::Create(inspectionContext->Language(),
+		evalFlags, pEvalText.get(), DkmDataItem::Null(), pLanguageExpression.put()));
 
     com_ptr<DkmInspectionContext> pInspectionContext;
     if ((inspectionContext->EvaluationFlags() & evalFlags) != evalFlags)
     {
-        if (FAILED(DkmInspectionContext::Create(
-            inspectionContext->InspectionSession(),
-            inspectionContext->RuntimeInstance(),
-            inspectionContext->Thread(),
-            inspectionContext->Timeout(),
-            evalFlags,
-            inspectionContext->FuncEvalFlags(),
-            inspectionContext->Radix(),
-            inspectionContext->Language(),
-            inspectionContext->ReturnValue(),
-            pInspectionContext.put())))
-        {
-            return false;
-        }
+		winrt::check_hresult(DkmInspectionContext::Create(
+			inspectionContext->InspectionSession(),
+			inspectionContext->RuntimeInstance(),
+			inspectionContext->Thread(),
+			inspectionContext->Timeout(),
+			evalFlags,
+			inspectionContext->FuncEvalFlags(),
+			inspectionContext->Radix(),
+			inspectionContext->Language(),
+			inspectionContext->ReturnValue(),
+			pInspectionContext.put()));
     }
     else
     {
@@ -248,15 +249,19 @@ bool EvaluateUInt64(DkmVisualizedExpression* pExpression, wchar_t const* express
     }
 
     com_ptr<DkmEvaluationResult> pEvaluationResult;
-    auto hr = pExpression->EvaluateExpressionCallback(pInspectionContext.get(), pLanguageExpression.get(),
-        pExpression->StackFrame(), pEvaluationResult.put());
+	winrt::check_hresult(pExpression->EvaluateExpressionCallback(pInspectionContext.get(), pLanguageExpression.get(),
+		pExpression->StackFrame(), pEvaluationResult.put()));
 
-    if (FAILED(hr) || !pEvaluationResult || pEvaluationResult->TagValue() != DkmEvaluationResult::Tag::SuccessResult)
+    if (pEvaluationResult->TagValue() != DkmEvaluationResult::Tag::SuccessResult)
     {
         return false;
     }
-
-    auto pValue = pEvaluationResult.as<DkmSuccessEvaluationResult>()->Value();
+    auto pSuccessEvaluationResult = pEvaluationResult.try_as<DkmSuccessEvaluationResult>();
+    if (!pSuccessEvaluationResult)
+    {
+        return false;
+    }
+    auto pValue = pSuccessEvaluationResult->Value();
     if (!pValue)
     {
         return false;
@@ -273,11 +278,15 @@ bool EvaluateUInt64(DkmVisualizedExpression* pExpression, wchar_t const* express
     value = parsed;
     return true;
 }
+catch (...)
+{
+	return false;
+}
 
 // Asks the debuggee which the metadata of the references it consumes. The files are embedded as a
 // semicolon separated wide string literal, and its size is embedded alongside it so that the string
 // can be read out of the debuggee's memory in one exact read.
-void CollectKnownMetadata(DkmVisualizedExpression* pExpression, DkmProcess* process)
+void CollectKnownMetadata(DkmVisualizedExpression* pExpression)
 {
     UINT64 address = 0;
     UINT64 size = 0;
@@ -285,20 +294,18 @@ void CollectKnownMetadata(DkmVisualizedExpression* pExpression, DkmProcess* proc
         !EvaluateUInt64(pExpression, L"(unsigned long long)WINRT_Known_Winmds_Size", size) ||
         !address || !size)
     {
+        NatvisDiagnostic(pExpression, L"Failed to get the known metadata files from the process. "
+            "Please enable natvis or upgrade C++/WinRT.", NatvisDiagnosticLevel::Error);
         return;
     }
 
-    CAutoDkmArray<BYTE> stringMemory;
-    auto hr = process->ReadMemoryString(address, DkmReadMemoryFlags::None, sizeof(wchar_t),
-        static_cast<UINT32>(size / sizeof(wchar_t)), &stringMemory);
-    if (FAILED(hr))
-    {
-        return;
-    }
+    std::wstring dir_list;
+    dir_list.resize(static_cast<std::size_t>(size));
+    auto process = pExpression->RuntimeInstance()->Process();
+	winrt::check_hresult(process->ReadMemory(address, DkmReadMemoryFlags::None, dir_list.data(), static_cast<UINT32>(size), nullptr));
 
     // The buffer includes the null terminator, which the list have no use for.
-    auto const characters = stringMemory.Length / sizeof(wchar_t);
-    std::wstring_view dir_list(reinterpret_cast<wchar_t const*>(stringMemory.Members), characters - 1);
+    dir_list.pop_back();
 
     size_t start = 0;
     while (start <= dir_list.size())
@@ -318,7 +325,7 @@ void CollectKnownMetadata(DkmVisualizedExpression* pExpression, DkmProcess* proc
     }
 }
 
-void EnsureWinmdCandidatesCollected(DkmVisualizedExpression* pExpression, WCHAR const* processPath)
+void EnsureWinmdCandidatesCollected(DkmVisualizedExpression* pExpression)
 {
     if (winmd_candidates_collected)
     {
@@ -327,10 +334,9 @@ void EnsureWinmdCandidatesCollected(DkmVisualizedExpression* pExpression, WCHAR 
     winmd_candidates_collected = true;
 
     auto process = pExpression->RuntimeInstance()->Process();
-    bool remote = (process->Connection()->Flags() & DkmTransportConnectionFlags_t::LocalComputer) == 0;
-    CollectKnownMetadata(pExpression, process);
-    CollectWinmdDirectory(process, std::filesystem::path(processPath).parent_path(), remote);
-    CollectSystemMetadata();
+    CollectKnownMetadata(pExpression);
+    CollectFromAppDirectory(process);
+    CollectSystemMetadata(process);
 }
 
 // The file that defines a type is named after the type's namespace, in lower case, so the
@@ -359,17 +365,13 @@ std::string ToLowerCasedWinmdName(std::string_view const& typeName)
 }
 
 // If type not indexed, simulate RoGetMetaDataFile's strategy for finding app-local metadata
-// and add to the database dynamically.  RoGetMetaDataFile looks for types in the current process
+// and add to the database dynamically. RoGetMetaDataFile looks for types in the current process
 // so cannot be called directly.
 void LoadMetadata(DkmVisualizedExpression* pExpression, std::string_view const& typeName)
 {
-    auto process = pExpression->RuntimeInstance()->Process();
-    auto processPath = process->Path()->Value();
-    EnsureWinmdCandidatesCollected(pExpression, processPath);
-
-    bool remote = (process->Connection()->Flags() & DkmTransportConnectionFlags_t::LocalComputer) == 0;
+    EnsureWinmdCandidatesCollected(pExpression);
     auto ns = ToLowerCasedWinmdName(typeName);
-
+    auto process = pExpression->RuntimeInstance()->Process();
     while (!ns.empty())
     {
         // A namespace that has been looked at before must not be looked at again.
@@ -378,28 +380,28 @@ void LoadMetadata(DkmVisualizedExpression* pExpression, std::string_view const& 
             auto winmd_name = ns + ".winmd";
             for (auto it = candidates_files.begin(); it != candidates_files.end(); ++it)
             {
-                std::filesystem::path path(*it);
-                if (path.filename().string() == winmd_name)
+                std::filesystem::path candidate(*it);
+                if (candidate.filename().string() != winmd_name)
                 {
-                    auto candidate = path;
-                    candidates_files.erase(it);
-                    if (FindMetadata(process, candidate, remote))
-                    {
-                        try
-                        {
-                            db_cache->add_database(candidate.string(), [](TypeDef const& type) {
-                                return type.Flags().WindowsRuntime();
-                            });
-                        }
-                        catch (...)
-                        {
-                            NatvisDiagnostic(pExpression,
-                                L"Unable to load metadata " + candidate.native(),
-                                NatvisDiagnosticLevel::Warning);
-                        }
-                    }
-                    break;
+                    continue;
                 }
+                candidates_files.erase(it);
+                if (!FindMetadata(process, candidate))
+                {
+                    continue;
+                }
+                try
+                {
+					// path.string() may corrupt non-ASCII paths.
+                    db_cache->add_database(winrt::to_string(candidate.native()), [](TypeDef const& type) {
+                        return type.Flags().WindowsRuntime();
+                    });
+                }
+                catch (...)
+                {
+                    MetadataDiagnostic(process, L"Unable to load metadata ", candidate);
+                }
+                break;
             }
         }
         auto dot = ns.rfind('.');

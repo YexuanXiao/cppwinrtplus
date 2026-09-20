@@ -115,3 +115,17 @@ inline winmd::reader::TypeDef ResolveType(Microsoft::VisualStudio::Debugger::Eva
 std::pair<winmd::reader::TypeDef, std::wstring> ResolveTypeInterface(Microsoft::VisualStudio::Debugger::Evaluation::DkmVisualizedExpression* pExpression, winmd::reader::TypeSig const& typeSig);
 
 void ClearTypeResolver();
+
+inline std::wstring string_to_wstring(std::string_view const& str)
+{
+    int const size = MultiByteToWideChar(CP_UTF8, 0, str.data(), static_cast<int>(str.size()), nullptr, 0);
+    if (size == 0)
+    {
+        return {};
+    }
+
+    std::wstring result(size, L'?');
+    [[maybe_unused]] auto size_result = MultiByteToWideChar(CP_UTF8, 0, str.data(), static_cast<int>(str.size()), result.data(), size);
+    XLANG_ASSERT(size == size_result);
+    return result;
+}
