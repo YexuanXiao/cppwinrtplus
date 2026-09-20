@@ -381,7 +381,7 @@ void LoadMetadata(DkmVisualizedExpression* pExpression, std::string_view const& 
             for (auto it = candidates_files.begin(); it != candidates_files.end(); ++it)
             {
                 std::filesystem::path candidate(*it);
-                if (candidate.filename().string() != winmd_name)
+                if (winrt::to_string(candidate.filename().native()) != winmd_name)
                 {
                     continue;
                 }
