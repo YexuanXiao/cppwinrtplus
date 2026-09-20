@@ -385,7 +385,7 @@ std::optional<PropertyCategory> GetPropertyCategory(
     }
     else if (auto pGenericInst = std::get_if<GenericTypeInstSig>(&propertyType.Type()))
     {
-        XLANG_ASSERT(get_category(ResolveType(process, pGenericInst->GenericType())) == category::interface_type);
+        XLANG_ASSERT(get_category(ResolveType(pExpression, pGenericInst->GenericType())) == category::interface_type);
         propCategory = PropertyCategory::Class;
     }
     else if (auto pGenericIndex = std::get_if<GenericTypeIndex>(&propertyType.Type()))
@@ -603,20 +603,6 @@ struct writer
             }, type.Type());
     }
 };
-
-std::wstring string_to_wstring(std::string_view const& str)
-{
-    int const size = MultiByteToWideChar(CP_UTF8, 0, str.data(), static_cast<int>(str.size()), nullptr, 0);
-    if (size == 0)
-    {
-        return {};
-    }
-
-    std::wstring result(size, L'?');
-    [[maybe_unused]] auto size_result = MultiByteToWideChar(CP_UTF8, 0, str.data(), static_cast<int>(str.size()), result.data(), size);
-    XLANG_ASSERT(size == size_result);
-    return result;
-}
 
 void GetInterfaceData(
     DkmVisualizedExpression* pExpression,
