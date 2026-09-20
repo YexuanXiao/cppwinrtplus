@@ -295,7 +295,7 @@ void CollectKnownMetadata(DkmVisualizedExpression* pExpression)
         !address || !size)
     {
         NatvisDiagnostic(pExpression, L"Failed to get the known metadata files from the process. "
-            "Please enable natvis or upgrade C++/WinRT.", NatvisDiagnosticLevel::Error);
+            "Please define WINRT_KNOWN_WINMDS or use the NuGet package.", NatvisDiagnosticLevel::Warning);
         return;
     }
 
