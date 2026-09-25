@@ -425,7 +425,7 @@ TypeDef FindSimpleType(DkmVisualizedExpression* pExpression, std::string_view co
     if (loaded_ns.count(ToLowerCasedWinmdName(typeName)) != 0)
     {
         NatvisDiagnostic(pExpression,
-            std::wstring(L"Could not find metadata for ") + std::wstring(typeName.begin(), typeName.end()),
+            std::wstring(L"Could not find metadata for ") + string_to_wstring(typeName),
             NatvisDiagnosticLevel::Error);
         return {};
     }
@@ -434,7 +434,7 @@ TypeDef FindSimpleType(DkmVisualizedExpression* pExpression, std::string_view co
     if (!type)
     {
         NatvisDiagnostic(pExpression,
-            std::wstring(L"Could not find metadata for ") + std::wstring(typeName.begin(), typeName.end()),
+            std::wstring(L"Could not find metadata for ") + string_to_wstring(typeName),
             NatvisDiagnosticLevel::Error);
     }
     return type;
