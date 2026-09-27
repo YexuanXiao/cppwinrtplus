@@ -295,7 +295,7 @@ void CollectKnownMetadata(DkmVisualizedExpression* pExpression)
         !address || !size)
     {
         NatvisDiagnostic(pExpression, L"Failed to get the known metadata files from the process. "
-            "Please enable natvis or upgrade C++/WinRT.", NatvisDiagnosticLevel::Error);
+            "Please define WINRT_KNOWN_WINMDS or use the NuGet package.", NatvisDiagnosticLevel::Warning);
         return;
     }
 
@@ -381,7 +381,7 @@ void LoadMetadata(DkmVisualizedExpression* pExpression, std::string_view const& 
             for (auto it = candidates_files.begin(); it != candidates_files.end(); ++it)
             {
                 std::filesystem::path candidate(*it);
-                if (candidate.filename().string() != winmd_name)
+                if (winrt::to_string(candidate.filename().native()) != winmd_name)
                 {
                     continue;
                 }
@@ -425,7 +425,7 @@ TypeDef FindSimpleType(DkmVisualizedExpression* pExpression, std::string_view co
     if (loaded_ns.count(ToLowerCasedWinmdName(typeName)) != 0)
     {
         NatvisDiagnostic(pExpression,
-            std::wstring(L"Could not find metadata for ") + std::wstring(typeName.begin(), typeName.end()),
+            std::wstring(L"Could not find metadata for ") + string_to_wstring(typeName),
             NatvisDiagnosticLevel::Error);
         return {};
     }
@@ -434,7 +434,7 @@ TypeDef FindSimpleType(DkmVisualizedExpression* pExpression, std::string_view co
     if (!type)
     {
         NatvisDiagnostic(pExpression,
-            std::wstring(L"Could not find metadata for ") + std::wstring(typeName.begin(), typeName.end()),
+            std::wstring(L"Could not find metadata for ") + string_to_wstring(typeName),
             NatvisDiagnosticLevel::Error);
     }
     return type;
