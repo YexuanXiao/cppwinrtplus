@@ -76,16 +76,12 @@ namespace cppwinrt
             return;
         }
 
-        if (!settings.component_opt)
-        {
-            auto format = R"(#include "%.h"
+        auto format = R"(#include "%.h"
 )";
-
-            w.write(format, get_component_filename(type));
-        }
+        w.write(format, get_component_filename(type));
     }
 
-    static void write_component_make_definition(writer& w, TypeDef const& type)
+    static void write_component_activation(writer& w, TypeDef const& type)
     {
         if (!has_factory_members(w, type) || is_always_disabled(type))
         {
@@ -108,13 +104,55 @@ namespace cppwinrt
             type_name);
     }
 
-    static void write_component_activation(writer& w, std::vector<TypeDef> const& classes)
+    static void write_module_g_cpp(writer& w, std::vector<TypeDef> const& classes)
     {
+        if (!settings.modules)
+        {
+            w.write_root_include("base");
+        }
+
         if (!settings.component_opt)
         {
             for (auto&& type : classes)
             {
-                write_component_make_definition(w, type);
+                write_component_include(w, type);
+            }
+        }
+
+        std::vector<std::string> components;
+
+        for (auto&& type : classes)
+        {
+            if (!has_factory_members(w, type) || is_always_disabled(type))
+            {
+                continue;
+            }
+
+            std::string name{type.TypeNamespace()};
+            name += '.';
+            name += type.TypeName();
+            components.push_back(std::move(name));
+        }
+
+        // Sort the strings so that binary search can be used.
+        std::sort(components.begin(), components.end());
+        w.write("#define WINRT_ACTIVATION_TABLE(X)\\\n");
+
+        for (std::size_t i = 0; i + 1 < components.size(); ++i)
+        {
+            w.write("    X(winrt_make_%, L\"%\") \\\n", get_impl_name(components[i]), components[i]);
+        }
+
+        if (!components.empty())
+        {
+            w.write("    X(winrt_make_%, L\"%\") \n", get_impl_name(components.back()), components.back());
+        }
+
+        if (!settings.component_opt)
+        {
+            for (auto&& type : classes)
+            {
+                write_component_activation(w, type);
             }
         }
         else
@@ -125,51 +163,6 @@ WINRT_ACTIVATION_TABLE(WINRT_DECLARE_FUNC)
 )";
             w.write(declarations);
         }
-    }
-
-    static void collect_component(writer& w, TypeDef const& type, std::vector<std::string>& components)
-    {
-        if (!has_factory_members(w, type) || is_always_disabled(type))
-        {
-            return;
-        }
-
-        std::string name;
-        name += type.TypeNamespace();
-        name += '.';
-        name += type.TypeName();
-        components.push_back(std::move(name));
-    }
-
-    static void write_module_g_cpp(writer& w, std::vector<TypeDef> const& classes)
-    {
-        if (!settings.modules)
-        {
-            w.write_root_include("base");
-        }
-
-        std::vector<std::string> components;
-        for (auto&& type : classes)
-        {
-            write_component_include(w, type);
-            collect_component(w, type, components);
-        }
-
-        // Sort the strings so that binary search can be used.
-        std::sort(components.begin(), components.end());
-        w.write("#define WINRT_ACTIVATION_TABLE(X)\\\n");
-
-        for (std::size_t i = 0; i + 1 < components.size(); ++i)
-        {
-            w.write(std::string{ "    X(winrt_make_" } + get_impl_name(components[i]) + ", L\"" + components[i] + "\") \\\n");
-        }
-
-        if (!components.empty())
-        {
-            w.write(std::string{ "    X(winrt_make_" } + get_impl_name(components.back()) + ", L\"" + components.back() + "\")\n");
-        }
-
-        write_component_activation(w, classes);
 
         auto format = R"(
 bool __stdcall %_can_unload_now() noexcept
@@ -198,6 +191,7 @@ void* __stdcall %_get_activation_factory([[maybe_unused]] std::wstring_view cons
 #define WINRT_MAKE_LIST(func, name) func,
         WINRT_ACTIVATION_TABLE(WINRT_MAKE_LIST)
     };
+
 #if % <= 32
     auto it = std::find(std::begin(names), std::end(names), name);
     if (it != std::end(names))
@@ -426,7 +420,7 @@ catch (...) { return winrt::to_hresult(); }
         auto type_name = type.TypeName();
         auto type_namespace = type.TypeNamespace();
 
-        write_component_make_definition(w, type);
+        write_component_activation(w, type);
 
         if (!settings.component_opt)
         {
@@ -1243,14 +1237,7 @@ namespace winrt::@::implementation
 
     static void write_component_cpp(writer& w, TypeDef const& type)
     {
-        {
-            auto filename = get_component_filename(type);
-
-            auto format = R"(#include "%.h"
-)";
-
-            w.write(format, filename);
-        }
+        write_component_include(w, type);
 
         if (settings.component_opt)
         {
