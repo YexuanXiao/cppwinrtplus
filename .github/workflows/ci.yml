@@ -61,10 +61,10 @@ jobs:
         run: |
           cmd /c "$env:VSDevCmd" "&" msbuild /m /clp:ForceConsoleColor "$env:msbuild_config_props" cppwinrt.sln /t:fast_fwd
 
-      - name: Build x86 prebuild tool
+      - name: Build x64 prebuild tool
         if: matrix.arch == 'arm64'
         run: |
-          cmd /c "$env:VSDevCmd" "&" msbuild /m /clp:ForceConsoleColor "$env:msbuild_config_props" /p:Platform=x86 cppwinrt.sln /t:cppwinrt
+          cmd /c "$env:VSDevCmd" "&" msbuild /m /clp:ForceConsoleColor "$env:msbuild_config_props" /p:Platform=x64 cppwinrt.sln /t:cppwinrt
 
       - name: Build cppwinrt
         run: |
