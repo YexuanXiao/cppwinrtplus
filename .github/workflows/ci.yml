@@ -390,7 +390,7 @@ jobs:
         run: |
           $target_configuration = "${{ matrix.config }}"
           $target_platform = "${{ matrix.arch }}"
-          cmd /c "$env:VSDevCmd" "&" msbuild /m /clp:ForceConsoleColor "/p:CppWinRTPath=$(Resolve-Path "_build\$target_platform\$target_configuration")" "$env:msbuild_config_props" test\nuget\NugetTest.sln
+          cmd /c "$env:VSDevCmd" "&" msbuild /m /clp:ForceConsoleColor "/p:CppWinRTPath=$(Resolve-Path "_build\$target_platform\$target_configuration")\" "$env:msbuild_config_props" test\nuget\NugetTest.sln
 
   build-nuget:
     name: Build nuget package with MSVC
