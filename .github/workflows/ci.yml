@@ -388,7 +388,9 @@ jobs:
 
       - name: Run nuget test
         run: |
-          cmd /c "$env:VSDevCmd" "&" msbuild /m /clp:ForceConsoleColor /p:CppWinRTPath=_build\$target_platform\$target_configuration\cppwinrt.exe "$env:msbuild_config_props" test\nuget\NugetTest.sln
+          $target_configuration = "${{ matrix.config }}"
+          $target_platform = "${{ matrix.arch }}"
+          cmd /c "$env:VSDevCmd" "&" msbuild /m /clp:ForceConsoleColor "/p:CppWinRTPath=_build\$target_platform\$target_configuration\" "$env:msbuild_config_props" test\nuget\NugetTest.sln
 
   build-nuget:
     name: Build nuget package with MSVC
