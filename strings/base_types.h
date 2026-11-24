@@ -1,7 +1,6 @@
 
 WINRT_EXPORT namespace winrt::impl
 {
-    using ptp_io = struct tp_io*;
     using ptp_timer = struct tp_timer*;
     using ptp_wait = struct tp_wait*;
     using ptp_pool = struct tp_pool*;
@@ -43,12 +42,12 @@ WINRT_EXPORT namespace winrt::impl
     template <typename T>
     constexpr std::uint8_t hex_to_uint8(T const a, T const b)
     {
-        return (hex_to_uint(a) << 4) | hex_to_uint(b);
+        return static_cast<std::uint8_t>((hex_to_uint(a) << 4) | hex_to_uint(b));
     }
 
     constexpr std::uint16_t uint8_to_uint16(std::uint8_t a, std::uint8_t b)
     {
-        return (static_cast<std::uint16_t>(a) << 8) | static_cast<std::uint16_t>(b);
+        return static_cast<std::uint16_t>((static_cast<std::uint16_t>(a) << 8) | static_cast<std::uint16_t>(b));
     }
 
     constexpr std::uint32_t uint8_to_uint32(std::uint8_t a, std::uint8_t b, std::uint8_t c, std::uint8_t d)
